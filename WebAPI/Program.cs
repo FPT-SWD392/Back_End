@@ -79,6 +79,7 @@ namespace WebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FA Intership Management API");
                     c.EnableTryItOutByDefault();
                     c.InjectStylesheet("/swagger-ui-css/SwaggerDark.css");
                     c.RoutePrefix = "";
