@@ -81,6 +81,7 @@ namespace WebAPI
                 {
                     c.EnableTryItOutByDefault();
                     c.InjectStylesheet("/swagger-ui-css/SwaggerDark.css");
+                    c.RoutePrefix = "";
                 });
             }
 
