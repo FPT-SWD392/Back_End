@@ -34,3 +34,8 @@ dotnet build
 -
 
 ## License
+All Rights Reserved
+
+The code in this repository is proprietary and confidential. Any use, reproduction, modification, distribution, or disclosure of the code without the explicit written permission of the owner is strictly prohibited.
+
+
