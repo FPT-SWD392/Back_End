@@ -13,7 +13,7 @@ namespace Repository.Implementation
 {
     public class UserInfoRepository : IUserInfoRepository
     {
-        public readonly IGenericDao<UserInfo> _userInfoDao;
+        private readonly IGenericDao<UserInfo> _userInfoDao;
         private readonly ISqlFluentRepository<UserInfo> _sqlFluentRepository;
         public UserInfoRepository(
             IDaoFactory daoFactory, 

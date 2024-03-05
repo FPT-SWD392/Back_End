@@ -11,8 +11,8 @@ namespace Repository.Implementation
 {
     public class CreatorInfoRepository : ICreatorInfoRepository
     {
-        private IGenericDao<CreatorInfo> _dao;
-        private ISqlFluentRepository<CreatorInfo> _sqlFluentRepository;
+        private readonly IGenericDao<CreatorInfo> _dao;
+        private readonly ISqlFluentRepository<CreatorInfo> _sqlFluentRepository;
         public CreatorInfoRepository(IDaoFactory daoFactory, ISqlFluentRepository<CreatorInfo> sqlFluentRepository)
         {
             _dao = daoFactory.CreateDao<CreatorInfo>();

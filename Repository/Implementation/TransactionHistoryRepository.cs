@@ -13,8 +13,8 @@ namespace Repository.Implementation
 {
     public class TransactionHistoryRepository : ITransactionHistoryRepository
     {
-        private IGenericDao<TransactionHistory> _dao;
-        private ISqlFluentRepository<TransactionHistory> _sqlFluentRepository;
+        private readonly IGenericDao<TransactionHistory> _dao;
+        private readonly ISqlFluentRepository<TransactionHistory> _sqlFluentRepository;
         public TransactionHistoryRepository(
             IDaoFactory daoFactory, 
             ISqlFluentRepository<TransactionHistory> sqlFluentRepository)

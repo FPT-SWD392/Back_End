@@ -11,8 +11,8 @@ namespace Repository.Implementation
 {
     public class PostLikeRepository : IPostLikeRepository
     {
-        private IGenericDao<PostLike> _dao;
-        private ISqlFluentRepository<PostLike> _sqlFluentRepository;
+        private readonly IGenericDao<PostLike> _dao;
+        private readonly ISqlFluentRepository<PostLike> _sqlFluentRepository;
         public PostLikeRepository(IDaoFactory daoFactory, ISqlFluentRepository<PostLike> sqlFluentRepository)
         {
             _dao = daoFactory.CreateDao<PostLike>();

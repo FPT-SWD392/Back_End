@@ -11,8 +11,8 @@ namespace Repository.Implementation
 {
     public class ReportRepository : IReportRepository
     {
-        private IGenericDao<Report> _dao;
-        private ISqlFluentRepository<Report> _sqlFluentRepository;
+        private readonly IGenericDao<Report> _dao;
+        private readonly ISqlFluentRepository<Report> _sqlFluentRepository;
         public ReportRepository(IDaoFactory daoFactory, ISqlFluentRepository<Report> sqlFluentRepository)
         {
             _dao = daoFactory.CreateDao<Report>();

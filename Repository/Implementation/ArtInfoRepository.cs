@@ -11,8 +11,8 @@ namespace Repository.Implementation
 {
     public class ArtInfoRepository : IArtInfoRepository
     {
-        IGenericDao<ArtInfo> _artInfoDao;
-        ISqlFluentRepository<ArtInfo> _sqlFluentRepository;
+        private readonly IGenericDao<ArtInfo> _artInfoDao;
+        private readonly ISqlFluentRepository<ArtInfo> _sqlFluentRepository;
         public ArtInfoRepository(IDaoFactory daoFactory, ISqlFluentRepository<ArtInfo> sqlFluentRepository)
         {
             _artInfoDao = daoFactory.CreateDao<ArtInfo>();

@@ -11,8 +11,8 @@ namespace Repository.Implementation
 {
     public class PostContentRepository : IPostContentRepository
     {
-        private IGenericDao<PostContent> _dao;
-        private IMongoFluentRepository<PostContent> _mongoFluentRepository;
+        private readonly IGenericDao<PostContent> _dao;
+        private readonly IMongoFluentRepository<PostContent> _mongoFluentRepository;
         public PostContentRepository(
             IDaoFactory daoFactory, 
             IMongoFluentRepository<PostContent> mongoFluentRepository)

@@ -11,8 +11,8 @@ namespace Repository.Implementation
 {
     public class ImageInfoRepository : IImageInfoRepository
     {
-        private IGenericDao<ImageInfo> _dao;
-        private IMongoFluentRepository<ImageInfo> _mongoFluentRepository;
+        private readonly IGenericDao<ImageInfo> _dao;
+        private readonly IMongoFluentRepository<ImageInfo> _mongoFluentRepository;
         public ImageInfoRepository(
             IDaoFactory daoFactory, 
             IMongoFluentRepository<ImageInfo> mongoFluentRepository)

@@ -11,7 +11,7 @@ namespace Repository.Implementation
 {
     public class ArtRatingRepository : IArtRatingRepository
     {
-        public readonly IGenericDao<ArtRating> _artRatingDao;
+        private readonly IGenericDao<ArtRating> _artRatingDao;
         private readonly ISqlFluentRepository<ArtRating> _sqlFluentRepository;
         public ArtRatingRepository(
             IDaoFactory daoFactory,

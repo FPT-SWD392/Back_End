@@ -11,8 +11,8 @@ namespace Repository.Implementation
 {
     public class PostRepository : IPostRepository
     {
-        private IGenericDao<Post> _dao;
-        private ISqlFluentRepository<Post> _sqlFluentRepository;
+        private readonly IGenericDao<Post> _dao;
+        private readonly ISqlFluentRepository<Post> _sqlFluentRepository;
         public PostRepository(IDaoFactory daoFactory, ISqlFluentRepository<Post> sqlFluentRepository)
         {
             _dao = daoFactory.CreateDao<Post>();

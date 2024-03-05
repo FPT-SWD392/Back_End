@@ -11,8 +11,8 @@ namespace Repository.Implementation
 {
     public class FollowRepository : IFollowRepository
     {
-        private IGenericDao<Follow> _dao;
-        private ISqlFluentRepository<Follow> _sqlFluentRepository;
+        private readonly IGenericDao<Follow> _dao;
+        private readonly ISqlFluentRepository<Follow> _sqlFluentRepository;
         public FollowRepository(IDaoFactory daoFactory, ISqlFluentRepository<Follow> sqlFluentRepository)
         {
             _dao = daoFactory.CreateDao<Follow>();

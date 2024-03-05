@@ -11,8 +11,8 @@ namespace Repository.Implementation
 {
     public class ImageTagsRepository : IImageTagsRepository
     {
-        private IGenericDao<ImageTags> _dao;
-        private IMongoFluentRepository<ImageTags> _mongoFluentRepository;
+        private readonly IGenericDao<ImageTags> _dao;
+        private readonly IMongoFluentRepository<ImageTags> _mongoFluentRepository;
         public ImageTagsRepository(
             IDaoFactory daoFactory, 
             IMongoFluentRepository<ImageTags> mongoFluentRepository)

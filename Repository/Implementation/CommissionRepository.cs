@@ -11,8 +11,8 @@ namespace Repository.Implementation
 {
     public class CommissionRepository : ICommissionRepository
     {
-        private IGenericDao<Commission> _dao;
-        private ISqlFluentRepository<Commission> _sqlFluentRepository;
+        private readonly IGenericDao<Commission> _dao;
+        private readonly ISqlFluentRepository<Commission> _sqlFluentRepository;
         public CommissionRepository(IDaoFactory daoFactory, ISqlFluentRepository<Commission> sqlFluentRepository)
         {
             _dao = daoFactory.CreateDao<Commission>();

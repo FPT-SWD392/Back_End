@@ -11,8 +11,8 @@ namespace Repository.Implementation
 {
     public class PurchaseRepository : IPurchaseRepository
     {
-        private IGenericDao<Purchase> _dao;
-        private ISqlFluentRepository<Purchase> _sqlFluentRepository;
+        private readonly IGenericDao<Purchase> _dao;
+        private readonly ISqlFluentRepository<Purchase> _sqlFluentRepository;
         public PurchaseRepository(IDaoFactory daoFactory, ISqlFluentRepository<Purchase> sqlFluentRepository)
         {
             _dao = daoFactory.CreateDao<Purchase>();
