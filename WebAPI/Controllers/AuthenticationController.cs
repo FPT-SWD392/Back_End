@@ -1,8 +1,12 @@
-﻿using BusinessObject.SqlObject;
+﻿using BusinessObject.NoSqlObject;
+using BusinessObject.SqlObject;
+using DataAccessObject;
 using JwtTokenAuthorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services;
+using System.Security.Claims;
 using WebAPI.Model;
 
 namespace WebAPI.Controllers
@@ -15,28 +19,16 @@ namespace WebAPI.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService _authenticationService;
-        private readonly JwtTokenHelper _jwtHelper;
-        public AuthenticationController(IAuthenticationService authenticationService, JwtTokenHelper jwtHelper)
+        private readonly ITokenHelper _jwtHelper;
+        public AuthenticationController(IAuthenticationService authenticationService, ITokenHelper jwtHelper)
         {
             _authenticationService = authenticationService;
             _jwtHelper = jwtHelper;
         }
-
-
-        /// <summary>
-        /// Authenticates a user by validating the provided credentials.
-        /// </summary>
-        /// <remarks>
-        /// This method verifies the username and password provided by the user
-        /// and returns a token if the authentication is successful.
-        /// </remarks>
-        /// <returns>
-        ///  Status code 200, JWT token and user information if the authentication is successful; otherwise, returns status code 400.
-        /// </returns>
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody]LoginRequest loginRequest)
         {
-            User? user = await _authenticationService.Login(loginRequest.Email, loginRequest.Password);
+            UserInfo? user = await _authenticationService.Login(loginRequest.Email, loginRequest.Password);
             if (user == null)
             {
                 return Unauthorized();
@@ -45,17 +37,10 @@ namespace WebAPI.Controllers
             LoginResponse loginResponse = new()
             {
                 Token = token,
-                UserName = user.UserName,
-                UserRole = user.Role,
-                ProfilePictureUrl = user.ProfilePictureUrl
+                UserName = user.FullName,
+                ProfilePictureUrl = user.ProfilePicture
             };
             return Ok(loginResponse);
-        }
-        [HttpGet("Init")]
-        public async Task<IActionResult> Create()
-        {
-            await _authenticationService.CreateUser();
-            return Ok();
         }
     }
 }

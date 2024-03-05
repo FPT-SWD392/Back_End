@@ -9,7 +9,7 @@ namespace Services
 {
     public interface IAuthenticationService
     {
-        Task<User?> Login(string email, string password);
+        Task<UserInfo?> Login(string email, string password);
         Task CreateUser();
     }
 }

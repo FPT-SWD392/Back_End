@@ -6,7 +6,6 @@ namespace WebAPI.Model
     {
         public required string Token {  get; set; }
         public required string UserName { get; set; }
-        public required UserRole UserRole { get; set; }
         public string? ProfilePictureUrl { get; set; }
     }
 }

@@ -1,48 +1,50 @@
 ﻿using BusinessObject.SqlObject;
-using Repository;
+using Repository.Interface;
 using System.Security.Cryptography;
 using System.Text;
 using Utils.PasswordHasher;
+using BusinessObject;
+using DataAccessObject;
+using BusinessObject.NoSqlObject;
 
 namespace Services.Implementation
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserInfoRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
-        public AuthenticationService(IUserRepository userRepository, IPasswordHasher passwordHasher)
+        public AuthenticationService(IUserInfoRepository userRepository, IPasswordHasher passwordHasher)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
         }
-        public async Task<User?> Login(string email, string password)
+        public async Task<UserInfo?> Login(string email, string password)
         {
-            IEnumerable<User>? users = await _userRepository.GetUsersByConditionAsync(u=>u.Email == email);
-            if (null == users || false == users.Any()) return null;
+            UserInfo? user = await _userRepository
+                .Query()
+                .Where(u=>u.Email == email && u.Status == AccountStatus.Active)
+                .SingleOrDefaultAsync();
+            if (user == null || false == _passwordHasher.VerifyPassword(password, user.PasswordHash)) return null;
 
-            User user = users.Single();
-            if (false == _passwordHasher.VerifyPassword(password, user.PasswordHash)) return null;
-
-            return users.SingleOrDefault();
+            return user;
         }
         public async Task CreateUser()
         {
             string passwordHash = _passwordHasher.HashPassword("dotutoan");
-            User user = new()
+            UserInfo user = new()
             {
-                UserId = "U-1",
-                UserName = "Đỗ Tú Toàn",
+                Balance = 0,
                 Email = "to@n.do",
+                FullName = "Do Tu Toan",
+                JoinDate = DateTime.Now,
+                Location = "",
+                NickName = "",
                 PasswordHash = passwordHash,
-                Address=string.Empty,
-                CreatedDate = DateTime.Now,
-                Introduction=string.Empty,
-                PhoneNumber=string.Empty,
-                ProfilePictureUrl = "https://cdn.discordapp.com/avatars/591436719576842240/5cdbb5c2679fd91d9750d94b1d06a08f.webp?size=1024",
-                Status = AccountStatus.Active
+                PhoneNumber = "",
+                Status = AccountStatus.Active,
+                ProfilePicture = ""
             };
-            await _userRepository.AddUserAsync(user);
+            await _userRepository.CreateNewUser(user);
         }
-
     }
 }
