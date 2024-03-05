@@ -2,7 +2,6 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using MongoDB.Driver;
 using DataAccessObject;
-using Repository;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,6 +15,8 @@ using Services.Implementation;
 using Middleware;
 using Utils.PasswordHasher;
 using Utils.RandomGenerator;
+using Repository.Interface;
+using Repository;
 
 namespace WebAPI
 {
@@ -50,10 +51,13 @@ namespace WebAPI
                     ?? throw new Exception("Can not get connection string");
                 return new MongoClient(connectionString);
             });
-            builder.Services.AddSingleton<JwtTokenHelper>();
+            builder.Services.AddScoped<ITokenHelper, JwtTokenHelper>();
+            builder.Services.AddScoped<IDaoFactory,DaoFactory>();
 
-            builder.Services.AddScoped<IDaoFactory, DaoFactory>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped(typeof(ISqlFluentRepository<>), typeof(SqlFluentRepository<>));
+            builder.Services.AddScoped(typeof(IMongoFluentRepository<>), typeof(MongoFluentRepository<>));
+
+            builder.Services.AddScoped<IUserInfoRepository, UserInfoRepository>();
             builder.Services.AddScoped<IAuthenticationService,AuthenticationService>();
 
             builder.Services.AddScoped<IPasswordHasher,PasswordHasher>();

@@ -4,7 +4,7 @@ namespace JwtTokenAuthorization
 {
     public interface ITokenHelper
     {
-        public string GenerateToken(User user);
+        public string GenerateToken(UserInfo user);
         public string GetUserIdFromToken(HttpContext httpContext);
     }
 }

@@ -22,14 +22,13 @@ namespace JwtTokenAuthorization
             _key = configuration["Jwt:SecretKey"] 
                 ?? throw new Exception("Can not find jwt secret key in config file");
         }
-        public string GenerateToken(User user)
+        public string GenerateToken(UserInfo user)
         {
             SymmetricSecurityKey symmetricKey = new(Encoding.UTF8.GetBytes(_key));
             SigningCredentials credential = new(symmetricKey, SecurityAlgorithms.HmacSha256);
             List<Claim> claims = new()
             {
-                new(CustomClaimType.Role,user.Role.ToString()),
-                new(CustomClaimType.UserId,user.UserId)
+                new(CustomClaimType.UserId,user.UserId.ToString())
             };
             JwtSecurityToken token = new(
                 issuer: _issuer,
