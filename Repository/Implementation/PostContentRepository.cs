@@ -33,7 +33,7 @@ namespace Repository.Implementation
 
         public async Task<PostContent?> GetPostContentById(int postId)
         {
-            await _dao
+            return await _dao
                 .Where(x => x.PostId == postId)
                 .SingleOrDefaultAsync();
         }
