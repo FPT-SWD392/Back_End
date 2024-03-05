@@ -10,7 +10,7 @@ namespace BusinessObject.NoSqlObject
     public class ImageInfo : IMongoDbObject
     {
         [BsonId]
-        public int Id { get; set; }
+        public int ImageId { get; set; }
         public required UploadedFileInfo Preview { get; set; }
         public required UploadedFileInfo Original { get; set; }
     }

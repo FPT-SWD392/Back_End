@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.NoSqlObject
 {
-    public class ImageTags : ISqlObject
+    public class ImageTags : IMongoDbObject
     {
         [BsonId]
         public int ImageId { get; set; }

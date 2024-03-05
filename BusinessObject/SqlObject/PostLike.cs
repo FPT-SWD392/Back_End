@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace BusinessObject.SqlObject
 {
     [PrimaryKey(nameof(UserId),nameof(PostId))]
-    public class PostLike
+    public class PostLike : ISqlObject
     {
         [Required]
         [ForeignKey(nameof(UserInfo))]
