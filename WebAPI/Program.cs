@@ -67,11 +67,13 @@ namespace WebAPI
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IPostLikeRepository, PostLikeRepository>();
             builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
-            builder.Services.AddScoped<IReportRepository,IReportRepository>();
+            builder.Services.AddScoped<IReportRepository,ReportRepository>();
             builder.Services.AddScoped<ITransactionHistoryRepository , TransactionHistoryRepository>();
             builder.Services.AddScoped<IUserInfoRepository, UserInfoRepository>();
 
             builder.Services.AddScoped<IAuthenticationService,AuthenticationService>();
+            builder.Services.AddScoped<ICommissionService, CommissionService>();
+            builder.Services.AddScoped<IUserInfoService, UserInfoService>();
 
             builder.Services.AddScoped<IPasswordHasher,PasswordHasher>();
             builder.Services.AddScoped<ITokenHelper,JwtTokenHelper>();
