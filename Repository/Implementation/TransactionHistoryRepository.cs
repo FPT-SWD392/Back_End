@@ -22,8 +22,12 @@ namespace Repository.Implementation
             _dao = daoFactory.CreateDao<TransactionHistory>();
             _sqlFluentRepository = sqlFluentRepository;
         }
+        public async Task<List<TransactionHistory>> GetAllTransaction()
+        {
+            return await _dao.ToListAsync();
+        }
 
-        public async Task CreateNewTransactionHistory(TransactionHistory transactionHistory)
+        public async Task CreateTransactionHistory(TransactionHistory transactionHistory)
         {
             await _dao.CreateAsync(transactionHistory);
         }
