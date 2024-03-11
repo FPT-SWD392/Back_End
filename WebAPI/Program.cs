@@ -72,6 +72,7 @@ namespace WebAPI
             builder.Services.AddScoped<IUserInfoRepository, UserInfoRepository>();
 
             builder.Services.AddScoped<IAuthenticationService,AuthenticationService>();
+            builder.Services.AddScoped<ICommissionService, CommissionService>();
             builder.Services.AddScoped<IUserInfoService, UserInfoService>();
 
             builder.Services.AddScoped<IPasswordHasher,PasswordHasher>();

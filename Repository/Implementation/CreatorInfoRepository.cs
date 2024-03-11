@@ -32,6 +32,7 @@ namespace Repository.Implementation
         {
             return await _dao
                 .Where(x=>x.CreatorId == creatorId)
+                .Include(x => x.UserInfo)
                 .SingleOrDefaultAsync();
         }
 

@@ -1,4 +1,4 @@
-﻿using Amazon.Auth.AccessControlPolicy.ActionIdentifiers;
+using Amazon.Auth.AccessControlPolicy.ActionIdentifiers;
 using BusinessObject;
 using BusinessObject.SqlObject;
 using Microsoft.Identity.Client;

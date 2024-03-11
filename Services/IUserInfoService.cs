@@ -1,4 +1,4 @@
-﻿using BusinessObject.SqlObject;
+using BusinessObject.SqlObject;
 using System;
 
 namespace Services

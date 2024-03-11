@@ -31,7 +31,8 @@ namespace Repository.Implementation
         public async Task<List<Commission>> GetArtistCommissions(int creatorId)
         {
             return await _dao
-                .Where(x=>x.CreatorId == creatorId)
+                .Where(x => x.CreatorId == creatorId)
+                .Include(x => x.UserInfo)
                 .ToListAsync();
         }
 
@@ -39,6 +40,7 @@ namespace Repository.Implementation
         {
             return await _dao
                 .Where(x=>x.CommissionId == commissionId)
+                .Include(x => x.UserInfo)
                 .SingleOrDefaultAsync();
         }
 
@@ -46,6 +48,7 @@ namespace Repository.Implementation
         {
             return await _dao
                 .Where(x => x.UserId == userId)
+                .Include(x => x.UserInfo)
                 .ToListAsync();
         }
 
