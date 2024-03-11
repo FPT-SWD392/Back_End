@@ -33,10 +33,11 @@ namespace BusinessObject
     }
     public enum CommissionStatus
     {
+        Pending,
         Accepted,
         Denied,
-        Ongoing,
-        Finished
+        Finished,
+        Canceled
     }
     public enum ImageType
     {
