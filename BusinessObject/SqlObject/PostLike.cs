@@ -21,7 +21,7 @@ namespace BusinessObject.SqlObject
         [Required]
         public DateTime LikedDate { get; set; }
 
-        public virtual UserInfo? UserInfo { get; set; }
-        public virtual Post? Post { get; set; }
+        public virtual UserInfo UserInfo { get; set; }
+        public virtual Post Post { get; set; }
     }
 }

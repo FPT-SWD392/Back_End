@@ -21,7 +21,7 @@ namespace BusinessObject.SqlObject
         [Required]
         public DateTime FollowDate { get; set; }
 
-        public virtual UserInfo? UserInfo { get; set; }
-        public virtual CreatorInfo? CreatorInfo { get; set; }
+        public virtual UserInfo UserInfo { get; set; }
+        public virtual CreatorInfo CreatorInfo { get; set; }
     }
 }

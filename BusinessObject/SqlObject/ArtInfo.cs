@@ -32,9 +32,8 @@ namespace BusinessObject.SqlObject
         [Required]
         public required ArtStatus Status { get; set; }
 
-        public virtual CreatorInfo? CreatorInfo { get; set; }
-        public virtual ICollection<Purchase>? Purchases { get; set; }
-        public virtual ICollection<ArtRating>? ArtRatings { get; set; }
-        public virtual ICollection<Report>? Reports { get; set; }
+        public virtual CreatorInfo CreatorInfo { get; set; }
+        public virtual ICollection<Purchase> Purchases { get; set; }
+        public virtual ICollection<ArtRating> ArtRatings { get; set; }
     }
 }

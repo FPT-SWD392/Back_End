@@ -32,8 +32,7 @@ namespace BusinessObject.SqlObject
         public DateTime? RatingDate { get; set; }
         public string? Review { get; set; }
         
-        public virtual UserInfo? UserInfo { get; set; }
-        public virtual CreatorInfo? CreatorInfo { get; set; }
-        public virtual Report? Report { get; set; }
+        public virtual UserInfo UserInfo { get; set; }
+        public virtual CreatorInfo CreatorInfo { get; set; }
     }
 }

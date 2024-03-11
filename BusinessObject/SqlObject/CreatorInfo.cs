@@ -22,11 +22,10 @@ namespace BusinessObject.SqlObject
         [Required]
         public required string ContactInfo { get; set; }    
 
-        public virtual UserInfo? UserInfo { get; set; }
-        public virtual ICollection<Follow>? Follows { get; set; }
-        public virtual ICollection<Commission>? Commissions { get; set; }
-        public virtual ICollection<ArtInfo>? ArtInfos { get; set; }
-        public virtual ICollection<Report>? Reports { get; set; }
-        public virtual ICollection<Post>? Posts { get; set; }
+        public virtual UserInfo UserInfo { get; set; }
+        public virtual ICollection<Follow> Follows { get; set; }
+        public virtual ICollection<Commission> Commissions { get; set; }
+        public virtual ICollection<ArtInfo> ArtInfos { get; set; }
+        public virtual ICollection<Post> Posts { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using BusinessObject.SqlObject;
+﻿using BusinessObject;
+using BusinessObject.SqlObject;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -17,6 +18,8 @@ namespace DataAccessObject
         public DbSet<Report> Report { get; set; }
         public DbSet<TransactionHistory> TransactionHistorie { get; set; }
         public DbSet<UserInfo> UserInfo { get; set; }
+        public DbSet<Tag> Tag { get; set; }
+        public DbSet<ArtTag> ArtTag { get; set; }
         public SqlDbContext()
         {
         }
