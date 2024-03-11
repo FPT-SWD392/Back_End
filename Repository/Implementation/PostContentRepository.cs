@@ -12,13 +12,9 @@ namespace Repository.Implementation
     public class PostContentRepository : IPostContentRepository
     {
         private readonly IGenericDao<PostContent> _dao;
-        private readonly IMongoFluentRepository<PostContent> _mongoFluentRepository;
-        public PostContentRepository(
-            IDaoFactory daoFactory, 
-            IMongoFluentRepository<PostContent> mongoFluentRepository)
+        public PostContentRepository( IDaoFactory daoFactory)
         {
             _dao = daoFactory.CreateDao<PostContent>();
-            _mongoFluentRepository = mongoFluentRepository;
         }
 
         public async Task CreateNewPostContent(PostContent postContent)
@@ -36,11 +32,6 @@ namespace Repository.Implementation
             return await _dao
                 .Where(x => x.PostId == postId)
                 .SingleOrDefaultAsync();
-        }
-
-        public IMongoFluentRepository<PostContent> Query()
-        {
-            return _mongoFluentRepository;
         }
 
         public async Task UpdatePostContent(PostContent postContent)

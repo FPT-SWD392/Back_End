@@ -13,6 +13,5 @@ namespace Repository.Interface
         public Task DeletePostContent(PostContent postContent);
         public Task UpdatePostContent(PostContent postContent);
         public Task<PostContent?> GetPostContentById(int postId);
-        public IMongoFluentRepository<PostContent> Query();
     }
 }

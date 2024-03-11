@@ -12,13 +12,9 @@ namespace Repository.Implementation
     public class ArtRatingRepository : IArtRatingRepository
     {
         private readonly IGenericDao<ArtRating> _artRatingDao;
-        private readonly ISqlFluentRepository<ArtRating> _sqlFluentRepository;
-        public ArtRatingRepository(
-            IDaoFactory daoFactory,
-            ISqlFluentRepository<ArtRating> sqlFluentRepository)
+        public ArtRatingRepository(IDaoFactory daoFactory)
         {
             _artRatingDao = daoFactory.CreateDao<ArtRating>();
-            _sqlFluentRepository = sqlFluentRepository;
         }
         public async Task CreateNewArtRating(ArtRating artRating)
         {
@@ -40,11 +36,6 @@ namespace Repository.Implementation
             return await _artRatingDao
                 .Where(a=>a.ArtId == artId)
                 .ToListAsync();
-        }
-
-        public ISqlFluentRepository<ArtRating> Query()
-        {
-            return _sqlFluentRepository;
         }
 
         public async Task<List<ArtRating>> GetAllUserArtRatings(int userId)

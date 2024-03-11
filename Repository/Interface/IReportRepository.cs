@@ -1,9 +1,4 @@
 ﻿using BusinessObject.SqlObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Interface
 {
@@ -18,6 +13,5 @@ namespace Repository.Interface
         public Task<List<Report>> GetAllComissionReports(int commissionId);
         public Task<List<Report>> GetAllCreatorReports(int creatorId);
         public Task<List<Report>> GetAllPostReports(int postId);
-        public ISqlFluentRepository<Report> Query();
     }
 }

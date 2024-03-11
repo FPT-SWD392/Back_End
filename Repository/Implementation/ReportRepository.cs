@@ -12,11 +12,9 @@ namespace Repository.Implementation
     public class ReportRepository : IReportRepository
     {
         private readonly IGenericDao<Report> _dao;
-        private readonly ISqlFluentRepository<Report> _sqlFluentRepository;
-        public ReportRepository(IDaoFactory daoFactory, ISqlFluentRepository<Report> sqlFluentRepository)
+        public ReportRepository(IDaoFactory daoFactory)
         {
             _dao = daoFactory.CreateDao<Report>();
-            _sqlFluentRepository = sqlFluentRepository;
         }
 
         public async Task CreateNewReport(Report report)
@@ -69,11 +67,6 @@ namespace Repository.Implementation
             return await _dao
                 .Where(x => x.ReporterId == reportId)
                 .SingleOrDefaultAsync();
-        }
-
-        public ISqlFluentRepository<Report> Query()
-        {
-            return _sqlFluentRepository;
         }
 
         public async Task UpdateReport(Report report)

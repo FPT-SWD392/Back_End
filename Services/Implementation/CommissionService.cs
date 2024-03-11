@@ -71,11 +71,7 @@ namespace Services.Implementation
 
         public async Task<List<Commission>?> GetAcceptedCommissionByCreatorId(int artistId)
         {
-            return await _commissionRepository
-                .Query()
-                .Where(x => x.CreatorId == artistId && x.CommissionStatus == CommissionStatus.Accepted)
-                .Include(x => x.UserInfo)
-                .ToListAsync();
+            return await _commissionRepository.GetAcceptedCommissionByCreatorId(artistId);
         }
 
         public async Task UpdateCommissionStatus(int commissionId, string status)

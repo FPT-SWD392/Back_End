@@ -13,6 +13,5 @@ namespace Repository.Interface
         public Task DeleteImageTags(ImageTags imageTags);
         public Task UpdateImageTags(ImageTags imageTags);
         public Task<ImageTags?> GetImageTagsById(int imageId);
-        public IMongoFluentRepository<ImageTags> Query();
     }
 }

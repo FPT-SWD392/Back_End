@@ -12,11 +12,9 @@ namespace Repository.Implementation
     public class ArtInfoRepository : IArtInfoRepository
     {
         private readonly IGenericDao<ArtInfo> _artInfoDao;
-        private readonly ISqlFluentRepository<ArtInfo> _sqlFluentRepository;
-        public ArtInfoRepository(IDaoFactory daoFactory, ISqlFluentRepository<ArtInfo> sqlFluentRepository)
+        public ArtInfoRepository(IDaoFactory daoFactory)
         {
             _artInfoDao = daoFactory.CreateDao<ArtInfo>();
-            _sqlFluentRepository = sqlFluentRepository;
         }
 
         public async Task CreateNewArt(ArtInfo artInfo)
@@ -37,11 +35,6 @@ namespace Repository.Implementation
         public async Task<ArtInfo?> GetArtById(int id)
         {
             return await _artInfoDao.Where(x=>x.ArtId == id).SingleOrDefaultAsync();
-        }
-
-        public ISqlFluentRepository<ArtInfo> Query()
-        {
-            return _sqlFluentRepository;
         }
 
         public async Task UpdateArt(ArtInfo artInfo)

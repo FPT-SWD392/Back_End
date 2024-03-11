@@ -42,7 +42,7 @@ namespace WebAPI
                 string connectionString = builder.Configuration
                     .GetConnectionString("SqlConnectionString")
                     ?? throw new Exception("Can not get connection string");
-                s.UseSqlServer(connectionString);
+                s.UseSqlServer(connectionString, option => { option.EnableRetryOnFailure(); });
             });
             builder.Services.AddSingleton<IMongoClient>(s =>
             {
@@ -54,8 +54,6 @@ namespace WebAPI
             builder.Services.AddScoped<ITokenHelper, JwtTokenHelper>();
             builder.Services.AddScoped<IDaoFactory,DaoFactory>();
 
-            builder.Services.AddScoped(typeof(ISqlFluentRepository<>), typeof(SqlFluentRepository<>));
-            builder.Services.AddScoped(typeof(IMongoFluentRepository<>), typeof(MongoFluentRepository<>));
             builder.Services.AddScoped<IArtInfoRepository, ArtInfoRepository>();    
             builder.Services.AddScoped<IArtRatingRepository, ArtRatingRepository>();
             builder.Services.AddScoped<ICommissionRepository, CommissionRepository>();

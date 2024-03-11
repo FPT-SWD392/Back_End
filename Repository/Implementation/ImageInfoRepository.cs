@@ -12,13 +12,9 @@ namespace Repository.Implementation
     public class ImageInfoRepository : IImageInfoRepository
     {
         private readonly IGenericDao<ImageInfo> _dao;
-        private readonly IMongoFluentRepository<ImageInfo> _mongoFluentRepository;
-        public ImageInfoRepository(
-            IDaoFactory daoFactory, 
-            IMongoFluentRepository<ImageInfo> mongoFluentRepository)
+        public ImageInfoRepository(IDaoFactory daoFactory)
         {
             _dao = daoFactory.CreateDao<ImageInfo>();
-            _mongoFluentRepository = mongoFluentRepository;
         }
 
         public async Task CreateNewImageInfo(ImageInfo imageInfo)
@@ -36,11 +32,6 @@ namespace Repository.Implementation
             return await _dao
                 .Where(x => x.ImageId == imageId)
                 .SingleOrDefaultAsync();
-        }
-
-        public IMongoFluentRepository<ImageInfo> Query()
-        {
-            return _mongoFluentRepository;
         }
 
         public async Task UpdateImageInfo(ImageInfo imageInfo)

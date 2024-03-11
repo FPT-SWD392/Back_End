@@ -13,6 +13,5 @@ namespace Repository.Interface
         public Task DeleteImageInfo(ImageInfo imageInfo);
         public Task UpdateImageInfo(ImageInfo imageInfo);
         public Task<ImageInfo?> GetImageInfoById(int imageId);
-        public IMongoFluentRepository<ImageInfo> Query();
     }
 }

@@ -12,13 +12,9 @@ namespace Repository.Implementation
     public class ImageTagsRepository : IImageTagsRepository
     {
         private readonly IGenericDao<ImageTags> _dao;
-        private readonly IMongoFluentRepository<ImageTags> _mongoFluentRepository;
-        public ImageTagsRepository(
-            IDaoFactory daoFactory, 
-            IMongoFluentRepository<ImageTags> mongoFluentRepository)
+        public ImageTagsRepository(IDaoFactory daoFactory)
         {
             _dao = daoFactory.CreateDao<ImageTags>();
-            _mongoFluentRepository = mongoFluentRepository;
         }
 
         public async Task CreateNewImageTags(ImageTags imageTags)
@@ -36,11 +32,6 @@ namespace Repository.Implementation
             return await _dao
                 .Where(x => x.ImageId == imageId)
                 .SingleOrDefaultAsync();
-        }
-
-        public IMongoFluentRepository<ImageTags> Query()
-        {
-            return _mongoFluentRepository;
         }
 
         public async Task UpdateImageTags(ImageTags imageTags)

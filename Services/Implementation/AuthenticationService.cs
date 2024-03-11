@@ -21,30 +21,10 @@ namespace Services.Implementation
         public async Task<UserInfo?> Login(string email, string password)
         {
             UserInfo? user = await _userRepository
-                .Query()
-                .Where(u=>u.Email == email && u.Status == AccountStatus.Active)
-                .SingleOrDefaultAsync();
+                .GetUserByEmail(email);
             if (user == null || false == _passwordHasher.VerifyPassword(password, user.PasswordHash)) return null;
 
             return user;
-        }
-        public async Task CreateUser()
-        {
-            string passwordHash = _passwordHasher.HashPassword("dotutoan");
-            UserInfo user = new()
-            {
-                Balance = 0,
-                Email = "to@n.do",
-                FullName = "Do Tu Toan",
-                JoinDate = DateTime.Now,
-                Location = "",
-                NickName = "",
-                PasswordHash = passwordHash,
-                PhoneNumber = "",
-                Status = AccountStatus.Active,
-                ProfilePicture = ""
-            };
-            await _userRepository.CreateNewUser(user);
         }
     }
 }

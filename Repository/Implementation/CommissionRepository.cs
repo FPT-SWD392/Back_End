@@ -12,11 +12,9 @@ namespace Repository.Implementation
     public class CommissionRepository : ICommissionRepository
     {
         private readonly IGenericDao<Commission> _dao;
-        private readonly ISqlFluentRepository<Commission> _sqlFluentRepository;
-        public CommissionRepository(IDaoFactory daoFactory, ISqlFluentRepository<Commission> sqlFluentRepository)
+        public CommissionRepository(IDaoFactory daoFactory)
         {
             _dao = daoFactory.CreateDao<Commission>();
-            _sqlFluentRepository = sqlFluentRepository;
         }
         public async Task CreateNewCommission(Commission commission)
         {
@@ -26,6 +24,14 @@ namespace Repository.Implementation
         public async Task DeleteCommission(Commission commission)
         {
             await _dao.DeleteAsync(commission);
+        }
+
+        public async Task<List<Commission>> GetAcceptedCommissionByCreatorId(int creatorId)
+        {
+            return await _dao
+                .Where(x => x.CreatorId == creatorId && x.CommissionStatus == BusinessObject.CommissionStatus.Accepted)
+                .Include(x => x.UserInfo)
+                .ToListAsync();
         }
 
         public async Task<List<Commission>> GetArtistCommissions(int creatorId)
@@ -51,12 +57,6 @@ namespace Repository.Implementation
                 .Include(x => x.UserInfo)
                 .ToListAsync();
         }
-
-        public ISqlFluentRepository<Commission> Query()
-        {
-            return _sqlFluentRepository;
-        }
-
         public async Task UpdateCommission(Commission commission)
         {
             await _dao.UpdateAsync(commission);

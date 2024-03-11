@@ -12,11 +12,9 @@ namespace Repository.Implementation
     public class PurchaseRepository : IPurchaseRepository
     {
         private readonly IGenericDao<Purchase> _dao;
-        private readonly ISqlFluentRepository<Purchase> _sqlFluentRepository;
-        public PurchaseRepository(IDaoFactory daoFactory, ISqlFluentRepository<Purchase> sqlFluentRepository)
+        public PurchaseRepository(IDaoFactory daoFactory)
         {
             _dao = daoFactory.CreateDao<Purchase>();
-            _sqlFluentRepository = sqlFluentRepository;
         }
 
         public async Task CreateNewPurchase(Purchase purchase)
@@ -48,11 +46,6 @@ namespace Repository.Implementation
             return await _dao
                 .Where(x => x.PurchaseId == purchaseId)
                 .SingleOrDefaultAsync();
-        }
-
-        public ISqlFluentRepository<Purchase> Query()
-        {
-            return _sqlFluentRepository;
         }
 
         public async Task UpdatePurchase(Purchase purchase)

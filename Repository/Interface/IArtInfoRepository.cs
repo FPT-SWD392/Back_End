@@ -14,6 +14,5 @@ namespace Repository.Interface
         public Task UpdateArt(ArtInfo artInfo);
         public Task<ArtInfo?> GetArtById(int id);
         public Task<List<ArtInfo>> GetAllArts();
-        public ISqlFluentRepository<ArtInfo> Query();
     }
 }
