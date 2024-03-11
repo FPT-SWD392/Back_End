@@ -1,10 +1,5 @@
-﻿using BusinessObject;
 using BusinessObject.SqlObject;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services
 {
@@ -12,5 +7,9 @@ namespace Services
     {
         Task<UserInfo?> GetUserByUserId(int userId);
         Task<UserInfo?> GetUserByCreatorId(int creatorId);
+        Task UpdateProfile(int id, string fullName, string location, string phoneNumber, string nickName);
+        Task UpdateProfilePicture(int id, string imgBase64);
+        Task<bool> VerifyOldPassword(int id, string oldPassword);
+        Task UpdatePassword(int id, string newPassword);
     }
 }
