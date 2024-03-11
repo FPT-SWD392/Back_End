@@ -60,7 +60,6 @@ namespace WebAPI
             builder.Services.AddScoped<ICreatorInfoRepository, CreatorInfoRepository>();
             builder.Services.AddScoped<IFollowRepository, FollowRepository>();
             builder.Services.AddScoped<IImageInfoRepository, ImageInfoRepository>();
-            builder.Services.AddScoped<IImageTagsRepository, ImageTagsRepository>();
             builder.Services.AddScoped<IPostContentRepository, PostContentRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IPostLikeRepository, PostLikeRepository>();

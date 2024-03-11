@@ -1,11 +1,6 @@
 ﻿using BusinessObject.SqlObject;
 using Repository.Interface;
-using System.Security.Cryptography;
-using System.Text;
 using Utils.PasswordHasher;
-using BusinessObject;
-using DataAccessObject;
-using BusinessObject.NoSqlObject;
 
 namespace Services.Implementation
 {

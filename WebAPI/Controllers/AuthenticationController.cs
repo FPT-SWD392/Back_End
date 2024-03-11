@@ -1,12 +1,7 @@
-﻿using BusinessObject.NoSqlObject;
-using BusinessObject.SqlObject;
-using DataAccessObject;
+﻿using BusinessObject.SqlObject;
 using JwtTokenAuthorization;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services;
-using System.Security.Claims;
 using WebAPI.Model;
 
 namespace WebAPI.Controllers
