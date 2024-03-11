@@ -28,8 +28,12 @@ namespace JwtTokenAuthorization
             SigningCredentials credential = new(symmetricKey, SecurityAlgorithms.HmacSha256);
             List<Claim> claims = new()
             {
-                new(CustomClaimType.UserId,user.UserId.ToString())
+                new(CustomClaimType.UserId,user.UserId.ToString()),
             };
+            if (user.CreatorId != null)
+            {
+                claims.Add(new(CustomClaimType.CreatorId, user.CreatorId.ToString()));
+            }
             JwtSecurityToken token = new(
                 issuer: _issuer,
                 audience: _audience,
@@ -40,6 +44,22 @@ namespace JwtTokenAuthorization
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        public string GetCreatorIdFromToken(HttpContext httpContext)
+        {
+            if (false == httpContext.Request.Headers.ContainsKey("Authorization"))
+                throw new Exception("Need authorization");
+            string? authorizationString = httpContext.Request.Headers["Authorization"];
+            if (string.IsNullOrWhiteSpace(authorizationString) || false == authorizationString.StartsWith("Bearer "))
+                throw new Exception("Invalid token");
+            string jwtTokenString = authorizationString["Bearer ".Length..];
+            JwtSecurityTokenHandler tokenHandler = new();
+            JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(jwtTokenString);
+
+            Claim? idClaim = jwtToken.Claims.SingleOrDefault(claim => claim.Type == CustomClaimType.CreatorId);
+            return idClaim?.Value ?? throw new Exception("Invalid token");
+        }
+
         public string GetUserIdFromToken(HttpContext httpContext)
         {
             if (false == httpContext.Request.Headers.ContainsKey("Authorization"))
@@ -58,6 +78,6 @@ namespace JwtTokenAuthorization
     public static class CustomClaimType
     {
         public static string UserId { get; } = "UserId";
-        public static string Role { get; } = "UserRole";
+        public static string CreatorId { get; } = "CreatorId";
     }
 }

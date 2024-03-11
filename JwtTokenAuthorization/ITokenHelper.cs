@@ -6,5 +6,6 @@ namespace JwtTokenAuthorization
     {
         public string GenerateToken(UserInfo user);
         public string GetUserIdFromToken(HttpContext httpContext);
+        public string GetCreatorIdFromToken(HttpContext httpContext);
     }
 }
