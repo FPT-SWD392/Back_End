@@ -1,10 +1,5 @@
 ﻿using Azure.Storage.Blobs;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AzureBlobStorage
 {
@@ -27,26 +22,28 @@ namespace AzureBlobStorage
             _containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
             _containerClient.CreateIfNotExists();
         }
-        public Task<bool> DeleteFileAsync(string blobName)
+        public async Task<bool> DeleteFileAsync(string blobName)
         {
-            throw new NotImplementedException();
+            BlobClient blobClient = _containerClient.GetBlobClient(blobName);
+            return await blobClient.DeleteIfExistsAsync();
         }
 
-        public Task<Stream> DownloadFileAsync(string blobName)
+        public async Task<Stream> DownloadFileAsync(string blobName)
         {
-            throw new NotImplementedException();
+            BlobClient blobClient = _containerClient.GetBlobClient(blobName);
+            return await blobClient.OpenReadAsync();
         }
 
-        public async Task<string> UploadFileAsync(MemoryStream file)
+        public async Task<string> UploadFileAsync(byte[] file)
         {
             string blobName = Guid.NewGuid().ToString();
             if (file.Length > FILE_SIZE_LIMIT)
             {
                 throw new Exception("File too big");
             }
+            using MemoryStream stream = new(file);
             BlobClient blobClient = _containerClient.GetBlobClient(blobName);
-            await blobClient.UploadAsync(file);
-            file.Close();
+            await blobClient.UploadAsync(stream);
             return blobName;
         }
     }
