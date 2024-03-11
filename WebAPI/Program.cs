@@ -67,6 +67,8 @@ namespace WebAPI
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IPostLikeRepository, PostLikeRepository>();
             builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+
+            builder.Services.AddScoped<ITransactionHistoryService, TransactionHistoryService>();
             builder.Services.AddScoped<IReportRepository,ReportRepository>();
             builder.Services.AddScoped<ITransactionHistoryRepository , TransactionHistoryRepository>();
             builder.Services.AddScoped<IUserInfoRepository, UserInfoRepository>();
