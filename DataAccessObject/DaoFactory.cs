@@ -1,5 +1,5 @@
 ﻿using BusinessObject;
-using BusinessObject.NoSqlObject;
+using BusinessObject.MongoDbObject;
 using BusinessObject.SqlObject;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;

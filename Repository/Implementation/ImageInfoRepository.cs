@@ -1,4 +1,4 @@
-﻿using BusinessObject.NoSqlObject;
+﻿using BusinessObject.MongoDbObject;
 using DataAccessObject;
 using Repository.Interface;
 using System;
