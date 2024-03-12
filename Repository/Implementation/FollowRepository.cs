@@ -20,6 +20,7 @@ namespace Repository.Implementation
         public async Task<long> CountArtistFollows(int creatorId)
         {
             return await _dao
+                .Query()
                 .Where(x => x.CreatorId == creatorId)
                 .CountAsync();
         }
@@ -37,6 +38,7 @@ namespace Repository.Implementation
         public async Task<List<Follow>> GetAllUserFollows(int userId)
         {
             return await _dao
+                .Query()
                 .Where(x => x.UserId == userId)
                 .ToListAsync();
         }
@@ -44,6 +46,7 @@ namespace Repository.Implementation
         public async Task<List<Follow>> GetArtistFollowers(int creatorId)
         {
             return await _dao
+                .Query()
                 .Where(x => x.CreatorId == creatorId)
                 .ToListAsync();
         }
@@ -51,6 +54,7 @@ namespace Repository.Implementation
         public async Task<Follow?> GetFollow(int userId, int creatorId)
         {
             return await _dao
+                .Query()
                 .Where(x => x.CreatorId == creatorId && x.UserId == userId)
                 .SingleOrDefaultAsync();
         }

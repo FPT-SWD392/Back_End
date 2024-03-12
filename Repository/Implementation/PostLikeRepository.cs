@@ -15,6 +15,7 @@ namespace Repository.Implementation
         public async Task<long> CountPostLikes(int postId)
         {
             return await _dao
+                .Query()
                 .Where(x=>x.PostId==postId)
                 .CountAsync();
         }
@@ -32,6 +33,7 @@ namespace Repository.Implementation
         public async Task<List<PostLike>> GetAllUserPostLikes(int userId)
         {
             return await _dao
+                .Query()
                 .Where(x=>x.UserId==userId)
                 .ToListAsync();
         }
@@ -39,6 +41,7 @@ namespace Repository.Implementation
         public async Task<List<PostLike>> GetPostLikes(int postId)
         {
             return await _dao
+                .Query()
                 .Where(x=>x.PostId==postId)
                 .ToListAsync();
         }
@@ -46,6 +49,7 @@ namespace Repository.Implementation
         public async Task<PostLike?> GetUserPostLike(int userId, int postId)
         {
             return await _dao
+                .Query()
                 .Where(x => x.UserId == userId && x.PostId == postId)
                 .SingleOrDefaultAsync();
         }

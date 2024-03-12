@@ -30,6 +30,7 @@ namespace Repository.Implementation
         public async Task<ImageInfo?> GetImageInfoById(int imageId)
         {
             return await _dao
+                .Query()
                 .Where(x => x.ImageId == imageId)
                 .SingleOrDefaultAsync();
         }
