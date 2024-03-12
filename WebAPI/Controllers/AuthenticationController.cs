@@ -21,6 +21,7 @@ namespace WebAPI.Controllers
             _jwtHelper = jwtHelper;
         }
         [HttpPost("Login")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(LoginResponse))]
         public async Task<IActionResult> Login([FromBody]LoginRequest loginRequest)
         {
             UserInfo? user = await _authenticationService.Login(loginRequest.Email, loginRequest.Password);
