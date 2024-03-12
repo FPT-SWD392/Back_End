@@ -24,7 +24,6 @@ namespace WebAPI.Controllers
         }
         [HttpPost("Login")]
         [SwaggerResponse(200, Type = typeof(LoginResponse))]
-
         public async Task<IActionResult> Login([FromBody]LoginRequest loginRequest)
         {
             UserInfo? user = await _authenticationService.Login(loginRequest.Email, loginRequest.Password);
