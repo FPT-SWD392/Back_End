@@ -23,8 +23,7 @@ namespace BusinessObject.SqlObject
         [Required]
         public PostVisibility Visibility { get; set; }
 
-        public virtual CreatorInfo? CreatorInfo { get; set; }
-        public virtual ICollection<PostLike>? PostLikes { get; set; }
-        public virtual ICollection<Report>? Reports { get; set; }
+        public virtual CreatorInfo CreatorInfo { get; set; }
+        public virtual ICollection<PostLike> PostLikes { get; set; }
     }
 }

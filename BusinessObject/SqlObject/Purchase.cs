@@ -25,7 +25,7 @@ namespace BusinessObject.SqlObject
         public int ArtId { get; set; }
         [Required]
         
-        public virtual UserInfo? UserInfo { get; set; }
-        public virtual ArtInfo? ArtInfo { get; set;}
+        public virtual UserInfo UserInfo { get; set; }
+        public virtual ArtInfo ArtInfo { get; set;}
     }
 }

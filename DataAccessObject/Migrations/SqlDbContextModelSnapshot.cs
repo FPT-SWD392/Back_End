@@ -22,6 +22,21 @@ namespace DataAccessObject.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("BusinessObject.ArtTag", b =>
+                {
+                    b.Property<int>("ArtId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ArtId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("ArtTag");
+                });
+
             modelBuilder.Entity("BusinessObject.SqlObject.ArtInfo", b =>
                 {
                     b.Property<int>("ArtId")
@@ -267,19 +282,10 @@ namespace DataAccessObject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ReportedArtId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ReportedCommissionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ReportedCreatorId")
+                    b.Property<int>("ReportedObjectId")
                         .HasColumnType("int");
 
                     b.Property<int>("ReportedObjectType")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ReportedPostId")
                         .HasColumnType("int");
 
                     b.Property<int>("ReporterId")
@@ -287,19 +293,31 @@ namespace DataAccessObject.Migrations
 
                     b.HasKey("ReportId");
 
-                    b.HasIndex("ReportedArtId");
-
-                    b.HasIndex("ReportedCommissionId")
-                        .IsUnique()
-                        .HasFilter("[ReportedCommissionId] IS NOT NULL");
-
-                    b.HasIndex("ReportedCreatorId");
-
-                    b.HasIndex("ReportedPostId");
-
                     b.HasIndex("ReporterId");
 
                     b.ToTable("Report");
+                });
+
+            modelBuilder.Entity("BusinessObject.SqlObject.Tag", b =>
+                {
+                    b.Property<int>("TagId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TagId"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TagName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("TagId");
+
+                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("BusinessObject.SqlObject.TransactionHistory", b =>
@@ -387,6 +405,25 @@ namespace DataAccessObject.Migrations
                         .HasFilter("[CreatorId] IS NOT NULL");
 
                     b.ToTable("UserInfo");
+                });
+
+            modelBuilder.Entity("BusinessObject.ArtTag", b =>
+                {
+                    b.HasOne("BusinessObject.SqlObject.ArtInfo", "ArtInfo")
+                        .WithMany()
+                        .HasForeignKey("ArtId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BusinessObject.SqlObject.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ArtInfo");
+
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("BusinessObject.SqlObject.ArtInfo", b =>
@@ -508,35 +545,11 @@ namespace DataAccessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.SqlObject.Report", b =>
                 {
-                    b.HasOne("BusinessObject.SqlObject.ArtInfo", "ReportedArtInfo")
-                        .WithMany("Reports")
-                        .HasForeignKey("ReportedArtId");
-
-                    b.HasOne("BusinessObject.SqlObject.Commission", "ReportedCommission")
-                        .WithOne("Report")
-                        .HasForeignKey("BusinessObject.SqlObject.Report", "ReportedCommissionId");
-
-                    b.HasOne("BusinessObject.SqlObject.CreatorInfo", "ReportedCreatorInfo")
-                        .WithMany("Reports")
-                        .HasForeignKey("ReportedCreatorId");
-
-                    b.HasOne("BusinessObject.SqlObject.Post", "ReportedPost")
-                        .WithMany("Reports")
-                        .HasForeignKey("ReportedPostId");
-
                     b.HasOne("BusinessObject.SqlObject.UserInfo", "Reporter")
                         .WithMany("Reports")
                         .HasForeignKey("ReporterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ReportedArtInfo");
-
-                    b.Navigation("ReportedCommission");
-
-                    b.Navigation("ReportedCreatorInfo");
-
-                    b.Navigation("ReportedPost");
 
                     b.Navigation("Reporter");
                 });
@@ -566,13 +579,6 @@ namespace DataAccessObject.Migrations
                     b.Navigation("ArtRatings");
 
                     b.Navigation("Purchases");
-
-                    b.Navigation("Reports");
-                });
-
-            modelBuilder.Entity("BusinessObject.SqlObject.Commission", b =>
-                {
-                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("BusinessObject.SqlObject.CreatorInfo", b =>
@@ -585,16 +591,13 @@ namespace DataAccessObject.Migrations
 
                     b.Navigation("Posts");
 
-                    b.Navigation("Reports");
-
-                    b.Navigation("UserInfo");
+                    b.Navigation("UserInfo")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BusinessObject.SqlObject.Post", b =>
                 {
                     b.Navigation("PostLikes");
-
-                    b.Navigation("Reports");
                 });
 
             modelBuilder.Entity("BusinessObject.SqlObject.UserInfo", b =>

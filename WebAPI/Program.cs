@@ -42,7 +42,7 @@ namespace WebAPI
                 string connectionString = builder.Configuration
                     .GetConnectionString("SqlConnectionString")
                     ?? throw new Exception("Can not get connection string");
-                s.UseSqlServer(connectionString);
+                s.UseSqlServer(connectionString, option => { option.EnableRetryOnFailure(); });
             });
             builder.Services.AddSingleton<IMongoClient>(s =>
             {
@@ -54,24 +54,25 @@ namespace WebAPI
             builder.Services.AddScoped<ITokenHelper, JwtTokenHelper>();
             builder.Services.AddScoped<IDaoFactory,DaoFactory>();
 
-            builder.Services.AddScoped(typeof(ISqlFluentRepository<>), typeof(SqlFluentRepository<>));
-            builder.Services.AddScoped(typeof(IMongoFluentRepository<>), typeof(MongoFluentRepository<>));
             builder.Services.AddScoped<IArtInfoRepository, ArtInfoRepository>();    
             builder.Services.AddScoped<IArtRatingRepository, ArtRatingRepository>();
             builder.Services.AddScoped<ICommissionRepository, CommissionRepository>();
             builder.Services.AddScoped<ICreatorInfoRepository, CreatorInfoRepository>();
             builder.Services.AddScoped<IFollowRepository, FollowRepository>();
             builder.Services.AddScoped<IImageInfoRepository, ImageInfoRepository>();
-            builder.Services.AddScoped<IImageTagsRepository, ImageTagsRepository>();
             builder.Services.AddScoped<IPostContentRepository, PostContentRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IPostLikeRepository, PostLikeRepository>();
             builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
-            builder.Services.AddScoped<IReportRepository,IReportRepository>();
+
+            builder.Services.AddScoped<ITransactionHistoryService, TransactionHistoryService>();
+            builder.Services.AddScoped<IReportRepository,ReportRepository>();
             builder.Services.AddScoped<ITransactionHistoryRepository , TransactionHistoryRepository>();
             builder.Services.AddScoped<IUserInfoRepository, UserInfoRepository>();
 
             builder.Services.AddScoped<IAuthenticationService,AuthenticationService>();
+            builder.Services.AddScoped<ICommissionService, CommissionService>();
+            builder.Services.AddScoped<IUserInfoService, UserInfoService>();
 
             builder.Services.AddScoped<IPasswordHasher,PasswordHasher>();
             builder.Services.AddScoped<ITokenHelper,JwtTokenHelper>();

@@ -1,26 +1,15 @@
-﻿
-using BusinessObject.SqlObject;
+﻿using BusinessObject.SqlObject;
 using DataAccessObject;
 using Repository.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Implementation
 {
     public class UserInfoRepository : IUserInfoRepository
     {
         private readonly IGenericDao<UserInfo> _userInfoDao;
-        private readonly ISqlFluentRepository<UserInfo> _sqlFluentRepository;
-        public UserInfoRepository(
-            IDaoFactory daoFactory, 
-            ISqlFluentRepository<UserInfo> sqlFluentRepository)
+        public UserInfoRepository(IDaoFactory daoFactory)
         {
             _userInfoDao = daoFactory.CreateDao<UserInfo>();
-            _sqlFluentRepository = sqlFluentRepository;
         }
         public async Task CreateNewUser(UserInfo userInfo)
         {
@@ -49,9 +38,11 @@ namespace Repository.Implementation
                 .SingleOrDefaultAsync();
         }
 
-        public ISqlFluentRepository<UserInfo> Query()
+        public async Task<UserInfo?> GetUserByEmail(string email)
         {
-            return _sqlFluentRepository;
+            return await _userInfoDao
+                .Where(u => u.Email == email)
+                .SingleOrDefaultAsync();
         }
     }
 }

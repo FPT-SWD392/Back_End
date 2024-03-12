@@ -12,11 +12,9 @@ namespace Repository.Implementation
     public class PostRepository : IPostRepository
     {
         private readonly IGenericDao<Post> _dao;
-        private readonly ISqlFluentRepository<Post> _sqlFluentRepository;
-        public PostRepository(IDaoFactory daoFactory, ISqlFluentRepository<Post> sqlFluentRepository)
+        public PostRepository(IDaoFactory daoFactory)
         {
             _dao = daoFactory.CreateDao<Post>();
-            _sqlFluentRepository = sqlFluentRepository;
         }
 
         public async Task CreateNewPost(Post post)
@@ -41,11 +39,6 @@ namespace Repository.Implementation
             return await _dao
                 .Where(p => p.PostId == postId)
                 .SingleOrDefaultAsync();
-        }
-
-        public ISqlFluentRepository<Post> Query()
-        {
-            return _sqlFluentRepository;
         }
 
         public async Task UpdatePost(Post post)

@@ -24,7 +24,7 @@ namespace BusinessObject.SqlObject
         [Range(1,5)]
         public int Rating {  get; set; }
 
-        public virtual UserInfo? UserInfo { get; set; }
-        public virtual ArtInfo? ArtInfo { get; set; }
+        public virtual UserInfo UserInfo { get; set; }
+        public virtual ArtInfo ArtInfo { get; set; }
     }
 }

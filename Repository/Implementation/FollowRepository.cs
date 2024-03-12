@@ -12,11 +12,9 @@ namespace Repository.Implementation
     public class FollowRepository : IFollowRepository
     {
         private readonly IGenericDao<Follow> _dao;
-        private readonly ISqlFluentRepository<Follow> _sqlFluentRepository;
-        public FollowRepository(IDaoFactory daoFactory, ISqlFluentRepository<Follow> sqlFluentRepository)
+        public FollowRepository(IDaoFactory daoFactory)
         {
             _dao = daoFactory.CreateDao<Follow>();
-            _sqlFluentRepository = sqlFluentRepository;
         }
 
         public async Task<long> CountArtistFollows(int creatorId)
@@ -55,11 +53,6 @@ namespace Repository.Implementation
             return await _dao
                 .Where(x => x.CreatorId == creatorId && x.UserId == userId)
                 .SingleOrDefaultAsync();
-        }
-
-        public ISqlFluentRepository<Follow> Query()
-        {
-            return _sqlFluentRepository;
         }
 
         public async Task UpdateFollow(Follow follow)

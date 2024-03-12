@@ -15,6 +15,6 @@ namespace Repository.Interface
         public Task<List<Commission>> GetUserCommissions(int userId);
         public Task<List<Commission>> GetArtistCommissions(int creatorId);
         public Task<Commission?> GetCommission(int commissionId);
-        public ISqlFluentRepository<Commission> Query();
+        public Task<List<Commission>> GetAcceptedCommissionByCreatorId(int creatorId);
     }
 }

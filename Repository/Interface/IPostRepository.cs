@@ -1,10 +1,4 @@
 ﻿using BusinessObject.SqlObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Repository.Interface
 {
     public interface IPostRepository
@@ -14,6 +8,5 @@ namespace Repository.Interface
         public Task UpdatePost(Post post);
         public Task<Post?> GetPostById(int postId);
         public Task<List<Post>> GetAllArtistPosts(int creatorId);
-        public ISqlFluentRepository<Post> Query();
     }
 }

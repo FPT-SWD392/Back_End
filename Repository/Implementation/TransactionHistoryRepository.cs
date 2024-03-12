@@ -14,16 +14,16 @@ namespace Repository.Implementation
     public class TransactionHistoryRepository : ITransactionHistoryRepository
     {
         private readonly IGenericDao<TransactionHistory> _dao;
-        private readonly ISqlFluentRepository<TransactionHistory> _sqlFluentRepository;
-        public TransactionHistoryRepository(
-            IDaoFactory daoFactory, 
-            ISqlFluentRepository<TransactionHistory> sqlFluentRepository)
+        public TransactionHistoryRepository(IDaoFactory daoFactory)
         {
             _dao = daoFactory.CreateDao<TransactionHistory>();
-            _sqlFluentRepository = sqlFluentRepository;
+        }
+        public async Task<List<TransactionHistory>> GetAllTransaction()
+        {
+            return await _dao.ToListAsync();
         }
 
-        public async Task CreateNewTransactionHistory(TransactionHistory transactionHistory)
+        public async Task CreateTransactionHistory(TransactionHistory transactionHistory)
         {
             await _dao.CreateAsync(transactionHistory);
         }
@@ -45,11 +45,6 @@ namespace Repository.Implementation
             return await _dao
                 .Where(x => x.UserId == userId)
                 .ToListAsync();
-        }
-
-        public ISqlFluentRepository<TransactionHistory> Query()
-        {
-            return _sqlFluentRepository;
         }
 
         public async Task UpdateTransactionHistory(TransactionHistory transactionHistory)

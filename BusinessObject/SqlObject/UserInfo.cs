@@ -36,13 +36,13 @@ namespace BusinessObject.SqlObject
         [Required]
         public required double Balance { get; set; }
 
-        public virtual CreatorInfo? CreatorInfo { get; set; }
-        public virtual ICollection<Report>? Reports { get; set; }
-        public virtual ICollection<PostLike>? PostLikes { get; set; }
-        public virtual ICollection<Purchase>? Purchases { get; set; }
-        public virtual ICollection<TransactionHistory>? TransactionHistory { get; set; }
-        public virtual ICollection<ArtRating>? ArtRatings { get; set; }
-        public virtual ICollection<Commission>? Commissions { get; set; }
-        public virtual ICollection<Follow>? Follows { get; set; }
+        public virtual CreatorInfo CreatorInfo { get; set; }
+        public virtual ICollection<Report> Reports { get; set; }
+        public virtual ICollection<PostLike> PostLikes { get; set; }
+        public virtual ICollection<Purchase> Purchases { get; set; }
+        public virtual ICollection<TransactionHistory> TransactionHistory { get; set; }
+        public virtual ICollection<ArtRating> ArtRatings { get; set; }
+        public virtual ICollection<Commission> Commissions { get; set; }
+        public virtual ICollection<Follow> Follows { get; set; }
     }
 }

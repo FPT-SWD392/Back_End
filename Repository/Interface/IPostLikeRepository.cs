@@ -15,7 +15,6 @@ namespace Repository.Interface
         public Task<List<PostLike>> GetAllUserPostLikes(int userId);
         public Task<List<PostLike>> GetPostLikes(int postId);
         public Task<PostLike?> GetUserPostLike(int userId, int postId);
-        public ISqlFluentRepository<PostLike> Query();
         public Task<long> CountPostLikes(int postId);
     }
 }

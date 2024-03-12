@@ -28,6 +28,20 @@ namespace DataAccessObject.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tag",
+                columns: table => new
+                {
+                    TagId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TagName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tag", x => x.TagId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ArtInfo",
                 columns: table => new
                 {
@@ -101,6 +115,30 @@ namespace DataAccessObject.Migrations
                         column: x => x.CreatorId,
                         principalTable: "CreatorInfo",
                         principalColumn: "CreatorId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ArtTag",
+                columns: table => new
+                {
+                    ArtId = table.Column<int>(type: "int", nullable: false),
+                    TagId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArtTag", x => new { x.ArtId, x.TagId });
+                    table.ForeignKey(
+                        name: "FK_ArtTag_ArtInfo_ArtId",
+                        column: x => x.ArtId,
+                        principalTable: "ArtInfo",
+                        principalColumn: "ArtId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ArtTag_Tag_TagId",
+                        column: x => x.TagId,
+                        principalTable: "Tag",
+                        principalColumn: "TagId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -241,6 +279,30 @@ namespace DataAccessObject.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Report",
+                columns: table => new
+                {
+                    ReportId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ReportReason = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReportDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReportDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ReporterId = table.Column<int>(type: "int", nullable: false),
+                    ReportedObjectId = table.Column<int>(type: "int", nullable: false),
+                    ReportedObjectType = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Report", x => x.ReportId);
+                    table.ForeignKey(
+                        name: "FK_Report_UserInfo_ReporterId",
+                        column: x => x.ReporterId,
+                        principalTable: "UserInfo",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TransactionHistorie",
                 columns: table => new
                 {
@@ -263,53 +325,6 @@ namespace DataAccessObject.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Report",
-                columns: table => new
-                {
-                    ReportId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ReportReason = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReportDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReportDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReporterId = table.Column<int>(type: "int", nullable: false),
-                    ReportedArtId = table.Column<int>(type: "int", nullable: true),
-                    ReportedCreatorId = table.Column<int>(type: "int", nullable: true),
-                    ReportedPostId = table.Column<int>(type: "int", nullable: true),
-                    ReportedCommissionId = table.Column<int>(type: "int", nullable: true),
-                    ReportedObjectType = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Report", x => x.ReportId);
-                    table.ForeignKey(
-                        name: "FK_Report_ArtInfo_ReportedArtId",
-                        column: x => x.ReportedArtId,
-                        principalTable: "ArtInfo",
-                        principalColumn: "ArtId");
-                    table.ForeignKey(
-                        name: "FK_Report_Commission_ReportedCommissionId",
-                        column: x => x.ReportedCommissionId,
-                        principalTable: "Commission",
-                        principalColumn: "CommissionId");
-                    table.ForeignKey(
-                        name: "FK_Report_CreatorInfo_ReportedCreatorId",
-                        column: x => x.ReportedCreatorId,
-                        principalTable: "CreatorInfo",
-                        principalColumn: "CreatorId");
-                    table.ForeignKey(
-                        name: "FK_Report_Post_ReportedPostId",
-                        column: x => x.ReportedPostId,
-                        principalTable: "Post",
-                        principalColumn: "PostId");
-                    table.ForeignKey(
-                        name: "FK_Report_UserInfo_ReporterId",
-                        column: x => x.ReporterId,
-                        principalTable: "UserInfo",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_ArtInfo_CreatorId",
                 table: "ArtInfo",
@@ -319,6 +334,11 @@ namespace DataAccessObject.Migrations
                 name: "IX_ArtRating_ArtId",
                 table: "ArtRating",
                 column: "ArtId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArtTag_TagId",
+                table: "ArtTag",
+                column: "TagId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Commission_CreatorId",
@@ -356,28 +376,6 @@ namespace DataAccessObject.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Report_ReportedArtId",
-                table: "Report",
-                column: "ReportedArtId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Report_ReportedCommissionId",
-                table: "Report",
-                column: "ReportedCommissionId",
-                unique: true,
-                filter: "[ReportedCommissionId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Report_ReportedCreatorId",
-                table: "Report",
-                column: "ReportedCreatorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Report_ReportedPostId",
-                table: "Report",
-                column: "ReportedPostId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Report_ReporterId",
                 table: "Report",
                 column: "ReporterId");
@@ -402,6 +400,12 @@ namespace DataAccessObject.Migrations
                 name: "ArtRating");
 
             migrationBuilder.DropTable(
+                name: "ArtTag");
+
+            migrationBuilder.DropTable(
+                name: "Commission");
+
+            migrationBuilder.DropTable(
                 name: "Follow");
 
             migrationBuilder.DropTable(
@@ -417,13 +421,13 @@ namespace DataAccessObject.Migrations
                 name: "TransactionHistorie");
 
             migrationBuilder.DropTable(
-                name: "ArtInfo");
-
-            migrationBuilder.DropTable(
-                name: "Commission");
+                name: "Tag");
 
             migrationBuilder.DropTable(
                 name: "Post");
+
+            migrationBuilder.DropTable(
+                name: "ArtInfo");
 
             migrationBuilder.DropTable(
                 name: "UserInfo");

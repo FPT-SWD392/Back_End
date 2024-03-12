@@ -13,7 +13,7 @@ namespace Repository.Interface
         public Task DeleteUser(UserInfo userInfo);
         public Task UpdateUser(UserInfo userInfo);
         public Task<UserInfo?> GetUserById(int id);
+        public Task<UserInfo?> GetUserByEmail(string email);
         public Task<List<UserInfo>> GetAllUsers();
-        public ISqlFluentRepository<UserInfo> Query();
     }
 }

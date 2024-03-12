@@ -9,11 +9,11 @@ namespace Repository.Interface
 {
     public interface ITransactionHistoryRepository
     {
-        public Task CreateNewTransactionHistory(TransactionHistory transactionHistory);
+        public Task<List<TransactionHistory>> GetAllTransaction();
+        public Task CreateTransactionHistory(TransactionHistory transactionHistory);
         public Task DeleteTransactionHistory(TransactionHistory transactionHistory);
         public Task UpdateTransactionHistory(TransactionHistory transactionHistory);
         public Task<TransactionHistory?> GetTransactionHistoryById(int transactionId);
         public Task<List<TransactionHistory>> GetUserTransactionHistories(int userId);
-        public ISqlFluentRepository<TransactionHistory> Query();
     }
 }

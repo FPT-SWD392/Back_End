@@ -12,11 +12,9 @@ namespace Repository.Implementation
     public class ReportRepository : IReportRepository
     {
         private readonly IGenericDao<Report> _dao;
-        private readonly ISqlFluentRepository<Report> _sqlFluentRepository;
-        public ReportRepository(IDaoFactory daoFactory, ISqlFluentRepository<Report> sqlFluentRepository)
+        public ReportRepository(IDaoFactory daoFactory)
         {
             _dao = daoFactory.CreateDao<Report>();
-            _sqlFluentRepository = sqlFluentRepository;
         }
 
         public async Task CreateNewReport(Report report)
@@ -32,28 +30,36 @@ namespace Repository.Implementation
         public async Task<List<Report>> GetAllArtReports(int artId)
         {
             return await _dao
-                .Where(x=>x.ReportedArtId == artId)
+                .Where(x=>
+                    x.ReportedObjectType == BusinessObject.ReportedObjectType.Art&&
+                    x.ReportedObjectId == artId)
                 .ToListAsync();
         }
 
         public async Task<List<Report>> GetAllComissionReports(int commissionId)
         {
             return await _dao
-                .Where(x => x.ReportedCommissionId == commissionId)
+                .Where(x => 
+                    x.ReportedObjectType == BusinessObject.ReportedObjectType.Commission &&
+                    x.ReportedObjectType==BusinessObject.ReportedObjectType.Commission)
                 .ToListAsync();
         }
 
         public async Task<List<Report>> GetAllCreatorReports(int creatorId)
         {
             return await _dao
-                .Where(x => x.ReportedCreatorId == creatorId)
+                .Where(x => 
+                    x.ReportedObjectType == BusinessObject.ReportedObjectType.Artist &&
+                    x.ReportedObjectId == creatorId)
                 .ToListAsync();
         }
 
         public async Task<List<Report>> GetAllPostReports(int postId)
         {
             return await _dao
-                .Where(x => x.ReportedPostId == postId)
+                .Where(x =>
+                    x.ReportedObjectType == BusinessObject.ReportedObjectType.Post &&
+                    x.ReportedObjectId == postId)
                 .ToListAsync();
         }
 
@@ -69,11 +75,6 @@ namespace Repository.Implementation
             return await _dao
                 .Where(x => x.ReporterId == reportId)
                 .SingleOrDefaultAsync();
-        }
-
-        public ISqlFluentRepository<Report> Query()
-        {
-            return _sqlFluentRepository;
         }
 
         public async Task UpdateReport(Report report)

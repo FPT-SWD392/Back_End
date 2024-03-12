@@ -1,9 +1,4 @@
 ﻿using BusinessObject.SqlObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Interface
 {
@@ -15,7 +10,6 @@ namespace Repository.Interface
         public Task<List<Follow>> GetAllUserFollows(int userId);
         public Task<List<Follow>> GetArtistFollowers(int creatorId);
         public Task<Follow?> GetFollow(int userId, int creatorId);
-        public ISqlFluentRepository<Follow> Query();
         public Task<long> CountArtistFollows(int creatorId);
     }
 }

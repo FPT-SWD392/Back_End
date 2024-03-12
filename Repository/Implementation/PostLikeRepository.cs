@@ -1,22 +1,15 @@
 ﻿using BusinessObject.SqlObject;
 using DataAccessObject;
 using Repository.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Implementation
 {
     public class PostLikeRepository : IPostLikeRepository
     {
         private readonly IGenericDao<PostLike> _dao;
-        private readonly ISqlFluentRepository<PostLike> _sqlFluentRepository;
-        public PostLikeRepository(IDaoFactory daoFactory, ISqlFluentRepository<PostLike> sqlFluentRepository)
+        public PostLikeRepository(IDaoFactory daoFactory)
         {
             _dao = daoFactory.CreateDao<PostLike>();
-            _sqlFluentRepository = sqlFluentRepository;
         }
 
         public async Task<long> CountPostLikes(int postId)
@@ -55,11 +48,6 @@ namespace Repository.Implementation
             return await _dao
                 .Where(x => x.UserId == userId && x.PostId == postId)
                 .SingleOrDefaultAsync();
-        }
-
-        public ISqlFluentRepository<PostLike> Query()
-        {
-            return _sqlFluentRepository;
         }
 
         public async Task UpdatePostLike(PostLike postLike)

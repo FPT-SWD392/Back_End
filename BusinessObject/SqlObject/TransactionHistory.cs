@@ -32,6 +32,6 @@ namespace BusinessObject.SqlObject
         [Required]
         public required TransactionType TransactionType { get; set; }
 
-        public virtual UserInfo? UserInfo { get; set; }
+        public virtual UserInfo UserInfo { get; set; }
     }
 }

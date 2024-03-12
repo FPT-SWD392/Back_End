@@ -10,6 +10,5 @@ namespace Services
     public interface IAuthenticationService
     {
         Task<UserInfo?> Login(string email, string password);
-        Task CreateUser();
     }
 }
