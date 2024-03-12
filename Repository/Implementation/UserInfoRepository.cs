@@ -28,12 +28,15 @@ namespace Repository.Implementation
 
         public async Task<List<UserInfo>> GetAllUsers()
         {
-            return await _userInfoDao.ToListAsync();
+            return await _userInfoDao
+                .Query()
+                .ToListAsync();
         }
 
         public async Task<UserInfo?> GetUserById(int id)
         {
             return await _userInfoDao
+                .Query()
                 .Where(u=>u.UserId== id)
                 .SingleOrDefaultAsync();
         }
@@ -41,6 +44,7 @@ namespace Repository.Implementation
         public async Task<UserInfo?> GetUserByEmail(string email)
         {
             return await _userInfoDao
+                .Query()
                 .Where(u => u.Email == email)
                 .SingleOrDefaultAsync();
         }

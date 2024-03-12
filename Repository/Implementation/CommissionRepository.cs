@@ -1,12 +1,6 @@
 ﻿using BusinessObject.SqlObject;
 using DataAccessObject;
 using Repository.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Repository.Implementation
 {
     public class CommissionRepository : ICommissionRepository
@@ -29,6 +23,7 @@ namespace Repository.Implementation
         public async Task<List<Commission>> GetAcceptedCommissionByCreatorId(int creatorId)
         {
             return await _dao
+                .Query()
                 .Where(x => x.CreatorId == creatorId && x.CommissionStatus == BusinessObject.CommissionStatus.Accepted)
                 .Include(x => x.UserInfo)
                 .ToListAsync();
@@ -37,6 +32,7 @@ namespace Repository.Implementation
         public async Task<List<Commission>> GetArtistCommissions(int creatorId)
         {
             return await _dao
+                .Query()
                 .Where(x => x.CreatorId == creatorId)
                 .Include(x => x.UserInfo)
                 .ToListAsync();
@@ -45,6 +41,7 @@ namespace Repository.Implementation
         public async Task<Commission?> GetCommission(int commissionId)
         {
             return await _dao
+                .Query()
                 .Where(x=>x.CommissionId == commissionId)
                 .Include(x => x.UserInfo)
                 .SingleOrDefaultAsync();
@@ -53,6 +50,7 @@ namespace Repository.Implementation
         public async Task<List<Commission>> GetUserCommissions(int userId)
         {
             return await _dao
+                .Query()
                 .Where(x => x.UserId == userId)
                 .Include(x => x.UserInfo)
                 .ToListAsync();
