@@ -35,26 +35,17 @@ namespace Services.Implementation
                 {
                     invalid.Add("Invalid phone number. The Telephone have to be 10 numbers");
                 }
-                else if(_userRepository
-                        .Query()
-                        .Where(x => x.PhoneNumber == userInfo.PhoneNumber)
-                        .SingleOrDefaultAsync() != null)
+                else if(_userRepository.GetUserByPhoneNumber(userInfo.PhoneNumber) != null)
                 {
                     invalid.Add("This phone number has already been used.");
                 }
 
-                if (_userRepository
-                        .Query()
-                        .Where(x => x.Email == userInfo.Email)
-                        .SingleOrDefaultAsync() != null)
+                if (_userRepository.GetUserByEmail(userInfo.Email) != null)
                 {
                     invalid.Add("This email has already been used.");
                 }
 
-                if (_userRepository
-                        .Query()
-                        .Where(x => x.NickName == userInfo.NickName)
-                        .SingleOrDefaultAsync() != null)
+                if (_userRepository.GetUserByNickName(userInfo.NickName) != null)
                 {
                     invalid.Add("This nickname has already been used.");
                 }
