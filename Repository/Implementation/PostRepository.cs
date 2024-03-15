@@ -35,6 +35,13 @@ namespace Repository.Implementation
                 .ToListAsync();
         }
 
+        public async Task<List<Post>> GetAllPosts()
+        {
+            return await _dao
+                .Query()
+                .ToListAsync();
+        }
+
         public async Task<Post?> GetPostById(int postId)
         {
             return await _dao
