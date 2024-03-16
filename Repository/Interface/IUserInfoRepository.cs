@@ -16,6 +16,6 @@ namespace Repository.Interface
         public Task<UserInfo?> GetUserByEmail(string email);
         public Task<List<UserInfo>> GetAllUsers();
         public Task<UserInfo?> GetUserByPhoneNumber(string phoneNumber);
-        public Task<UserInfo?> GetUserByNickName(string nickname)
+        public Task<UserInfo?> GetUserByNickName(string nickname);
     }
 }

@@ -51,14 +51,14 @@ namespace Repository.Implementation
 
         public async Task<UserInfo?> GetUserByPhoneNumber(string phoneNumber)
         {
-            return await _userInfoDao
+            return await _userInfoDao.Query()
                 .Where(u => u.PhoneNumber == phoneNumber)
                 .SingleOrDefaultAsync();
         }
 
         public async Task<UserInfo?> GetUserByNickName(string nickname)
         {
-            return await _userInfoDao
+            return await _userInfoDao.Query()
                 .Where(u => u.NickName == nickname)
                 .SingleOrDefaultAsync();
         }
