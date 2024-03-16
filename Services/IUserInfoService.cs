@@ -1,3 +1,4 @@
+using BusinessObject.DTO;
 using BusinessObject.SqlObject;
 using System;
 
@@ -11,7 +12,7 @@ namespace Services
         Task UpdateProfilePicture(int id, string imgBase64);
         Task<bool> VerifyOldPassword(int id, string oldPassword);
         Task UpdatePassword(int id, string newPassword);
-        Task Register(UserInfo userInfo);
+        Task<RegisterResponse> Register(UserInfo userInfo);
         Task<UserInfo?> GetUserByUserEmail(string email);
         Task<UserInfo?> GetUserByUserPhone(string phoneNumber);
         Task<UserInfo?> GetUserByNickName(string nickName);

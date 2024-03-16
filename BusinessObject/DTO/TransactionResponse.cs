@@ -1,6 +1,6 @@
 ﻿using BusinessObject;
 
-namespace WebAPI.Model
+namespace BusinessObject.DTO
 {
     public class TransactionResponse
     {
