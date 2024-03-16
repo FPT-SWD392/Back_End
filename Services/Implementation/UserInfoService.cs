@@ -128,5 +128,32 @@ namespace Services.Implementation
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<UserInfo?> GetUserByNickName(string nickName)
+        {
+            return await _userRepository.GetUserByNickName(nickName);
+        }
+
+        public async Task<UserInfo?> GetUserByUserEmail(string email)
+        {
+            return await _userRepository.GetUserByEmail(email);
+        }
+
+        public async Task<UserInfo?> GetUserByUserPhone(string phoneNumber)
+        {
+            return await _userRepository.GetUserByPhoneNumber(phoneNumber);
+        }
+
+        public async Task Register(UserInfo userInfo)
+        {
+            try
+            {
+                await _userRepository.CreateNewUser(userInfo);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
