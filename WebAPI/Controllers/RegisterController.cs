@@ -1,6 +1,8 @@
 ﻿using BusinessObject;
 using BusinessObject.SqlObject;
 using JwtTokenAuthorization;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
 using Services;
@@ -14,46 +16,95 @@ namespace WebAPI.Controllers
     public class RegisterController : ControllerBase
     {
 
-        private readonly IRegisterService _registerServices;
+        private readonly IUserInfoService _userInfoService;
         private readonly IPasswordHasher _passwordHasher;
-        public RegisterController(IRegisterService registerServices, IPasswordHasher passwordHasher)
+        public RegisterController(IUserInfoService userInfoService, IPasswordHasher passwordHasher)
         {
-            _registerServices = registerServices;
+            _userInfoService = userInfoService;
             _passwordHasher = passwordHasher;
         }
+        [Authorize]
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
         {
-            UserInfo userInfo = new UserInfo
+            try
             {
-                Email = registerRequest.Email,
-                PasswordHash = _passwordHasher.HashPassword(registerRequest.Password),
-                Status = AccountStatus.Active,
-                FullName = registerRequest.FullName,
-                Location = registerRequest.Location,
-                PhoneNumber = registerRequest.PhoneNumber,
-                NickName = registerRequest.NickName,
-                JoinDate = DateTime.Today,
-                Balance = 0
-            };
+                UserInfo userInfo = new UserInfo
+                {
+                    Email = registerRequest.Email,
+                    PasswordHash = _passwordHasher.HashPassword(registerRequest.Password),
+                    Status = AccountStatus.Active,
+                    FullName = registerRequest.FullName,
+                    Location = registerRequest.Location,
+                    PhoneNumber = registerRequest.PhoneNumber,
+                    NickName = registerRequest.NickName,
+                    JoinDate = DateTime.Today,
+                    Balance = 0
+                };
 
-            List<string> result = await _registerServices.Register(userInfo, registerRequest.Password);
-            if (result.Count() == 0)
-            {
+                await _userInfoService.Register(userInfo);
+                //return Created("OK", null);
                 return Ok();
             }
-            else
+            catch (Exception ex)
             {
-                RegisterResponse registerResponse = new RegisterResponse();
-                foreach (string item in result)
-                {
-                    if(item.ToLower().Contains("password")) registerResponse.PasswordInvalid = item;
-                    else if(item.ToLower().Contains("email")) registerResponse.EmailInvalid = item;
-                    else if(item.ToLower().Contains("phone")) registerResponse.PhoneNumberInvalid = item;
-                    else if(item.ToLower().Contains("nickname")) registerResponse.NickNameInvalid = item;
-                }
-                return BadRequest(registerResponse);
+                return BadRequest(ex.Message);
             }
+            return BadRequest();
+        }
+
+        [Authorize]
+        [HttpGet("CheckEmail")]
+        public async Task<IActionResult> CheckEmail(string email)
+        {
+            try
+            {
+                if (await _userInfoService.GetUserByUserEmail(email) != null)
+                {
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest();
+        }
+
+        [Authorize]
+        [HttpGet("CheckPhoneNumber")]
+        public async Task<IActionResult> CheckPhoneNumber(string phoneNumber)
+        {
+            try
+            {
+                if (await _userInfoService.GetUserByUserPhone(phoneNumber) != null)
+                {
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest();
+        }
+
+        [Authorize]
+        [HttpGet("CheckNickName")]
+        public async Task<IActionResult> CheckNickName(string nickName)
+        {
+            try
+            {
+                if (await _userInfoService.GetUserByNickName(nickName) != null)
+                {
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return BadRequest();
         }
     }
 }
