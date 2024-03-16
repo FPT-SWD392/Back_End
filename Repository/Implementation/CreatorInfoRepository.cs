@@ -18,12 +18,15 @@ namespace Repository.Implementation
 
         public async Task<List<CreatorInfo>> GetAllCreatorInfo()
         {
-            return await _dao.ToListAsync();
+            return await _dao
+                .Query()
+                .ToListAsync();
         }
 
         public async Task<CreatorInfo?> GetCreatorInfo(int creatorId)
         {
             return await _dao
+                .Query()
                 .Where(x=>x.CreatorId == creatorId)
                 .Include(x => x.UserInfo)
                 .SingleOrDefaultAsync();

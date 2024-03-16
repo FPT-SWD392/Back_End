@@ -1,11 +1,6 @@
 ﻿using BusinessObject.SqlObject;
 using DataAccessObject;
 using Repository.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Implementation
 {
@@ -29,12 +24,16 @@ namespace Repository.Implementation
 
         public async Task<List<ArtInfo>> GetAllArts()
         {
-            return await _artInfoDao.ToListAsync();
+            return await _artInfoDao
+                .Query()
+                .ToListAsync();
         }
 
         public async Task<ArtInfo?> GetArtById(int id)
         {
-            return await _artInfoDao.Where(x=>x.ArtId == id).SingleOrDefaultAsync();
+            return await _artInfoDao
+                .Query()
+                .Where(x=>x.ArtId == id).SingleOrDefaultAsync();
         }
 
         public async Task UpdateArt(ArtInfo artInfo)

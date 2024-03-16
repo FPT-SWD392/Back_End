@@ -30,13 +30,22 @@ namespace Repository.Implementation
         public async Task<List<Post>> GetAllArtistPosts(int creatorId)
         {
             return await _dao
+                .Query()
                 .Where(p=>p.CreatorId == creatorId)
+                .ToListAsync();
+        }
+
+        public async Task<List<Post>> GetAllPosts()
+        {
+            return await _dao
+                .Query()
                 .ToListAsync();
         }
 
         public async Task<Post?> GetPostById(int postId)
         {
             return await _dao
+                .Query()
                 .Where(p => p.PostId == postId)
                 .SingleOrDefaultAsync();
         }

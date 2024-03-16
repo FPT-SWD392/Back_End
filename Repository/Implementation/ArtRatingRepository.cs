@@ -34,6 +34,7 @@ namespace Repository.Implementation
         public async Task<List<ArtRating>> GetArtRatings(int artId)
         {
             return await _artRatingDao
+                .Query()
                 .Where(a=>a.ArtId == artId)
                 .ToListAsync();
         }
@@ -41,6 +42,7 @@ namespace Repository.Implementation
         public async Task<List<ArtRating>> GetAllUserArtRatings(int userId)
         {
             return await _artRatingDao
+                .Query()
                 .Where(a => a.UserId == userId)
                 .ToListAsync();
         }
@@ -48,6 +50,7 @@ namespace Repository.Implementation
         public async Task<ArtRating?> GetUserArtRating(int userId, int artId)
         {
             return await _artRatingDao
+                .Query()
                 .Where(a=>a.UserId == userId && a.ArtId == artId)
                 .SingleOrDefaultAsync();
         }

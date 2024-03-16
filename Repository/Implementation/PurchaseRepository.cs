@@ -30,6 +30,7 @@ namespace Repository.Implementation
         public async Task<List<Purchase>> GetAllArtPurchases(int artId)
         {
             return await _dao
+                .Query()
                 .Where(x => x.ArtId == artId)
                 .ToListAsync();
         }
@@ -37,6 +38,7 @@ namespace Repository.Implementation
         public async Task<List<Purchase>> GetAllUserPurchases(int userId)
         {
             return await _dao
+                .Query()
                 .Where(x => x.UserId == userId)
                 .ToListAsync();
         }
@@ -44,6 +46,7 @@ namespace Repository.Implementation
         public async Task<Purchase?> GetPurchaseById(int purchaseId)
         {
             return await _dao
+                .Query()
                 .Where(x => x.PurchaseId == purchaseId)
                 .SingleOrDefaultAsync();
         }

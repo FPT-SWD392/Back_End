@@ -20,7 +20,9 @@ namespace Repository.Implementation
         }
         public async Task<List<TransactionHistory>> GetAllTransaction()
         {
-            return await _dao.ToListAsync();
+            return await _dao
+                .Query()
+                .ToListAsync();
         }
 
         public async Task CreateTransactionHistory(TransactionHistory transactionHistory)
@@ -36,6 +38,7 @@ namespace Repository.Implementation
         public async Task<TransactionHistory?> GetTransactionHistoryById(int transactionId)
         {
             return await _dao
+                .Query()
                 .Where(x => x.TransactionId == transactionId)
                 .SingleOrDefaultAsync();
         }
@@ -43,6 +46,7 @@ namespace Repository.Implementation
         public async Task<List<TransactionHistory>> GetUserTransactionHistories(int userId)
         {
             return await _dao
+                .Query()
                 .Where(x => x.UserId == userId)
                 .ToListAsync();
         }

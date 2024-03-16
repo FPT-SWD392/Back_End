@@ -2,6 +2,8 @@
 using JwtTokenAuthorization;
 using Microsoft.AspNetCore.Mvc;
 using Services;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Net;
 using WebAPI.Model;
 
 namespace WebAPI.Controllers
@@ -21,6 +23,7 @@ namespace WebAPI.Controllers
             _jwtHelper = jwtHelper;
         }
         [HttpPost("Login")]
+        [SwaggerResponse(200, Type = typeof(LoginResponse))]
         public async Task<IActionResult> Login([FromBody]LoginRequest loginRequest)
         {
             UserInfo? user = await _authenticationService.Login(loginRequest.Email, loginRequest.Password);
