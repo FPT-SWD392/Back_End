@@ -95,6 +95,7 @@ namespace Services.Implementation
                 {
                     if (status == "accept")
                     {
+                        /*VALIDATE HERE*/
                         commission.CommissionStatus = CommissionStatus.Accepted;
                         await _commissionRepository.UpdateCommission(commission);
                     }
@@ -118,6 +119,7 @@ namespace Services.Implementation
                     }
                     else if (status == "cancel")
                     {
+                        /* VALIDATE HERE*/
                         commission.CommissionStatus = CommissionStatus.Canceled;
                         await _commissionRepository.UpdateCommission(commission);
 
@@ -167,5 +169,6 @@ namespace Services.Implementation
                 throw new Exception(ex.Message);
             }
         }
+
     }
 }

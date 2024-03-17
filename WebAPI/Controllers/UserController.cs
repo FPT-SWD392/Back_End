@@ -28,7 +28,7 @@ namespace WebAPI.Controllers
             _passwordHasher = passwordHasher;
             _userInfo = userInfo;
         }
-
+        
         [Authorize]
         [HttpGet("GetAllInfoAboutUser")]
         public async Task<IActionResult> GetAllInfoAboutUser()
@@ -90,6 +90,25 @@ namespace WebAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+        [Authorize]
+        [HttpPut("AddAccountBalance/{amount}")]
+        public async Task<IActionResult> AddAccountBalance(string amount)
+        {
+            var userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
+            try
+            {
+                if (double.TryParse(amount, out var amountParse) == false)
+                {
+                    throw new Exception("Amount is not valid");
+                }
+                await _userInfo.AddAccountBalance(amountParse, userId);
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return Ok();
         }
 
     }

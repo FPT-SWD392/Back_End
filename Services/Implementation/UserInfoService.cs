@@ -182,5 +182,22 @@ namespace Services.Implementation
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task AddAccountBalance(double amount, int userId)
+        {
+            try
+            {
+                var userInfo = await this.GetUserByUserId(userId);
+                if (userInfo != null)
+                {
+                    userInfo.Balance += amount;
+                    await _userRepository.UpdateUser(userInfo);
+                }
+            } 
+            catch (Exception ex)
+            {
+                throw new Exception("Unhandled Error");
+            }
+        }
     }
 }

@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.IdentityModel.Tokens;
 using Services;
+using Swashbuckle.AspNetCore.Annotations;
 using Utils.PasswordHasher;
 using WebAPI.Model;
 
@@ -26,11 +28,12 @@ namespace WebAPI.Controllers
         }
         [HttpPost("Register")]
         [AllowAnonymous]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, Type = typeof(RegisterResponse))]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
         {
             try
             {
-                
                 UserInfo userInfo = new UserInfo
                 {
                     Email = registerRequest.Email,

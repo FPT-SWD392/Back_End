@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Services;
+using Swashbuckle.AspNetCore.Annotations;
 using WebAPI.Model;
 
 namespace WebAPI.Controllers
@@ -27,7 +28,9 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost("CreateCommission")]
+        [HttpPut("CreateCommission")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, "Deadline < Now error, or balance error" ,Type = typeof(string))]
         public async Task<IActionResult> CreateCommission([FromBody] CreateCommissionRequest commissionRequest)
         {
             try
@@ -48,7 +51,9 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost("CancelCommission/{commissionId}")]
+        [HttpPut("CancelCommission/{commissionId}")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, Type = typeof(string))]
         public async Task<IActionResult> CancelCommission(int commissionId)
         {
             try
@@ -64,7 +69,9 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost("AcceptCommission/{commissionId}")]
+        [HttpPut("AcceptCommission/{commissionId}")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, Type = typeof(string))]
         public async Task<IActionResult> AcceptCommission(int commissionId)
         {
             try
@@ -81,7 +88,9 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost("DenyCommission/{commissionId}")]
+        [HttpPut("DenyCommission/{commissionId}")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, Type = typeof(string))]
         public async Task<IActionResult> DenyCommission(int commissionId)
         {
             try
@@ -98,6 +107,8 @@ namespace WebAPI.Controllers
 
         [Authorize]
         [HttpGet("ViewArtistAcceptedCommission")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, Type = typeof(string))]
         public async Task<IActionResult> ViewArtistAcceptedCommission()
         {
             int artistId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
@@ -128,13 +139,15 @@ namespace WebAPI.Controllers
 
         [Authorize]
         [HttpGet("ViewCommission/{commissionId}")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, Type = typeof(string))]
         public async Task<IActionResult> ViewCommission(int commissionId)
         {
             Commission? commission = await _commissionService.GetCommissionByCommissionId(commissionId);
 
             if (commission != null)
             {
-                UserInfo creator = await _userInfoService.GetUserByCreatorId(commission.CreatorId);
+                UserInfo? creator = await _userInfoService.GetUserByCreatorId(commission.CreatorId);
                 ViewCommissionResponse response = new ViewCommissionResponse
                 {
                     CommisionId = commission.CommissionId,
@@ -154,7 +167,9 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost("FinishCommission")]
+        [HttpPut("FinishCommission")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, Type = typeof(string))]
         public async Task<IActionResult> FinishCommission([FromBody] FinishCommissionRequest finishCommissionRequest)
         {
             try
