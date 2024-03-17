@@ -19,7 +19,7 @@ namespace WebAPI.Controllers
         private readonly ICommissionService _commissionService;
         private readonly IUserInfoService _userInfoService;
 
-        public CommissionController(ITokenHelper jwtHelper, ICommissionService commissionService, 
+        public CommissionController(ITokenHelper jwtHelper, ICommissionService commissionService,
             IUserInfoService userInfoService)
         {
             _jwtHelper = jwtHelper;
@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
         [Authorize]
         [HttpPut("CreateCommission")]
         [SwaggerResponse(200)]
-        [SwaggerResponse(400, "Deadline < Now error, or balance error" ,Type = typeof(string))]
+        [SwaggerResponse(400, "Deadline < Now error, or balance error", Type = typeof(string))]
         public async Task<IActionResult> CreateCommission([FromBody] CreateCommissionRequest commissionRequest)
         {
             try
@@ -126,6 +126,10 @@ namespace WebAPI.Controllers
                         Price = item.Price,
                         UserName = item.UserInfo.NickName,
                         CommissionStatus = item.CommissionStatus,
+                        ArtistName = item.CreatorInfo.UserInfo.NickName,
+                        ImageId = item.ImageId,
+                        Rating = item.Rating,
+                        Review = item.Review,
                     };
                     response.Add(r);
                 }
@@ -147,7 +151,6 @@ namespace WebAPI.Controllers
 
             if (commission != null)
             {
-                UserInfo? creator = await _userInfoService.GetUserByCreatorId(commission.CreatorId);
                 ViewCommissionResponse response = new ViewCommissionResponse
                 {
                     CommisionId = commission.CommissionId,
@@ -156,7 +159,10 @@ namespace WebAPI.Controllers
                     Price = commission.Price,
                     UserName = commission.UserInfo.NickName,
                     CommissionStatus = commission.CommissionStatus,
-                    ArtistName = creator.NickName
+                    ArtistName = commission.CreatorInfo.UserInfo.NickName,
+                    ImageId = commission.ImageId,
+                    Rating = commission.Rating,
+                    Review = commission.Review,
                 };
                 return Ok(response);
             }
@@ -180,6 +186,78 @@ namespace WebAPI.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpGet("ViewCommissionByCreatorId")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, Type = typeof(string))]
+        public async Task<IActionResult> ViewCommissionByCreatorId()
+        {
+            int artistId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
+            List<Commission?> commission = await _commissionService.GetCommissionByCreatorId(artistId);
+            if (commission.Count > 0)
+            {
+                List<ViewCommissionResponse> response = new List<ViewCommissionResponse>();
+                foreach (Commission item in commission)
+                {
+                    ViewCommissionResponse r = new ViewCommissionResponse
+                    {
+                        CommisionId = item.CommissionId,
+                        CreatedDate = item.CreatedDate,
+                        Deadline = item.Deadline,
+                        Price = item.Price,
+                        UserName = item.UserInfo.NickName,
+                        CommissionStatus = item.CommissionStatus,
+                        ArtistName = item.CreatorInfo.UserInfo.NickName,
+                        ImageId = item.ImageId,
+                        Rating = item.Rating,
+                        Review = item.Review,
+                    };
+                    response.Add(r);
+                }
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest("Cannot find any commission.");
+            }
+        }
+
+        [Authorize]
+        [HttpGet("ViewCommissionByUserId")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, Type = typeof(string))]
+        public async Task<IActionResult> ViewCommissionByUserId()
+        {
+            int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
+            List<Commission?> commission = await _commissionService.GetCommissionByUserId(userId);
+            if (commission.Count > 0)
+            {
+                List<ViewCommissionResponse> response = new List<ViewCommissionResponse>();
+                foreach (Commission item in commission)
+                {
+                    ViewCommissionResponse r = new ViewCommissionResponse
+                    {
+                        CommisionId = item.CommissionId,
+                        CreatedDate = item.CreatedDate,
+                        Deadline = item.Deadline,
+                        Price = item.Price,
+                        UserName = item.UserInfo.NickName,
+                        CommissionStatus = item.CommissionStatus,
+                        ArtistName = item.CreatorInfo.UserInfo.NickName,
+                        ImageId = item.ImageId,
+                        Rating = item.Rating,
+                        Review = item.Review,
+                    };
+                    response.Add(r);
+                }
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest("Cannot find any commission.");
             }
         }
     }

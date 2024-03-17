@@ -78,12 +78,14 @@ namespace Services.Implementation
 
         public async Task<List<Commission>?> GetCommissionByCreatorId(int artistId)
         {
-            return await _commissionRepository.GetArtistCommissions(artistId);
+            UserInfo creator = await _userRepository.GetUserById(artistId);
+            return await _commissionRepository.GetArtistCommissions((int)creator.CreatorId);
         }
 
         public async Task<List<Commission>?> GetAcceptedCommissionByCreatorId(int artistId)
         {
-            return await _commissionRepository.GetAcceptedCommissionByCreatorId(artistId);
+            UserInfo creator = await _userRepository.GetUserById(artistId);
+            return await _commissionRepository.GetAcceptedCommissionByCreatorId((int)creator.CreatorId);
         }
 
         public async Task UpdateCommissionStatus(int commissionId, string status)
