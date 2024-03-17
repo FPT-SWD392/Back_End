@@ -16,10 +16,12 @@ namespace Services.Implementation
     {
         private readonly IUserInfoRepository _userRepository;
         private readonly ICommissionRepository _commissionRepository;
-        public CommissionService(ICommissionRepository commissionRepository, IUserInfoRepository userInfoRepository)
+        private readonly ITransactionHistoryRepository _transactionHistoryRepository;
+        public CommissionService(ICommissionRepository commissionRepository, IUserInfoRepository userInfoRepository, ITransactionHistoryRepository transactionHistoryRepository)
         {
             _commissionRepository = commissionRepository;
             _userRepository = userInfoRepository;
+            _transactionHistoryRepository = transactionHistoryRepository;
         }
 
         public async Task/*<Commission?> */CreateCommission(DateTime deadline, double price, int creatorId, int userId)
@@ -41,7 +43,17 @@ namespace Services.Implementation
                     await _commissionRepository.CreateNewCommission(newCommission);
 
                     user.Balance = user.Balance - price;
+
                     await _userRepository.UpdateUser(user);
+                    TransactionHistory transactionHistory = new TransactionHistory
+                    {
+                        UserId = userId,
+                        Note = "",
+                        Amount = price,
+                        TransactionDate = DateTime.Today,
+                        TransactionType = TransactionType.RequestCommission
+                    };
+                    await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
                 }
                 else
                 {
@@ -94,6 +106,15 @@ namespace Services.Implementation
                         UserInfo user = await _userRepository.GetUserById(commission.UserId);
                         user.Balance = user.Balance + commission.Price;
                         await _userRepository.UpdateUser(user);
+                        TransactionHistory transactionHistory = new TransactionHistory
+                        {
+                            UserId = commission.UserId,
+                            Note = "",
+                            Amount = commission.Price,
+                            TransactionDate = DateTime.Today,
+                            TransactionType = TransactionType.RequestCommissionDeny
+                        };
+                        await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
                     }
                     else if (status == "cancel")
                     {
@@ -103,6 +124,15 @@ namespace Services.Implementation
                         UserInfo user = await _userRepository.GetUserById(commission.UserId);
                         user.Balance = user.Balance + commission.Price / 2;
                         await _userRepository.UpdateUser(user);
+                        TransactionHistory transactionHistory = new TransactionHistory
+                        {
+                            UserId = commission.UserId,
+                            Note = "",
+                            Amount = commission.Price / 2,
+                            TransactionDate = DateTime.Today,
+                            TransactionType = TransactionType.RequestCommissionCancel
+                        };
+                        await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
                     }
                 }
                 else

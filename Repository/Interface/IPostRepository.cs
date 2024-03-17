@@ -8,5 +8,6 @@ namespace Repository.Interface
         public Task UpdatePost(Post post);
         public Task<Post?> GetPostById(int postId);
         public Task<List<Post>> GetAllArtistPosts(int creatorId);
+        public Task<List<Post>> GetAllPosts();
     }
 }

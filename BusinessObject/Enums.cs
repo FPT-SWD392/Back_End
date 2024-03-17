@@ -24,7 +24,9 @@ namespace BusinessObject
         Buy,
         Sell,
         RequestCommission,
-        FinishCommission
+        FinishCommission,
+        RequestCommissionDeny,
+        RequestCommissionCancel
     }
     public enum AccountStatus
     {

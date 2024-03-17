@@ -9,6 +9,7 @@ using Utils.PasswordHasher;
 using WebAPI.Model;
 using Microsoft.AspNetCore.Authorization;
 using Services;
+using BusinessObject.DTO;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

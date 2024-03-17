@@ -1,5 +1,6 @@
 using Amazon.Auth.AccessControlPolicy.ActionIdentifiers;
 using BusinessObject;
+using BusinessObject.DTO;
 using BusinessObject.SqlObject;
 using Microsoft.Identity.Client;
 using Repository.Implementation;
@@ -13,6 +14,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using Utils.PasswordHasher;
+using WebAPI.Model;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Services.Implementation
@@ -122,6 +124,58 @@ namespace Services.Implementation
                 {
                     throw new Exception("Cannot find user");
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<UserInfo?> GetUserByNickName(string nickName)
+        {
+            return await _userRepository.GetUserByNickName(nickName);
+        }
+
+        public async Task<UserInfo?> GetUserByUserEmail(string email)
+        {
+            return await _userRepository.GetUserByEmail(email);
+        }
+
+        public async Task<UserInfo?> GetUserByUserPhone(string phoneNumber)
+        {
+            return await _userRepository.GetUserByPhoneNumber(phoneNumber);
+        }
+
+        public async Task<RegisterResponse> Register(UserInfo userInfo)
+        {
+            try
+            {
+                bool errorCheck = false;
+                var registerReponse = new RegisterResponse() {
+                    IsSuccess = false
+                };
+                if (await this.GetUserByUserEmail(userInfo.Email) != null)
+                {
+                    errorCheck = true;
+                    registerReponse.ErrorEmail = "This email has been used by another user";
+                }
+                if (await this.GetUserByUserPhone(userInfo.PhoneNumber) != null)
+                {
+                    errorCheck = true;
+                    registerReponse.ErrorPhoneNumber = "This phone number has been used by another user";
+                }
+                if (await this.GetUserByNickName(userInfo.NickName) != null)
+                {
+                    errorCheck = true;
+                    registerReponse.ErrorNickName = "This nickname has been used by another user";
+                }
+                if (errorCheck)
+                {
+                    return registerReponse;
+                }
+                registerReponse.IsSuccess = true;
+                await _userRepository.CreateNewUser(userInfo);
+                return registerReponse;
             }
             catch (Exception ex)
             {

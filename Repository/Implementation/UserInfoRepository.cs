@@ -49,5 +49,19 @@ namespace Repository.Implementation
                 .Where(u => u.Email == email && u.Status == AccountStatus.Active)
                 .SingleOrDefaultAsync();
         }
+
+        public async Task<UserInfo?> GetUserByPhoneNumber(string phoneNumber)
+        {
+            return await _userInfoDao.Query()
+                .Where(u => u.PhoneNumber == phoneNumber)
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task<UserInfo?> GetUserByNickName(string nickname)
+        {
+            return await _userInfoDao.Query()
+                .Where(u => u.NickName == nickname)
+                .SingleOrDefaultAsync();
+        }
     }
 }
