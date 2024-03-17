@@ -1,5 +1,4 @@
-﻿using BusinessObject;
-using BusinessObject.SqlObject;
+﻿using BusinessObject.SqlObject;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 

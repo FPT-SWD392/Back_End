@@ -27,11 +27,11 @@ namespace Repository.Implementation
             await _dao.DeleteAsync(imageInfo);
         }
 
-        public async Task<ImageInfo?> GetImageInfoById(int imageId)
+        public async Task<ImageInfo?> GetImageInfoById(int artId)
         {
             return await _dao
                 .Query()
-                .Where(x => x.ImageId == imageId)
+                .Where(x => x.ArtId == artId)
                 .SingleOrDefaultAsync();
         }
 

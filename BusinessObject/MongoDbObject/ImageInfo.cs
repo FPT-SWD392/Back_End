@@ -5,7 +5,7 @@ namespace BusinessObject.MongoDbObject
     public class ImageInfo : IMongoDbObject
     {
         [BsonId]
-        public int ImageId { get; set; }
+        public int ArtId { get; set; }
         public required UploadedFileInfo Preview { get; set; }
         public required UploadedFileInfo Original { get; set; }
     }

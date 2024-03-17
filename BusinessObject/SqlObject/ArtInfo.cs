@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessObject.SqlObject
 {
@@ -21,8 +16,6 @@ namespace BusinessObject.SqlObject
         [Range(double.Epsilon, double.MaxValue)]
         public double Price { get; set; }
         [Required]
-        public required string ImageId { get; set; }
-        [Required]
         public DateTime UpdateDate {  get; set; }
         [Required]
         public DateTime CreatedDate { get; set; }
@@ -35,5 +28,6 @@ namespace BusinessObject.SqlObject
         public virtual CreatorInfo CreatorInfo { get; set; }
         public virtual ICollection<Purchase> Purchases { get; set; }
         public virtual ICollection<ArtRating> ArtRatings { get; set; }
+        public virtual ICollection<ArtTag> ArtTags { get; set; }
     }
 }
