@@ -1,4 +1,4 @@
-﻿using BusinessObject.SqlObject;
+﻿using BusinessObject.DTO;
 
 namespace WebAPI.Model
 {

@@ -1,4 +1,5 @@
-﻿using BusinessObject.SqlObject;
+﻿using BusinessObject.DTO;
+using BusinessObject.SqlObject;
 using JwtTokenAuthorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -57,7 +58,7 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpGet("GetTransactionById")]
+        [HttpGet("GetTransactionById/{transactionId}")]
         public async Task<ActionResult<TransactionResponse>> GetTransactionHistoryById(int transactionId)
         {
             var transaction = await _transactionHistoryService.GetTransactionHistoryById(transactionId);
@@ -79,7 +80,7 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpGet("GetTransactionByUserId")]
+        [HttpGet("GetTransactionByUserId/{userId}")]
         public async Task<ActionResult<List<TransactionResponse>>> GetUserTransactionHistories(int userId)
         {
             var transactions = await _transactionHistoryService.GetUserTransactionHistories(userId);

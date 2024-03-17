@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using BusinessObject.DTO;
 using BusinessObject.SqlObject;
 using JwtTokenAuthorization;
 using Microsoft.AspNetCore.Authorization;
@@ -23,12 +24,13 @@ namespace WebAPI.Controllers
             _userInfoService = userInfoService;
             _passwordHasher = passwordHasher;
         }
-        [Authorize]
         [HttpPost("Register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
         {
             try
             {
+                
                 UserInfo userInfo = new UserInfo
                 {
                     Email = registerRequest.Email,
@@ -42,69 +44,73 @@ namespace WebAPI.Controllers
                     Balance = 0
                 };
 
-                await _userInfoService.Register(userInfo);
-                //return Created("OK", null);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            return BadRequest();
-        }
-
-        [Authorize]
-        [HttpGet("CheckEmail")]
-        public async Task<IActionResult> CheckEmail(string email)
-        {
-            try
-            {
-                if (await _userInfoService.GetUserByUserEmail(email) != null)
+                RegisterResponse registerResponse = await _userInfoService.Register(userInfo);
+                if (registerResponse.IsSuccess)
                 {
                     return Ok();
+                }
+                else
+                {
+                    return BadRequest(registerResponse);
                 }
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-            return BadRequest();
         }
+        //[Authorize]
+        //[HttpGet("CheckEmail")]
+        //public async Task<IActionResult> CheckEmail(string email)
+        //{
+        //    try
+        //    {
+        //        if (await _userInfoService.GetUserByUserEmail(email) != null)
+        //        {
+        //            return Ok();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //    return BadRequest();
+        //}
 
-        [Authorize]
-        [HttpGet("CheckPhoneNumber")]
-        public async Task<IActionResult> CheckPhoneNumber(string phoneNumber)
-        {
-            try
-            {
-                if (await _userInfoService.GetUserByUserPhone(phoneNumber) != null)
-                {
-                    return Ok();
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            return BadRequest();
-        }
+        //[Authorize]
+        //[HttpGet("CheckPhoneNumber")]
+        //public async Task<IActionResult> CheckPhoneNumber(string phoneNumber)
+        //{
+        //    try
+        //    {
+        //        if (await _userInfoService.GetUserByUserPhone(phoneNumber) != null)
+        //        {
+        //            return Ok();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //    return BadRequest();
+        //}
 
-        [Authorize]
-        [HttpGet("CheckNickName")]
-        public async Task<IActionResult> CheckNickName(string nickName)
-        {
-            try
-            {
-                if (await _userInfoService.GetUserByNickName(nickName) != null)
-                {
-                    return Ok();
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            return BadRequest();
-        }
+        //[Authorize]
+        //[HttpGet("CheckNickName")]
+        //public async Task<IActionResult> CheckNickName(string nickName)
+        //{
+        //    try
+        //    {
+        //        if (await _userInfoService.GetUserByNickName(nickName) != null)
+        //        {
+        //            return Ok();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //    return BadRequest();
+        //}
     }
 }

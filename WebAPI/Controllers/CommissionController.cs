@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using BusinessObject.DTO;
 using BusinessObject.SqlObject;
 using JwtTokenAuthorization;
 using Microsoft.AspNetCore.Authorization;
@@ -47,7 +48,7 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost("CancelCommission")]
+        [HttpPost("CancelCommission/{commissionId}")]
         public async Task<IActionResult> CancelCommission(int commissionId)
         {
             try
@@ -63,7 +64,7 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost("AcceptCommission")]
+        [HttpPost("AcceptCommission/{commissionId}")]
         public async Task<IActionResult> AcceptCommission(int commissionId)
         {
             try
@@ -80,7 +81,7 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost("DenyCommission")]
+        [HttpPost("DenyCommission/{commissionId}")]
         public async Task<IActionResult> DenyCommission(int commissionId)
         {
             try
@@ -126,7 +127,7 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpGet("ViewCommission")]
+        [HttpGet("ViewCommission/{commissionId}")]
         public async Task<IActionResult> ViewCommission(int commissionId)
         {
             Commission? commission = await _commissionService.GetCommissionByCommissionId(commissionId);

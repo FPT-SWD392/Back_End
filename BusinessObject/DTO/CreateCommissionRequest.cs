@@ -1,4 +1,4 @@
-﻿namespace WebAPI.Model
+﻿namespace BusinessObject.DTO
 {
     public class CreateCommissionRequest
     {
