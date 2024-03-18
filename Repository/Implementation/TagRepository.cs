@@ -31,5 +31,17 @@ namespace Repository.Implementation
                 .Where(x => x.TagId == tagId)
                 .SingleOrDefaultAsync();
         }
+        public async Task AddTag(Tag tag)
+        {
+            await _dao.CreateAsync(tag);
+        }
+        public async Task DeleteTag(Tag tag)
+        {
+            await _dao.DeleteAsync(tag);
+        }
+        public async Task UpdateTag(Tag tag)
+        {
+            await _dao.UpdateAsync(tag);
+        }
     }
 }

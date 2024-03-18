@@ -30,8 +30,8 @@ namespace BusinessObject
     }
     public enum AccountStatus
     {
-        Active,
         Inactive,
+        Active,
     }
     public enum CommissionStatus
     {
@@ -40,16 +40,6 @@ namespace BusinessObject
         Denied,
         Finished,
         Canceled
-    }
-    public enum ImageType
-    {
-        JPG,
-        PNG,
-        GIF,
-        BMP,
-        TIFF,
-        WEBP,
-        SVG
     }
     public enum PostVisibility
     {

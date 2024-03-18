@@ -12,9 +12,8 @@ namespace BusinessObject.MongoDbObject
     public class UploadedFileInfo
     {
         public required string BlobName { get; set; }
-        public required string SHA256 { get; set; }
-        public required string FileSize { get; set; }
-        public required ImageType ImageType { get; set; }
-        public long Size { get; set; }
+        public required long FileSize { get; set; }
+        public required string ImageType { get; set; }
+        public required string FileName { get; set; }
     }
 }

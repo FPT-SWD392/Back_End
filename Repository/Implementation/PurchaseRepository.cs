@@ -55,5 +55,13 @@ namespace Repository.Implementation
         {
             await _dao.UpdateAsync(purchase);
         }
+
+        public async Task<Purchase?> GetPurchaseByUserIdAndArtId(int userId, int artId)
+        {
+            return await _dao
+                .Query()
+                .Where(x => x.UserId == userId && x.ArtId == artId)
+                .SingleOrDefaultAsync();
+        }
     }
 }

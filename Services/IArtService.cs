@@ -1,14 +1,12 @@
-﻿using BusinessObject.SqlObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BusinessObject.DTO;
 
 namespace Services
 {
     public interface IArtService
     {
-        public Task<List<ArtInfo>> GetArtList(string? searchValue, List<int> tagIds, int pageNumber);
+        public Task<List<ArtworkPreviewDTO>> GetArtList(string? searchValue, List<int> tagIds, int pageNumber);
+        public Task CreateArt(int creatorId, CreateArtRequest request);
+        public Task<ImageDTO?> DownloadPreview(int artId);
+        public Task<ImageDTO?> DownloadOriginal(int userId, int artId);
     }
 }

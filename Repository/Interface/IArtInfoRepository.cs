@@ -1,4 +1,5 @@
-﻿using BusinessObject.SqlObject;
+﻿using BusinessObject.DTO;
+using BusinessObject.SqlObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,6 @@ namespace Repository.Interface
         public Task UpdateArt(ArtInfo artInfo);
         public Task<ArtInfo?> GetArtById(int id);
         public Task<List<ArtInfo>> GetAllArts();
-        public Task<List<ArtInfo>> GetArtList(string? searchValue, List<int> tagIds, int page);
+        public Task<List<ArtworkPreviewDTO>> GetArtList(string? searchValue, List<int> tagIds, int page);
     }
 }
