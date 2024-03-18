@@ -92,7 +92,7 @@ namespace WebAPI.Controllers
             }
         }
         [Authorize]
-        [HttpPut("AddAccountBalance/{amount}")]
+        [HttpPost("AddAccountBalance/{amount}")]
         public async Task<IActionResult> AddAccountBalance(string amount)
         {
             var userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
@@ -110,6 +110,7 @@ namespace WebAPI.Controllers
 
             return Ok();
         }
+
 
     }
 }

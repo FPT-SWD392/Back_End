@@ -193,6 +193,13 @@ namespace Services.Implementation
                     userInfo.Balance += amount;
                     await _userRepository.UpdateUser(userInfo);
                 }
+                var transactionHistory = new TransactionHistory()
+                {
+                    UserId = userId,
+                    Note = "You added to you wallet " + amount,
+                    TransactionType = TransactionType.Deposite,
+                    TransactionDate = DateTime.UtcNow,
+                };
             } 
             catch (Exception ex)
             {

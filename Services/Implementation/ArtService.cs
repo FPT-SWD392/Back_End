@@ -121,6 +121,5 @@ namespace Services.Implementation
         {
             return await _artInfoRepository.GetArtList(searchValue, tagIds, pageNumber);
         }
-
     }
 }

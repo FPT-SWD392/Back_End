@@ -12,7 +12,7 @@ namespace BusinessObject.SqlObject
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public required int CreatorId { get; set; }
+        public int CreatorId { get; set; }
         [Required]
         public required string Bio {  get; set; }
         [Required]
