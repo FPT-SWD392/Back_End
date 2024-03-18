@@ -10,5 +10,6 @@ namespace Repository.Interface
         public Task<Purchase?> GetPurchaseById(int purchaseId);
         public Task<List<Purchase>> GetAllUserPurchases(int userId);
         public Task<List<Purchase>> GetAllArtPurchases(int artId);
+        public Task<Purchase?> GetPurchaseByUserIdAndArtId(int userId, int artId);
     }
 }

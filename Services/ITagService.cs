@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Interface
+namespace Services
 {
-    public interface ITagRepository
+    public interface ITagService
     {
-        Task<List<Tag>> GetAllTags();
-        Task<Tag?> GetTagById(int tagId);
+        Task<Tag?> GetTag(int tagId);
+        Task<List<Tag>> GetTags();
         Task AddTag(Tag tag);
-        Task DeleteTag(Tag tag);
+        Task RemoveTag(Tag tag);
         Task UpdateTag(Tag tag);
     }
 }

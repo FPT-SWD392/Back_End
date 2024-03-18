@@ -1,4 +1,5 @@
-﻿using BusinessObject.SqlObject;
+﻿using BusinessObject;
+using BusinessObject.SqlObject;
 using DataAccessObject;
 using Repository.Interface;
 
@@ -45,7 +46,7 @@ namespace Repository.Implementation
         {
             return await _userInfoDao
                 .Query()
-                .Where(u => u.Email == email)
+                .Where(u => u.Email == email && u.Status == AccountStatus.Active)
                 .SingleOrDefaultAsync();
         }
 

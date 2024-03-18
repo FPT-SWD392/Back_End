@@ -17,6 +17,10 @@ using Utils.PasswordHasher;
 using Utils.RandomGenerator;
 using Repository.Interface;
 using Repository;
+using WebAPI.MappingProfile;
+using Utils.ImageUtil;
+using Utils.ImageProcessing;
+using AzureBlobStorage;
 
 namespace WebAPI
 {
@@ -37,6 +41,7 @@ namespace WebAPI
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddAutoMapper(typeof(ProfileMapper));
             builder.Services.AddDbContext<SqlDbContext>(s =>
             {
                 string connectionString = builder.Configuration
@@ -64,7 +69,10 @@ namespace WebAPI
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IPostLikeRepository, PostLikeRepository>();
             builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+            builder.Services.AddScoped<ITagRepository, TagRepository>();
 
+            builder.Services.AddScoped<IArtService,ArtService>();
+            builder.Services.AddScoped<ITagService, TagService>();
             builder.Services.AddScoped<ITransactionHistoryService, TransactionHistoryService>();
             builder.Services.AddScoped<IReportRepository,ReportRepository>();
             builder.Services.AddScoped<ITransactionHistoryRepository , TransactionHistoryRepository>();
@@ -75,6 +83,8 @@ namespace WebAPI
             builder.Services.AddScoped<IUserInfoService, UserInfoService>();
             builder.Services.AddScoped<IPostService, PostService>();
 
+            builder.Services.AddScoped<IAzureBlobStorage, AzureBlobStorage.AzureBlobStorage>();
+            builder.Services.AddScoped<IImageUtil, ImageUtil>();
             builder.Services.AddScoped<IPasswordHasher,PasswordHasher>();
             builder.Services.AddScoped<ITokenHelper,JwtTokenHelper>();
             builder.Services.AddScoped<IRandomGenerator, RandomGenerator>();
