@@ -1,10 +1,14 @@
-﻿using BusinessObject.DTO;
+﻿using BusinessObject;
+using BusinessObject.DTO;
 using BusinessObject.SqlObject;
 using JwtTokenAuthorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services;
+using Services.Implementation;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
+using Utils.PasswordHasher;
 using WebAPI.Model;
 
 namespace WebAPI.Controllers
@@ -18,10 +22,14 @@ namespace WebAPI.Controllers
     {
         private readonly IAuthenticationService _authenticationService;
         private readonly ITokenHelper _jwtHelper;
-        public AuthenticationController(IAuthenticationService authenticationService, ITokenHelper jwtHelper)
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly IUserInfoService _userInfoService;
+        public AuthenticationController(IAuthenticationService authenticationService, ITokenHelper jwtHelper, IPasswordHasher passwordHasher, IUserInfoService userInfoService)
         {
             _authenticationService = authenticationService;
             _jwtHelper = jwtHelper;
+            _passwordHasher = passwordHasher;
+            _userInfoService = userInfoService;
         }
         [HttpPost("Login")]
         [SwaggerResponse(200, Type = typeof(LoginResponse))]
@@ -40,6 +48,42 @@ namespace WebAPI.Controllers
                 ProfilePictureUrl = user.ProfilePicture
             };
             return Ok(loginResponse);
+        }
+        [HttpPut("Register")]
+        [AllowAnonymous]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, Type = typeof(RegisterResponse))]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
+        {
+            try
+            {
+                UserInfo userInfo = new UserInfo
+                {
+                    Email = registerRequest.Email,
+                    PasswordHash = _passwordHasher.HashPassword(registerRequest.Password),
+                    Status = AccountStatus.Active,
+                    FullName = registerRequest.FullName,
+                    Location = registerRequest.Location,
+                    PhoneNumber = registerRequest.PhoneNumber,
+                    NickName = registerRequest.NickName,
+                    JoinDate = DateTime.Today,
+                    Balance = 0
+                };
+
+                RegisterResponse registerResponse = await _userInfoService.Register(userInfo);
+                if (registerResponse.IsSuccess)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest(registerResponse);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
