@@ -57,7 +57,7 @@ namespace Services.Implementation
                 {
                     var creator = await _creatorInfoRepository.GetCreatorInfo(user.CreatorId.Value);
                     profile.ContactInfo = creator.ContactInfo;
-                    profile.ContactInfo = creator.Bio;
+                    profile.Bio = creator.Bio;
                 }
                 return profile;
             }
