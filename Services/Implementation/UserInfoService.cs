@@ -41,6 +41,28 @@ namespace Services.Implementation
             CreatorInfo creator = await _creatorInfoRepository.GetCreatorInfo(creatorId);
             return creator.UserInfo;
         }
+        public async Task<UserProfile?> GetUserInfo (int userid)
+        {
+            var user = await _userRepository.GetUserById(userid);
+            if (user != null)
+            {
+                var profile = new UserProfile()
+                {
+                    NickName = user.NickName,
+                    FullName = user.FullName,
+                    Location = user.Location,
+                    PhoneNumber = user.PhoneNumber
+                };
+                if (user.CreatorId != null)
+                {
+                    var creator = await _creatorInfoRepository.GetCreatorInfo(user.CreatorId.Value);
+                    profile.ContactInfo = creator.ContactInfo;
+                    profile.ContactInfo = creator.Bio;
+                }
+                return profile;
+            }
+            else return null;
+        }
         public async Task UpdateProfile(int id, string fullName, string location, string phoneNumber, string nickName)
         {
             try

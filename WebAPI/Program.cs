@@ -82,6 +82,7 @@ namespace WebAPI
             builder.Services.AddScoped<ICommissionService, CommissionService>();
             builder.Services.AddScoped<IUserInfoService, UserInfoService>();
             builder.Services.AddScoped<IPostService, PostService>();
+            builder.Services.AddTransient<ISendEmail, SendEmail>();
 
             builder.Services.AddScoped<IAzureBlobStorage, AzureBlobStorage.AzureBlobStorage>();
             builder.Services.AddScoped<IImageUtil, ImageUtil>();
