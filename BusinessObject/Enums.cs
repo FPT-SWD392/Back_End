@@ -52,6 +52,7 @@ namespace BusinessObject
         Art,
         Post,
         Artist,
-        Commission
+        Commission,
+        User
     }
 }
