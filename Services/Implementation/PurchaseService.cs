@@ -27,7 +27,11 @@ namespace Services.Implementation
                     var artWorkToBeBought = await _artInfoRepository.GetArtById(artId);
                     if (buyingUser!.Balance < artWorkToBeBought!.Price)
                     {
-                        return false;
+                        throw new Exception("You don't have enough balance");
+                    }
+                    if (buyingUser.CreatorId == artWorkToBeBought.CreatorId)
+                    {
+                        throw new Exception("You can't buy your own artwork");
                     }
 
                     //hover over region to see code summary, you don't have to expand
@@ -45,6 +49,12 @@ namespace Services.Implementation
                     await _purchaseRepository.CreateNewPurchase(purchaseToBeAdded);
 
                     await _userInfoRepository.UpdateUser(buyingUser);
+                    #endregion
+                    #region Update Creator Balance
+                    var creatorId = artWorkToBeBought.CreatorId;
+                    var userInfoBaseOnCreatorId = await _userInfoRepository.GetUserByCreatorId(creatorId);
+                    userInfoBaseOnCreatorId!.Balance += artWorkToBeBought.Price;
+                    await _userInfoRepository.UpdateUser(userInfoBaseOnCreatorId);
                     #endregion
                     #region Add transaction history for buyer
                     var transactionHistoryBuyer = new TransactionHistory()
@@ -77,8 +87,8 @@ namespace Services.Implementation
                 }
             }
             else 
-            { 
-                return false; 
+            {
+                throw new Exception("You can't buy an artwork twice.");
             }
         }
         public async Task<bool> PurchaseWithExternalParty(int userId, int artId)
@@ -88,10 +98,15 @@ namespace Services.Implementation
             {
                 try
                 {
-                    //hover over region to see code summary, you don't have to expand
-                    #region Create new purchase
                     var artWorkToBeBought = await _artInfoRepository.GetArtById(artId);
                     var buyingUser = await _userInfoRepository.GetUserById(userId);
+                    if (buyingUser!.CreatorId == artWorkToBeBought!.CreatorId)
+                    {
+                        throw new Exception("You can't buy your own artwork");
+                    }
+                    //hover over region to see code summary, you don't have to expand
+                    #region Create new purchase
+
                     var purchaseToBeAdded = new Purchase()
                     {
                         UserId = userId,
@@ -100,6 +115,12 @@ namespace Services.Implementation
                     };
 
                     await _purchaseRepository.CreateNewPurchase(purchaseToBeAdded);
+                    #endregion
+                    #region Update Creator Balance
+                    var creatorId = artWorkToBeBought.CreatorId;
+                    var userInfoBaseOnCreatorId = await _userInfoRepository.GetUserByCreatorId(creatorId);
+                    userInfoBaseOnCreatorId!.Balance += artWorkToBeBought.Price;
+                    await _userInfoRepository.UpdateUser(userInfoBaseOnCreatorId);
                     #endregion
                     #region Add transaction history for buyer
                     var transactionHistoryBuyer = new TransactionHistory()
@@ -134,7 +155,7 @@ namespace Services.Implementation
             }
             else
             {
-                return false;
+                throw new Exception("You can't buy an artwork twice.");
             }
         }
     }

@@ -139,16 +139,9 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
             }
-            if (checkSuccess)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest("You have already bought this art");
-            }
+            return Ok();
         }
         [HttpPost("Rating")]
         [Authorize]
