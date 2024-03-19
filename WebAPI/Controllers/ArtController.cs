@@ -29,15 +29,96 @@ namespace WebAPI.Controllers
         }
         [HttpGet("GetArtList")]
         [Produces("application/json")]
-        [SwaggerResponse(200, Type = typeof(List<ArtworkPreviewDTO>))]
+        [SwaggerResponse(200, Type = typeof(ArtworkListDTO))]
         [SwaggerResponse(400)]
+        [SwaggerResponse(401)]
         public async Task<IActionResult> GetArtList(string? searchValue, [FromQuery] List<int> tagIds, int page)
         {
             if (page < 1)
             {
                 return BadRequest("Page number must be larger than 0");
             }
-            return Ok(await _artService.GetArtList(searchValue, tagIds, page));
+            try
+            {
+                string userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
+                int userId = int.Parse(userIdString);
+                return Ok(await _artService.GetArtListForLoggedUser(userId, searchValue, tagIds, page));
+            } catch
+            {
+                return Ok(await _artService.GetArtList(searchValue, tagIds, page));
+            }
+        }
+        [HttpGet("GetPurchasedArtList")]
+        [Produces("application/json")]
+        [SwaggerResponse(200, Type = typeof(ArtworkListDTO))]
+        [SwaggerResponse(400)]
+        [SwaggerResponse(401)]
+        public async Task<IActionResult> GetPurchasedArtList(string? searchValue, [FromQuery] List<int> tagIds, int page)
+        {
+            if (page < 1)
+            {
+                return BadRequest("Page number must be larger than 0");
+            }
+            try
+            {
+                string userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
+                int userId = int.Parse(userIdString);
+                return Ok(await _artService.GetPurchasedArtList(userId,searchValue,tagIds,page));
+            }
+            catch
+            {
+                return Unauthorized();
+            }
+        }
+        [HttpGet("GetCreatedArtList")]
+        [Produces("application/json")]
+        [SwaggerResponse(200, Type = typeof(ArtworkListDTO))]
+        [SwaggerResponse(400)]
+        [SwaggerResponse(401)]
+        public async Task<IActionResult> GetCreatedArtList(string? searchValue, [FromQuery] List<int> tagIds, int page)
+        {
+            if (page < 1)
+            {
+                return BadRequest("Page number must be larger than 0");
+            }
+            try
+            {
+                string creatorIdString = _tokenHelper.GetCreatorIdFromToken(HttpContext);
+                int creatorId = int.Parse(creatorIdString);
+                return Ok(await _artService.GetCreatedArtList(creatorId, searchValue, tagIds, page));
+            }
+            catch
+            {
+                return Unauthorized();
+            }
+        }
+        [HttpGet("GetArtInfo")]
+        [Produces("application/json")]
+        [SwaggerResponse(200, Type = typeof(ArtworkDetailDTO))]
+        [SwaggerResponse(400)]
+        public async Task<IActionResult> GetArtDetails(int artId)
+        {
+            ArtworkDetailDTO? artwork = await _artService.GetArtDetails(artId);
+            if (artwork == null) return NotFound();
+            return Ok(artwork);
+        }
+        [HttpGet("GetCreatorArtInfo")]
+        [Produces("application/json")]
+        [SwaggerResponse(200, Type = typeof(ArtworkListDTO))]
+        [SwaggerResponse(400)]
+        [SwaggerResponse(401)]
+        public async Task<IActionResult> GetCreatorsArtDetails(int artId)
+        {
+            try
+            {
+                int creatorId = int.Parse(_tokenHelper.GetCreatorIdFromToken(HttpContext));
+                ArtworkDetailDTO? artwork = await _artService.GetArtDetails(artId,creatorId);
+                if (artwork == null) return NotFound();
+                return Ok(artwork);
+            } catch
+            {
+                return Unauthorized();
+            }
         }
         [HttpGet("GetAllArtTags")]
         [Produces("application/json")]
@@ -50,6 +131,7 @@ namespace WebAPI.Controllers
         [Authorize]
         [SwaggerResponse(200)]
         [SwaggerResponse(400)]
+        [SwaggerResponse(401)]
         public async Task<IActionResult> CreateArtwork([FromForm] CreateArtRequest createArtRequest)
         {
             try

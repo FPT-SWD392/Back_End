@@ -1,5 +1,5 @@
-﻿using Azure.Core;
-using AzureBlobStorage;
+﻿using AzureBlobStorage;
+using BusinessObject;
 using BusinessObject.DTO;
 using BusinessObject.MongoDbObject;
 using BusinessObject.SqlObject;
@@ -110,16 +110,43 @@ namespace Services.Implementation
         public async Task<ImageDTO?> DownloadOriginal(int userId,int artId)
         {
             Purchase? purchase = await _purchaseRepository.GetPurchaseByUserIdAndArtId(userId, artId);
-            if (purchase == null) return null;
+            ArtInfo? artistCreatedArtInfo = await _artInfoRepository.GetCreatedArtByArtIdAndUserId(userId, artId);
+            if (purchase == null && artistCreatedArtInfo == null) return null;
             ImageInfo? imageInfo = await _imageInfoRepository.GetImageInfoById(artId);
             if (imageInfo == null) return null;
 
             Stream stream = await _azureBlobStorage.DownloadFileAsync(imageInfo.Original.BlobName);
             return new ImageDTO() { FileName = imageInfo.Original.FileName, FileStream = stream, ImageType = imageInfo.Original.ImageType };
         }
-        public async Task<List<ArtworkPreviewDTO>> GetArtList(string? searchValue, List<int> tagIds, int pageNumber)
+        public async Task<ArtworkListDTO> GetArtList(string? searchValue, List<int> tagIds, int pageNumber)
         {
             return await _artInfoRepository.GetArtList(searchValue, tagIds, pageNumber);
+        }
+
+        public async Task<ArtworkListDTO> GetArtListForLoggedUser(int userId, string? searchValue, List<int> tagIds, int pageNumber)
+        {
+            return await _artInfoRepository.GetArtListForLoggedUser(userId, searchValue, tagIds, pageNumber);
+        }
+
+        public async Task<ArtworkDetailDTO?> GetArtDetails(int artId)
+        {
+            ArtworkDetailDTO? artwork = await _artInfoRepository.GetArtDetails(artId);
+            if (artwork == null || artwork.Status == ArtStatus.Unavailable) return null;
+            return artwork;
+        }
+        public async Task<ArtworkDetailDTO?> GetArtDetails(int artId, int creatorId)
+        {
+            return await _artInfoRepository.GetArtDetails(artId,creatorId);
+        }
+
+        public async Task<ArtworkListDTO> GetPurchasedArtList(int userId, string? searchValue, List<int> tagIds, int pageNumber)
+        {
+            return await _artInfoRepository.GetPurchasedArtList(userId, searchValue, tagIds, pageNumber);
+        }
+
+        public async Task<ArtworkListDTO> GetCreatedArtList(int creatorId, string? searchValue, List<int> tagIds, int pageNumber)
+        {
+            return await _artInfoRepository.GetCreatedArtList(creatorId, searchValue, tagIds, pageNumber);
         }
     }
 }
