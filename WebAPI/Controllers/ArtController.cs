@@ -17,12 +17,15 @@ namespace WebAPI.Controllers
     {
         private readonly IArtService _artService;
         private readonly ITagService _tagService;
+        private readonly IPurchaseService _purchaseService;
+        private readonly IArtRatingService _artRatingService;
         private readonly ITokenHelper _tokenHelper;
-        public ArtController(IArtService artService, ITagService tagService, ITokenHelper tokenHelper)
+        public ArtController(IArtService artService, ITagService tagService, ITokenHelper tokenHelper, IArtRatingService artRatingService)
         {
             _artService = artService;
             _tagService = tagService;
             _tokenHelper = tokenHelper;
+            _artRatingService = artRatingService;
         }
         [HttpGet("GetArtList")]
         [Produces("application/json")]
@@ -169,6 +172,84 @@ namespace WebAPI.Controllers
             if (imageDTO == null) return NotFound();
             return File(imageDTO.FileStream, imageDTO.ImageType, enableRangeProcessing: true);
         }
+        [HttpPost("PurchaseWithBalance/{artId}")]
+        [Authorize]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, "Already bought || Don't have enough balance")]
+        [SwaggerResponse(500)]
+        public async Task<IActionResult> PurchaseWithBalance(int artId)
+        {
+            string userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
+            if (false == int.TryParse(userIdString, out var userID))
+            {
+                return Unauthorized();
+            }
+            bool checkSuccess = false;
+            try
+            {
+                checkSuccess = await _purchaseService.PurchaseWithBalance(userID, artId);
+            } catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            
+            if (checkSuccess)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("You have already bought this art/You don't have enough balance");
+            }        
+        }
+        [HttpPost("PurchaseWithExternalParty/{artId}")]
+        [Authorize]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, "Already bought")]
+        public async Task<IActionResult> PurchaseWithExternalParty(int artId)
+        {
+            string userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
+            if (false == int.TryParse(userIdString, out var userID))
+            {
+                return Unauthorized();
+            }
 
+            bool checkSuccess = false;
+            try
+            {
+                checkSuccess = await _purchaseService.PurchaseWithExternalParty(userID, artId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+            }
+            return Ok();
+        }
+        [HttpPost("Rating")]
+        [Authorize]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, "Already rated")]
+        public async Task<IActionResult> RatingArtwork([FromBody] RatingDTO ratingDTO)
+        {
+            if (ratingDTO.Rating == null || ratingDTO.Rating < 1 || ratingDTO.Rating > 5)
+            {
+                return BadRequest("Rating does not exist in this request");
+            }
+            string userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
+            if (false == int.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized("");
+            }
+
+            bool checkSuccess = await _artRatingService.RatingArtwork(userId, ratingDTO.ArtId, ratingDTO.Rating);
+            if (checkSuccess)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
     }
 }

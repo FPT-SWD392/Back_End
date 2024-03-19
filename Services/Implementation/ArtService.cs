@@ -122,6 +122,7 @@ namespace Services.Implementation
         {
             return await _artInfoRepository.GetArtList(searchValue, tagIds, pageNumber);
         }
+
         public async Task<ArtworkListDTO> GetArtListForLoggedUser(int userId, string? searchValue, List<int> tagIds, int pageNumber)
         {
             return await _artInfoRepository.GetArtListForLoggedUser(userId, searchValue, tagIds, pageNumber);

@@ -26,7 +26,8 @@ namespace BusinessObject
         RequestCommission,
         FinishCommission,
         RequestCommissionDeny,
-        RequestCommissionCancel
+        RequestCommissionCancel,
+        UpgradeToCreator,
     }
     public enum AccountStatus
     {

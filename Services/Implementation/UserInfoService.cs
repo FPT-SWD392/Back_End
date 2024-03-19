@@ -23,12 +23,14 @@ namespace Services.Implementation
     {
         private readonly IUserInfoRepository _userRepository;
         private readonly ICreatorInfoRepository _creatorInfoRepository;
+        private readonly ITransactionHistoryRepository _transactionHistoryRepository;
         private readonly IPasswordHasher _passwordHasher;
-        public UserInfoService(IUserInfoRepository userInfoRepository, ICreatorInfoRepository creatorInfoRepository, IPasswordHasher passwordHasher)
+        public UserInfoService(IUserInfoRepository userInfoRepository, ICreatorInfoRepository creatorInfoRepository, IPasswordHasher passwordHasher, ITransactionHistoryRepository transactionHistoryRepository)
         {
             _userRepository = userInfoRepository;
             _creatorInfoRepository = creatorInfoRepository;
             _passwordHasher = passwordHasher;
+            _transactionHistoryRepository = transactionHistoryRepository;
         }
 
         public  Task<UserInfo?> GetUserByUserId(int userId)
@@ -193,6 +195,15 @@ namespace Services.Implementation
                     userInfo.Balance += amount;
                     await _userRepository.UpdateUser(userInfo);
                 }
+                var transactionHistory = new TransactionHistory()
+                {
+                    UserId = userId,
+                    Note = "You added to you wallet " + amount,
+                    TransactionType = TransactionType.Deposite,
+                    TransactionDate = DateTime.UtcNow,
+                };
+                await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
+
             } 
             catch (Exception ex)
             {
