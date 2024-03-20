@@ -64,9 +64,4 @@ namespace BusinessObject
         Disable,
         Enable
     }
-    public enum AdminAccountStatus
-    {
-        Disable,
-        Enable
-    }
 }
