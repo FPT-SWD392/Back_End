@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
-    <Platforms>AnyCPU;x64</Platforms>
+    <Platforms>x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
