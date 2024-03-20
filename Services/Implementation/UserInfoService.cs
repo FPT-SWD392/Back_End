@@ -152,6 +152,27 @@ namespace Services.Implementation
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<bool> BanUser(int id)
+        {
+            try
+            {
+                var user = await _userRepository.GetUserById(id);
+                if (user != null)
+                {
+                    user.Status = AccountStatus.Banned;
+                    await _userRepository.UpdateUser(user);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
         public async Task<UserInfo?> GetUserByNickName(string nickName)
         {

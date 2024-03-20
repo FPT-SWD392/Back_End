@@ -1,5 +1,6 @@
 ﻿using Azure.Core;
 using AzureBlobStorage;
+using BusinessObject;
 using BusinessObject.DTO;
 using BusinessObject.MongoDbObject;
 using BusinessObject.SqlObject;
@@ -82,7 +83,7 @@ namespace Services.Implementation
                 CreatedDate = DateTime.Now,
                 CreatorId = creatorInfo.CreatorId,
                 Description = request.Description,
-                Status = request.ArtStatus,
+                Status = ArtStatus.Public,
                 Price = request.Price,
                 UpdateDate = DateTime.Now,
             };
@@ -121,6 +122,26 @@ namespace Services.Implementation
         {
             return await _artInfoRepository.GetArtList(searchValue, tagIds, pageNumber);
         }
-
+        public async Task<bool> BanArt(int id)
+        {
+            try
+            {
+                var art = await _artInfoRepository.GetArtById(id);
+                if (art != null)
+                {
+                    art.Status = ArtStatus.Banned;
+                    await _artInfoRepository.UpdateArt(art);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

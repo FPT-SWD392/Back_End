@@ -15,12 +15,15 @@ namespace WebAPI.Controllers
     public class ReportController : ControllerBase
     {
         private readonly ITokenHelper _jwtHelper;
-        private readonly IReportService _reportInfo;
-
-        public ReportController(ITokenHelper jwtHelper, IReportService reportInfo)
+        private readonly IReportService _reportService;
+        private readonly IUserInfoService _userService;
+        private readonly IArtService _artService;
+        public ReportController(ITokenHelper jwtHelper, IReportService reportService, IUserInfoService userService, IArtService artService)
         {
             _jwtHelper = jwtHelper;
-            _reportInfo = reportInfo;
+            _reportService = reportService;
+            _userService = userService;
+            _artService = artService;
         }
         // POST api/<ReportController>
         //for user view all of their reports
@@ -29,14 +32,14 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> ViewReports()
         {
             int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
-            var report = await _reportInfo.GetAllReportsOfThatUser(userId);
+            var report = await _reportService.GetAllReportsOfThatUser(userId);
             return Ok(report);
         }
         [Authorize]
         [HttpGet("GetAllReports")]
         public async Task<IActionResult> GetAllReports()
         {
-            var report = await _reportInfo.GetAllReport();
+            var report = await _reportService.GetAllReport();
             return Ok(report);
         }
         // POST api/<ReportController>
@@ -48,7 +51,7 @@ namespace WebAPI.Controllers
             {
                 report.ReportedObjectType = BusinessObject.ReportedObjectType.User;
                 report.ReporterId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
-                var check = await _reportInfo.ReportUser(report);
+                var check = await _reportService.ReportUser(report);
                 if (check)
                 {
                     return Ok();
@@ -69,7 +72,7 @@ namespace WebAPI.Controllers
             {
                 report.ReportedObjectType = BusinessObject.ReportedObjectType.Artist;
                 report.ReporterId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
-                var check = await _reportInfo.ReportArtist(report);
+                var check = await _reportService.ReportArtist(report);
                 if (check)
                 {
                     return Ok();
@@ -89,27 +92,7 @@ namespace WebAPI.Controllers
             {
                 report.ReportedObjectType = BusinessObject.ReportedObjectType.Art;
                 report.ReporterId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
-                var check = await _reportInfo.ReportArt(report);
-                if (check)
-                {
-                    return Ok();
-                }
-                else return BadRequest("Can not report");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        [Authorize]
-        [HttpPost("ReportPost")]
-        public async Task<IActionResult> ReportPost([FromBody] ReportRequest report)
-        {
-            try
-            {
-                report.ReportedObjectType = BusinessObject.ReportedObjectType.Post;
-                report.ReporterId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
-                var check = await _reportInfo.ReportPost(report);
+                var check = await _reportService.ReportArt(report);
                 if (check)
                 {
                     return Ok();
@@ -129,12 +112,49 @@ namespace WebAPI.Controllers
             {
                 report.ReportedObjectType = BusinessObject.ReportedObjectType.Commission;
                 report.ReporterId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
-                var check = await _reportInfo.ReportCommission(report);
+                var check = await _reportService.ReportCommission(report);
                 if (check)
                 {
                     return Ok();
                 }
                 else return BadRequest("Can not report");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [Authorize]
+        [HttpPost("BanUser/{id}")]
+        public async Task<IActionResult> BanUser(int id)
+        {
+            try
+            {
+                var ban = await _userService.BanUser(id);
+                if (ban)
+                {
+                    return Ok();
+                }
+                else return BadRequest("Unsuccessful. Try again");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("BanArt/{id}")]
+        public async Task<IActionResult> BanArt(int id)
+        {
+            try
+            {
+                var ban = await _artService.BanArt(id);
+                if (ban)
+                {
+                    return Ok();
+                }
+                else return BadRequest("Unsuccessful. Try again");
             }
             catch (Exception ex)
             {

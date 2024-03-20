@@ -8,9 +8,9 @@ namespace BusinessObject
 {
     public enum ArtStatus
     {
-        Available,
-        Unavailable,
-        PreOrder
+        Private,
+        Public,
+        Banned
     }
     public enum AcceptCommissionStatus
     {
@@ -30,8 +30,8 @@ namespace BusinessObject
     }
     public enum AccountStatus
     {
-        Inactive,
         Active,
+        Banned
     }
     public enum CommissionStatus
     {

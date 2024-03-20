@@ -18,7 +18,6 @@ namespace Services
         Task<bool> ReportUser(ReportRequest report);
         Task<List<Report>?> GetAllReport();
         Task<bool> ReportCommission(ReportRequest report);
-        Task<bool> ReportPost(ReportRequest report);
         Task<bool> ReportArt(ReportRequest report);
         Task<bool> ReportArtist(ReportRequest report);
 

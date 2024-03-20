@@ -147,28 +147,6 @@ namespace Services.Implementation
                 return true;
             }
         }
-        public async Task<bool> ReportPost(ReportRequest report)
-        {
-            var post = await _postInfoRepository.GetPostContentById(report.ReportedObjectId);
-            if (post == null)
-            {
-                return false;
-            }
-            else
-            {
-                Report newreport = new Report()
-                {
-                    ReportDescription = report.Description,
-                    ReportReason = report.Reason,
-                    ReportDate = report.ReportDate,
-                    ReportedObjectId = report.ReportedObjectId,
-                    ReportedObjectType = report.ReportedObjectType,
-                    ReporterId = report.ReporterId
-                };
-                await _reportRepository.CreateNewReport(newreport);
-                return true;
-            }
-        }
         public async Task<bool> ReportCommission(ReportRequest report)
         {
             var commission = await _commissionInfoRepository.GetCommission(report.ReportedObjectId);

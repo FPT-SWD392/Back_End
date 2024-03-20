@@ -12,8 +12,6 @@ namespace BusinessObject.DTO
         [Required]
         public required double Price { get; set; }
         [Required]
-        public required ArtStatus ArtStatus { get; set; }
-        [Required]
         public required List<int> Tags { get; set; }
         [Required]
         public required IFormFile ImageFile { get; set; }

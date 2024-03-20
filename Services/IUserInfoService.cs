@@ -18,5 +18,6 @@ namespace Services
         Task<UserInfo?> GetUserByNickName(string nickName);
         Task AddAccountBalance(double amount, int userId);
         Task<UserProfile?> GetUserInfo(int userid);
+        Task<bool> BanUser(int id);
     }
 }

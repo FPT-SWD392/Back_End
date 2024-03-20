@@ -8,5 +8,6 @@ namespace Services
         public Task CreateArt(int creatorId, CreateArtRequest request);
         public Task<ImageDTO?> DownloadPreview(int artId);
         public Task<ImageDTO?> DownloadOriginal(int userId, int artId);
+        public Task<bool> BanArt(int id);
     }
 }
