@@ -53,7 +53,10 @@ namespace Services.Implementation
                     NickName = user.NickName,
                     FullName = user.FullName,
                     Location = user.Location,
-                    PhoneNumber = user.PhoneNumber
+                    PhoneNumber = user.PhoneNumber,
+                    UserId = userid,
+                    Email = user.Email,
+                    Balance = user.Balance
                 };
                 if (user.CreatorId != null)
                 {
