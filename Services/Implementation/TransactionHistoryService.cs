@@ -27,6 +27,11 @@ namespace Services.Implementation
             return await _transactionHistoryRepository.GetAllTransaction();
         }
 
+        public async Task<List<TransactionHistory>> GetOnlyDepositTransactionByUser(int userId)
+        {
+            return await _transactionHistoryRepository.GetOnlyDepositTransactionByUser(userId);
+        }
+
         public async Task<TransactionHistory?> GetTransactionHistoryById(int transactionId)
         {
             return await _transactionHistoryRepository.GetTransactionHistoryById(transactionId);
@@ -35,6 +40,10 @@ namespace Services.Implementation
         public async Task<List<TransactionHistory>> GetUserTransactionHistories(int userId)
         {
             return await _transactionHistoryRepository.GetUserTransactionHistories(userId);
+        }
+        public async Task<List<TransactionHistory>> GetAllDepositTransaction()
+        {
+            return await _transactionHistoryRepository.GetAllDepositTransaction();
         }
     }
 }

@@ -15,5 +15,7 @@ namespace Repository.Interface
         public Task UpdateTransactionHistory(TransactionHistory transactionHistory);
         public Task<TransactionHistory?> GetTransactionHistoryById(int transactionId);
         public Task<List<TransactionHistory>> GetUserTransactionHistories(int userId);
+        public Task<List<TransactionHistory>> GetOnlyDepositTransactionByUser(int userId);
+        public Task<List<TransactionHistory>> GetAllDepositTransaction();
     }
 }

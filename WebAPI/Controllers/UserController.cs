@@ -10,6 +10,7 @@ using WebAPI.Model;
 using Microsoft.AspNetCore.Authorization;
 using Services;
 using BusinessObject.DTO;
+using Swashbuckle.AspNetCore.Annotations;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -37,6 +38,14 @@ namespace WebAPI.Controllers
             var result = await _userInfo.GetUserByUserId(userId);
             return Ok(result);
         }
+        [Authorize]
+        [HttpGet("GetAllUser")]
+        public async Task<IActionResult> GetAllUser()
+        {
+            var result = await _userInfo.GetAllUser();
+            return Ok(result);
+        }
+        
 
         [Authorize]
         [HttpPut("UserManageProfile")]
@@ -92,23 +101,67 @@ namespace WebAPI.Controllers
             }
         }
         [Authorize]
-        [HttpPost("AddAccountBalance/{amount}")]
-        public async Task<IActionResult> AddAccountBalance(string amount)
+        [HttpPost("AddAccountBalanceUser")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400)]
+        public async Task<IActionResult> AddAccountBalanceUser([FromBody] AddBalanceRequest addBalanceRequest)
         {
             var userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
+            if (addBalanceRequest.userId == null || userId == addBalanceRequest.userId)
+            {
+                
+                if (addBalanceRequest.TransactionType != TransactionType.DepositVnPay 
+                    && addBalanceRequest.TransactionType != TransactionType.DepositMomo
+                    && addBalanceRequest.TransactionType != TransactionType.DepositOther)
+                {
+                    return BadRequest("Wrong transaction type for this api call (accept value range 0-2: 0 - vnpay, 1 - momo, 2 - other)");
+                }
+                try
+                {
+                    await _userInfo.AddAccountBalance(addBalanceRequest, userId);
+                    return Ok("Success");
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("UserId must be null or equal to logged in user in this API call");
+            }
+            
+
+            
+        }
+        [Authorize]
+        [HttpPost("AddAccountBalanceAdmin")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400)]
+        public async Task<IActionResult> AddAccountBalanceAdmin([FromBody] AddBalanceRequest addBalanceRequest)
+        {
             try
             {
-                if (double.TryParse(amount, out var amountParse) == false)
+                if (addBalanceRequest.userId != null) 
                 {
-                    throw new Exception("Amount is not valid");
+                    if (addBalanceRequest.TransactionType != TransactionType.DepositManualAdmin)
+                    {
+                        return BadRequest("Wrong transaction type for this api call (accept value: 3)");
+                    }
+                    await _userInfo.AddAccountBalance(addBalanceRequest, (int) addBalanceRequest.userId);
+                    return Ok("Success");
                 }
-                await _userInfo.AddAccountBalance(amountParse, userId);
-            } catch (Exception ex)
+                else
+                {
+                    return BadRequest("UserId must exist in this API call");
+                }
+                
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
 
-            return Ok();
         }
 
 

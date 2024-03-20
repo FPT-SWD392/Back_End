@@ -16,6 +16,7 @@ namespace Services
         Task<UserInfo?> GetUserByUserEmail(string email);
         Task<UserInfo?> GetUserByUserPhone(string phoneNumber);
         Task<UserInfo?> GetUserByNickName(string nickName);
-        Task AddAccountBalance(double amount, int userId);
+        Task AddAccountBalance(AddBalanceRequest addBalanceRequest ,int userId);
+        Task<List<UserInfo>> GetAllUser();
     }
 }

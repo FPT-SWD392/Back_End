@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Interface;
 using Services;
+using Swashbuckle.AspNetCore.Annotations;
 using System.IdentityModel.Tokens.Jwt;
 using WebAPI.Model;
 
@@ -88,6 +89,42 @@ namespace WebAPI.Controllers
             var responses = transactions.Select(t => new TransactionResponse
             {
                 UserId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext)),
+                Note = t.Note,
+                Amount = t.Amount,
+                TransactionDate = t.TransactionDate,
+                TransactionType = t.TransactionType
+            }).ToList();
+
+            return Ok(responses);
+        }
+        [Authorize]
+        [HttpGet("GetOnlyDepositTransactionByUser/{userId}")]
+        [SwaggerResponse(200, Type = typeof(List<TransactionResponse>))]
+        public async Task<ActionResult<List<TransactionResponse>>> GetOnlyDepositTransactionByUser(int userId)
+        {
+            var transactionList = await _transactionHistoryService.GetOnlyDepositTransactionByUser(userId);
+
+            var responses = transactionList.Select(t => new TransactionResponse
+            {
+                UserId = userId,
+                Note = t.Note,
+                Amount = t.Amount,
+                TransactionDate = t.TransactionDate,
+                TransactionType = t.TransactionType
+            }).ToList();
+
+            return Ok(responses);
+        }
+        [Authorize]
+        [HttpGet("GetAllDepositTransaction")]
+        [SwaggerResponse(200, Type=typeof(List<TransactionResponse>))]
+        public async Task<ActionResult<List<TransactionResponse>>> GetAllDepositTransaction()
+        {
+            var transactionList = await _transactionHistoryService.GetAllDepositTransaction();
+
+            var responses = transactionList.Select(t => new TransactionResponse
+            {
+                UserId = t.UserId,
                 Note = t.Note,
                 Amount = t.Amount,
                 TransactionDate = t.TransactionDate,
