@@ -181,9 +181,6 @@ namespace WebAPI
                         Description = "Api Description",
                         Version = "v1",
                     });
-            var fileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            var filePath = Path.Combine(AppContext.BaseDirectory, fileName);
-            swaggerGenOptions.IncludeXmlComments(filePath);
             swaggerGenOptions.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
