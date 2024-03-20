@@ -55,7 +55,7 @@ namespace Repository.Implementation
         {
             int skip = (page - 1) * pageSize;
             Expression<Func<ArtInfo, bool>> expression = (ArtInfo) => ArtInfo.ArtName.Contains(searchValue ?? "");
-            expression = And(expression, (ArtInfo) => ArtInfo.Status != ArtStatus.Unavailable);
+            expression = And(expression, (ArtInfo) => ArtInfo.Status == ArtStatus.Public);
             foreach (var tagId in tagIds)
             {
                 expression = And(expression, (ArtInfo) => ArtInfo.ArtTags.Select(x => x.TagId).Contains(tagId));
@@ -115,7 +115,7 @@ namespace Repository.Implementation
 
             Expression<Func<ArtInfo, bool>> expression = ArtInfo =>
                 ArtInfo.ArtName.Contains(searchValue ?? "") &&
-                ArtInfo.Status != ArtStatus.Unavailable;
+                ArtInfo.Status == ArtStatus.Public;
 
             expression = And(expression, ArtInfo => false == ignoredArtIds.Contains(ArtInfo.ArtId));
             foreach (var tagId in tagIds)

@@ -38,15 +38,12 @@ namespace WebAPI.Controllers
             {
                 return BadRequest("Page number must be larger than 0");
             }
-            try
+            string? userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
+            if (userIdString == null || false == int.TryParse(userIdString, out int userId))
             {
-                string userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
-                int userId = int.Parse(userIdString);
-                return Ok(await _artService.GetArtListForLoggedUser(userId, searchValue, tagIds, page));
-            } catch
-            {
-                return Ok(await _artService.GetArtList(searchValue, tagIds, page));
+                return Unauthorized();
             }
+            return Ok(await _artService.GetArtListForLoggedUser(userId, searchValue, tagIds, page));
         }
         [HttpGet("GetPurchasedArtList")]
         [Produces("application/json")]
@@ -59,16 +56,12 @@ namespace WebAPI.Controllers
             {
                 return BadRequest("Page number must be larger than 0");
             }
-            try
-            {
-                string userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
-                int userId = int.Parse(userIdString);
-                return Ok(await _artService.GetPurchasedArtList(userId,searchValue,tagIds,page));
-            }
-            catch
+            string? userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
+            if (userIdString == null || false == int.TryParse(userIdString, out int userId))
             {
                 return Unauthorized();
             }
+            return Ok(await _artService.GetPurchasedArtList(userId, searchValue, tagIds, page));
         }
         [HttpGet("GetCreatedArtList")]
         [Produces("application/json")]
@@ -81,16 +74,12 @@ namespace WebAPI.Controllers
             {
                 return BadRequest("Page number must be larger than 0");
             }
-            try
-            {
-                string creatorIdString = _tokenHelper.GetCreatorIdFromToken(HttpContext);
-                int creatorId = int.Parse(creatorIdString);
-                return Ok(await _artService.GetCreatedArtList(creatorId, searchValue, tagIds, page));
-            }
-            catch
+            string? creatorIdString = _tokenHelper.GetCreatorIdFromToken(HttpContext);
+            if (creatorIdString == null || false == int.TryParse(creatorIdString, out int creatorId))
             {
                 return Unauthorized();
             }
+            return Ok(await _artService.GetCreatedArtList(creatorId, searchValue, tagIds, page));
         }
         [HttpGet("GetArtInfo")]
         [Produces("application/json")]
@@ -109,16 +98,14 @@ namespace WebAPI.Controllers
         [SwaggerResponse(401)]
         public async Task<IActionResult> GetCreatorsArtDetails(int artId)
         {
-            try
-            {
-                int creatorId = int.Parse(_tokenHelper.GetCreatorIdFromToken(HttpContext));
-                ArtworkDetailDTO? artwork = await _artService.GetArtDetails(artId,creatorId);
-                if (artwork == null) return NotFound();
-                return Ok(artwork);
-            } catch
+            string? creatorIdString = _tokenHelper.GetCreatorIdFromToken(HttpContext);
+            if (creatorIdString == null || false == int.TryParse(creatorIdString, out int creatorId))
             {
                 return Unauthorized();
             }
+            ArtworkDetailDTO? artwork = await _artService.GetArtDetails(artId, creatorId);
+            if (artwork == null) return NotFound();
+            return Ok(artwork);
         }
         [HttpGet("GetAllArtTags")]
         [Produces("application/json")]
@@ -134,18 +121,11 @@ namespace WebAPI.Controllers
         [SwaggerResponse(401)]
         public async Task<IActionResult> CreateArtwork([FromForm] CreateArtRequest createArtRequest)
         {
-            try
-            {
-                string creatorIdString = _tokenHelper.GetCreatorIdFromToken(HttpContext);
-                if (false == int.TryParse(creatorIdString, out int creatorId)) return Unauthorized();
-                if (createArtRequest == null) return BadRequest();
-                if (false == ImageType.IsSupportedImageType(createArtRequest.ImageFile.ContentType)) return BadRequest("Unsupported image file type");
-                await _artService.CreateArt(creatorId, createArtRequest);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            string? creatorIdString = _tokenHelper.GetCreatorIdFromToken(HttpContext);
+            if (false == int.TryParse(creatorIdString, out int creatorId)) return Unauthorized();
+            if (createArtRequest == null) return BadRequest();
+            if (false == ImageType.IsSupportedImageType(createArtRequest.ImageFile.ContentType)) return BadRequest("Unsupported image file type");
+            await _artService.CreateArt(creatorId, createArtRequest);
             return Ok();
         }
         [HttpGet("Preview")]
@@ -163,7 +143,7 @@ namespace WebAPI.Controllers
         [SwaggerResponse(404)]
         public async Task<IActionResult> DownloadOriginal(int artId)
         {
-            string userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
+            string? userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
             if (false == int.TryParse(userIdString, out var userId))
             {
                 return Unauthorized();

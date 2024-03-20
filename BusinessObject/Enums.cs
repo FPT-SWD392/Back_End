@@ -10,8 +10,7 @@ namespace BusinessObject
     {
         Private,
         Public,
-        Banned,
-        Unavailable
+        Banned
     }
     public enum AcceptCommissionStatus
     {
@@ -35,8 +34,8 @@ namespace BusinessObject
     }
     public enum AccountStatus
     {
-        Active,
-        Banned
+        Banned,
+        Active
     }
     public enum CommissionStatus
     {
@@ -59,5 +58,15 @@ namespace BusinessObject
         Artist,
         Commission,
         User
+    }
+    public enum AdminAccountStatus
+    {
+        Disable,
+        Enable
+    }
+    public enum AdminAccountStatus
+    {
+        Disable,
+        Enable
     }
 }

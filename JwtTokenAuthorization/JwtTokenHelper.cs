@@ -1,4 +1,5 @@
 ﻿using BusinessObject.SqlObject;
+using BusinessObject.MongoDbObject;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -21,6 +22,43 @@ namespace JwtTokenAuthorization
                 ?? throw new Exception("Can not find jwt audience in config file");
             _key = configuration["Jwt:SecretKey"] 
                 ?? throw new Exception("Can not find jwt secret key in config file");
+        }
+        public string GenerateSysAdminToken()
+        {
+            SymmetricSecurityKey symmetricKey = new(Encoding.UTF8.GetBytes(_key));
+            SigningCredentials credential = new(symmetricKey, SecurityAlgorithms.HmacSha256);
+            List<Claim> claims = new()
+            {
+                new(ClaimTypes.Role,"SYSADMIN"),
+            };
+            JwtSecurityToken token = new(
+                issuer: _issuer,
+                audience: _audience,
+                claims: claims,
+                notBefore: DateTime.Now,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: credential
+                );
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        public string GenerateAdminToken(AdminAccount adminAccount)
+        {
+            SymmetricSecurityKey symmetricKey = new(Encoding.UTF8.GetBytes(_key));
+            SigningCredentials credential = new(symmetricKey, SecurityAlgorithms.HmacSha256);
+            List<Claim> claims = new()
+            {
+                new(ClaimTypes.Role,"ADMIN"),
+                new(CustomClaimType.AdminId,adminAccount.Id.ToString())
+            };
+            JwtSecurityToken token = new(
+                issuer: _issuer,
+                audience: _audience,
+                claims: claims,
+                notBefore: DateTime.Now,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: credential
+                );
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
         public string GenerateToken(UserInfo user)
         {
@@ -45,39 +83,59 @@ namespace JwtTokenAuthorization
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public string GetCreatorIdFromToken(HttpContext httpContext)
+        private JwtSecurityToken? GetTokenFromHttpContext(HttpContext httpContext)
         {
             if (false == httpContext.Request.Headers.ContainsKey("Authorization"))
-                throw new Exception("Need authorization");
+            {
+                return null;
+            }
             string? authorizationString = httpContext.Request.Headers["Authorization"];
             if (string.IsNullOrWhiteSpace(authorizationString) || false == authorizationString.StartsWith("Bearer "))
-                throw new Exception("Invalid token");
+            {
+                return null;
+            }
             string jwtTokenString = authorizationString["Bearer ".Length..];
             JwtSecurityTokenHandler tokenHandler = new();
-            JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(jwtTokenString);
-
-            Claim? idClaim = jwtToken.Claims.SingleOrDefault(claim => claim.Type == CustomClaimType.CreatorId);
-            return idClaim?.Value ?? throw new Exception("Invalid token");
+            return tokenHandler.ReadJwtToken(jwtTokenString);
         }
 
-        public string GetUserIdFromToken(HttpContext httpContext)
+        public string? GetCreatorIdFromToken(HttpContext httpContext)
         {
-            if (false == httpContext.Request.Headers.ContainsKey("Authorization"))
-                throw new Exception("Need authorization");
-            string? authorizationString = httpContext.Request.Headers["Authorization"];
-            if (string.IsNullOrWhiteSpace(authorizationString) || false == authorizationString.StartsWith("Bearer "))
-                throw new Exception("Invalid token");
-            string jwtTokenString = authorizationString["Bearer ".Length..];
-            JwtSecurityTokenHandler tokenHandler = new();
-            JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(jwtTokenString);
+            JwtSecurityToken? jwtToken = GetTokenFromHttpContext(httpContext);
+            if (jwtToken == null)
+            {
+                return null;
+            }
+            Claim? idClaim = jwtToken.Claims.SingleOrDefault(claim => claim.Type == CustomClaimType.CreatorId);
+            return idClaim?.Value;
+        }
 
+        public string? GetUserIdFromToken(HttpContext httpContext)
+        {
+            JwtSecurityToken? jwtToken = GetTokenFromHttpContext(httpContext);
+            if (jwtToken == null)
+            {
+                return null;
+            }
             Claim? idClaim = jwtToken.Claims.SingleOrDefault(claim => claim.Type == CustomClaimType.UserId);
-            return idClaim?.Value ?? throw new Exception("Invalid token");
+            return idClaim?.Value;
+        }
+
+        public string? GetAdminIdFromToken(HttpContext httpContext)
+        {
+            JwtSecurityToken? jwtToken = GetTokenFromHttpContext(httpContext);
+            if (jwtToken == null)
+            {
+                return null;
+            }
+            Claim? idClaim = jwtToken.Claims.SingleOrDefault(claim => claim.Type == CustomClaimType.AdminId);
+            return idClaim?.Value;
         }
     }
     public static class CustomClaimType
     {
         public static string UserId { get; } = "UserId";
         public static string CreatorId { get; } = "CreatorId";
+        public static string AdminId { get; } = "AdminId";
     }
 }

@@ -152,7 +152,7 @@ namespace Services.Implementation
         public async Task<ArtworkDetailDTO?> GetArtDetails(int artId)
         {
             ArtworkDetailDTO? artwork = await _artInfoRepository.GetArtDetails(artId);
-            if (artwork == null || artwork.Status == ArtStatus.Unavailable) return null;
+            if (artwork == null || artwork.Status != ArtStatus.Public) return null;
             return artwork;
         }
         public async Task<ArtworkDetailDTO?> GetArtDetails(int artId, int creatorId)
