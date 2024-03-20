@@ -236,28 +236,43 @@ namespace Services.Implementation
             try
             {
                 var userInfo = await this.GetUserByUserId(userId);
-                if (userInfo != null)
+                if (addBalanceRequest.IsSuccess)
                 {
                     userInfo.Balance += addBalanceRequest.Amount;
                     await _userRepository.UpdateUser(userInfo);
-                }
-                string note = "";
-                if (addBalanceRequest.TransactionType == TransactionType.DepositManualAdmin)
-                {                   
-                    note = "Admin added to your wallet " + addBalanceRequest.Amount;
+                    string note = "";
+                    if (addBalanceRequest.TransactionType == TransactionType.DepositManualAdmin)
+                    {
+                        note = "Admin added to your wallet " + addBalanceRequest.Amount;
+                    }
+                    else
+                    {
+                        note = "You added to your wallet " + addBalanceRequest.Amount;
+                    }
+                    var transactionHistory = new TransactionHistory()
+                    {
+                        UserId = userId,
+                        Note = note,
+                        TransactionType = addBalanceRequest.TransactionType,
+                        TransactionDate = DateTime.UtcNow,
+                        IsSuccess = true,
+                    };
+                    await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
                 }
                 else
                 {
-                    note = "You added to your wallet " + addBalanceRequest.Amount;
+                    string note = "Transaction FAILED: " + addBalanceRequest.Amount;
+                    var transactionHistory = new TransactionHistory()
+                    {
+                        UserId = userId,
+                        Note = note,
+                        TransactionType = addBalanceRequest.TransactionType,
+                        TransactionDate = DateTime.UtcNow,
+                        IsSuccess = false,
+                    };
+                    await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
                 }
-                var transactionHistory = new TransactionHistory()
-                {
-                    UserId = userId,
-                    Note = note,
-                    TransactionType = addBalanceRequest.TransactionType,
-                    TransactionDate = DateTime.UtcNow,
-                };
-                await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
+                
 
             } 
             catch (Exception ex)
