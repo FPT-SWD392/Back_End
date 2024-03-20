@@ -10,7 +10,8 @@ namespace BusinessObject
     {
         Private,
         Public,
-        Banned
+        Banned,
+        Unavailable
     }
     public enum AcceptCommissionStatus
     {
