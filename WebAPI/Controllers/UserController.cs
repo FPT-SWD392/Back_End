@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetAllInfoAboutUser()
         {
             int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
-            var result = await _userInfo.GetUserByUserId(userId);
+            var result = await _userInfo.GetUserInfo(userId);
             return Ok(result);
         }
         [Authorize]
@@ -47,6 +47,24 @@ namespace WebAPI.Controllers
         }
         
 
+        [HttpPut("GetAnotherInfo/{id}")]
+        public async Task<IActionResult> GetAnotherInfo(int id)
+        {
+            try
+            {
+                var result = await _userInfo.GetUserInfo(id);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                else return BadRequest("User not found");
+                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [Authorize]
         [HttpPut("UserManageProfile")]
         public async Task<IActionResult> ManageProfile([FromQuery] UserProfile user)

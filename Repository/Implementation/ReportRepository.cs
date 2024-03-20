@@ -16,7 +16,12 @@ namespace Repository.Implementation
         {
             _dao = daoFactory.CreateDao<Report>();
         }
-
+        public async Task<List<Report>> GetAllReport()
+        {
+            return await _dao
+                .Query()
+                .ToListAsync();
+        }
         public async Task CreateNewReport(Report report)
         {
             await _dao.CreateAsync(report);
@@ -68,6 +73,15 @@ namespace Repository.Implementation
         }
 
         public async Task<List<Report>> GetAllUserReports(int userId)
+        {
+            return await _dao
+                .Query()
+                .Where(x =>
+                    x.ReportedObjectType == BusinessObject.ReportedObjectType.User &&
+                    x.ReportedObjectId == userId)
+                .ToListAsync();
+        }
+        public async Task<List<Report>> GetAllReportsOfThatUser(int userId)
         {
             return await _dao
                 .Query()

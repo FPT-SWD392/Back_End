@@ -43,6 +43,28 @@ namespace Services.Implementation
             CreatorInfo creator = await _creatorInfoRepository.GetCreatorInfo(creatorId);
             return creator.UserInfo;
         }
+        public async Task<UserProfile?> GetUserInfo (int userid)
+        {
+            var user = await _userRepository.GetUserById(userid);
+            if (user != null)
+            {
+                var profile = new UserProfile()
+                {
+                    NickName = user.NickName,
+                    FullName = user.FullName,
+                    Location = user.Location,
+                    PhoneNumber = user.PhoneNumber
+                };
+                if (user.CreatorId != null)
+                {
+                    var creator = await _creatorInfoRepository.GetCreatorInfo(user.CreatorId.Value);
+                    profile.ContactInfo = creator.ContactInfo;
+                    profile.Bio = creator.Bio;
+                }
+                return profile;
+            }
+            else return null;
+        }
         public async Task UpdateProfile(int id, string fullName, string location, string phoneNumber, string nickName)
         {
             try
@@ -125,6 +147,27 @@ namespace Services.Implementation
                 else
                 {
                     throw new Exception("Cannot find user");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<bool> BanUser(int id)
+        {
+            try
+            {
+                var user = await _userRepository.GetUserById(id);
+                if (user != null)
+                {
+                    user.Status = AccountStatus.Banned;
+                    await _userRepository.UpdateUser(user);
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
             }
             catch (Exception ex)

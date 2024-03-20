@@ -138,7 +138,7 @@ namespace WebAPI.Controllers
             {
                 string creatorIdString = _tokenHelper.GetCreatorIdFromToken(HttpContext);
                 if (false == int.TryParse(creatorIdString, out int creatorId)) return Unauthorized();
-                if (createArtRequest == null || createArtRequest.ArtStatus == ArtStatus.Unavailable) return BadRequest();
+                if (createArtRequest == null) return BadRequest();
                 if (false == ImageType.IsSupportedImageType(createArtRequest.ImageFile.ContentType)) return BadRequest("Unsupported image file type");
                 await _artService.CreateArt(creatorId, createArtRequest);
             }
