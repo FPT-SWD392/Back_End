@@ -63,5 +63,12 @@ namespace Repository.Implementation
                 .Where(u => u.NickName == nickname)
                 .SingleOrDefaultAsync();
         }
+
+        public async Task<UserInfo?> GetUserByCreatorId(int creatorId)
+        {
+            return await _userInfoDao.Query()
+                .Where(u => u.CreatorId == creatorId) 
+                .SingleOrDefaultAsync();
+        }
     }
 }

@@ -72,11 +72,14 @@ namespace WebAPI
             builder.Services.AddScoped<ITagRepository, TagRepository>();
 
             builder.Services.AddScoped<IArtService,ArtService>();
+            builder.Services.AddScoped<IArtRatingService, ArtRatingService>();
+            builder.Services.AddScoped<ICreatorInfoService, CreatorInfoService>();
             builder.Services.AddScoped<ITagService, TagService>();
             builder.Services.AddScoped<ITransactionHistoryService, TransactionHistoryService>();
             builder.Services.AddScoped<IReportRepository,ReportRepository>();
             builder.Services.AddScoped<ITransactionHistoryRepository , TransactionHistoryRepository>();
             builder.Services.AddScoped<IUserInfoRepository, UserInfoRepository>();
+            builder.Services.AddScoped<IPurchaseService , PurchaseService>();
 
             builder.Services.AddScoped<IAuthenticationService,AuthenticationService>();
             builder.Services.AddScoped<ICommissionService, CommissionService>();
