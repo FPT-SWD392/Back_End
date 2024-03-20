@@ -1,4 +1,5 @@
-﻿using BusinessObject.SqlObject;
+﻿using BusinessObject;
+using BusinessObject.SqlObject;
 using Repository.Interface;
 using System;
 using System.Collections.Generic;
@@ -44,6 +45,19 @@ namespace Services.Implementation
         public async Task<List<TransactionHistory>> GetAllDepositTransaction()
         {
             return await _transactionHistoryRepository.GetAllDepositTransaction();
+        }
+        public async Task<double> GetAmountDepositWithIn1Month(TransactionType type)
+        {
+            double amount = 0;
+            var list = await _transactionHistoryRepository.GetTransactionHistoryByTransactionTypeWithInLastMonth(type);
+            if (list != null)
+            {
+                foreach (var transactionHistory in list)
+                {
+                    amount += transactionHistory.Amount;
+                }
+            }
+            return amount;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using BusinessObject.SqlObject;
+﻿using BusinessObject;
+using BusinessObject.SqlObject;
 using DataAccessObject;
 using Repository.Interface;
 using System;
@@ -77,6 +78,15 @@ namespace Repository.Implementation
                                                     || u.TransactionType == BusinessObject.TransactionType.DepositManualAdmin)
                 .ToListAsync();
 
+        }
+
+        public async Task<List<TransactionHistory>> GetTransactionHistoryByTransactionTypeWithInLastMonth(TransactionType type)
+        {
+            DateTime oneMonthAgo = DateTime.Now.AddMonths(-1);
+            return await _dao
+                .Query()
+                .Where(x => x.TransactionType == type && x.TransactionDate >= oneMonthAgo)
+                .ToListAsync();
         }
     }
 }

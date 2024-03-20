@@ -1,4 +1,5 @@
-﻿using BusinessObject.SqlObject;
+﻿using BusinessObject;
+using BusinessObject.SqlObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,6 @@ namespace Repository.Interface
         public Task<List<TransactionHistory>> GetUserTransactionHistories(int userId);
         public Task<List<TransactionHistory>> GetOnlyDepositTransactionByUser(int userId);
         public Task<List<TransactionHistory>> GetAllDepositTransaction();
+        public Task<List<TransactionHistory>> GetTransactionHistoryByTransactionTypeWithInLastMonth(TransactionType type);
     }
 }

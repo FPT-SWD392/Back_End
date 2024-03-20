@@ -1,4 +1,5 @@
-﻿using BusinessObject.DTO;
+﻿using BusinessObject;
+using BusinessObject.DTO;
 using BusinessObject.SqlObject;
 using JwtTokenAuthorization;
 using Microsoft.AspNetCore.Authorization;
@@ -132,6 +133,17 @@ namespace WebAPI.Controllers
             }).ToList();
 
             return Ok(responses);
+        }
+        [Authorize]
+        [HttpGet("GetAmountDepositWithIn1Month")]
+        public async Task<IActionResult> GetAmountDepositWithIn1Month()
+        {
+            var transactions = await _transactionHistoryService.GetAmountDepositWithIn1Month(TransactionType.DepositManualAdmin);
+            transactions += await _transactionHistoryService.GetAmountDepositWithIn1Month(TransactionType.DepositMomo);
+            transactions += await _transactionHistoryService.GetAmountDepositWithIn1Month(TransactionType.DepositOther);
+            transactions += await _transactionHistoryService.GetAmountDepositWithIn1Month(TransactionType.DepositVnPay);
+
+            return Ok(transactions);
         }
     }
 }

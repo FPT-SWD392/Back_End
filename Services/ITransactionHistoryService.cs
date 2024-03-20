@@ -1,4 +1,5 @@
-﻿using BusinessObject.SqlObject;
+﻿using BusinessObject;
+using BusinessObject.SqlObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,6 @@ namespace Services
         Task CreateTransactionHistory(TransactionHistory transactionHistory);
         Task<List<TransactionHistory>> GetOnlyDepositTransactionByUser(int userId);
         Task<List<TransactionHistory>> GetAllDepositTransaction();
-
+        Task<double> GetAmountDepositWithIn1Month(TransactionType type);
     }
 }
