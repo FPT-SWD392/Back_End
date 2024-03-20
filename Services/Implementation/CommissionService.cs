@@ -1,14 +1,10 @@
-﻿using BusinessObject;
+﻿using AzureBlobStorage;
+using BusinessObject;
+using BusinessObject.MongoDbObject;
 using BusinessObject.SqlObject;
-using Repository.Implementation;
+using Microsoft.AspNetCore.Http;
 using Repository.Interface;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+using Utils.ImageUtil;
 
 namespace Services.Implementation
 {
@@ -16,159 +12,219 @@ namespace Services.Implementation
     {
         private readonly IUserInfoRepository _userRepository;
         private readonly ICommissionRepository _commissionRepository;
+        private readonly IImageUtil _imageUtil;
+        private readonly IAzureBlobStorage _azureBlobStorage;
         private readonly ITransactionHistoryRepository _transactionHistoryRepository;
-        public CommissionService(ICommissionRepository commissionRepository, IUserInfoRepository userInfoRepository, ITransactionHistoryRepository transactionHistoryRepository)
+        private readonly ICommissionImageInfoRepository _commissionImageInfoRepository;
+        public CommissionService(
+            ICommissionRepository commissionRepository, 
+            IUserInfoRepository userInfoRepository, 
+            ITransactionHistoryRepository transactionHistoryRepository, 
+            IImageUtil imageUtil,
+            IAzureBlobStorage azureBlobStorage,
+            ICommissionImageInfoRepository commissionImageInfoRepository)
         {
+            _azureBlobStorage = azureBlobStorage;
             _commissionRepository = commissionRepository;
             _userRepository = userInfoRepository;
             _transactionHistoryRepository = transactionHistoryRepository;
+            _imageUtil = imageUtil;
+            _commissionImageInfoRepository = commissionImageInfoRepository;
         }
 
-        public async Task/*<Commission?> */CreateCommission(DateTime deadline, double price, int creatorId, int userId)
+        public async Task<(bool isUpdated, string message)> AcceptCommission(int creatorId, int commissionId)
         {
-            try
+            Commission? commission = await _commissionRepository.GetCommission(commissionId);
+            if (commission == null || commission.CreatorId != creatorId)
             {
-                UserInfo user = await _userRepository.GetUserById(userId);
-                if (user.Balance >= price)
-                {
-                    Commission newCommission = new Commission
-                    {
-                        CreatedDate = DateTime.Today,
-                        Deadline = deadline,
-                        Price = price,
-                        CreatorId = creatorId,
-                        UserId = userId,
-                        CommissionStatus = CommissionStatus.Pending
-                    };
-                    await _commissionRepository.CreateNewCommission(newCommission);
-
-                    user.Balance = user.Balance - price;
-
-                    await _userRepository.UpdateUser(user);
-                    TransactionHistory transactionHistory = new TransactionHistory
-                    {
-                        UserId = userId,
-                        Note = "",
-                        Amount = price,
-                        TransactionDate = DateTime.Today,
-                        TransactionType = TransactionType.RequestCommission
-                    };
-                    await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
-                }
-                else
-                {
-                    throw new Exception("There's not enough money in your account");
-                }
+                return (false, $"Can not find commission with id {commissionId}");
             }
-            catch (Exception ex)
+            if (commission.CommissionStatus != CommissionStatus.Pending)
             {
-                throw new Exception(ex.Message);
+                return (false, "You can only accept pending commission");
             }
+            commission.CommissionStatus = CommissionStatus.Accepted;
+            await _commissionRepository.UpdateCommission(commission);
+            return (true, "The commission has been updated successfully");
+        }
+        public Task<(bool isUpdated, string message)> CancelCommission(int userId, int commissionId)
+        {
+            throw new NotImplementedException();
         }
 
-        public async Task<Commission?> GetCommissionByCommissionId(int commissionId)
+        public Task<(bool isCreated, string message)> CreateCommission(DateTime deadline, double price, int creatorId, int userId)
         {
-            return await _commissionRepository.GetCommission(commissionId);
+            throw new NotImplementedException();
         }
 
-        public async Task<List<Commission?>> GetCommissionByUserId(int userId)
+        public Task<(bool isUpdated, string message)> CreatorCancelCommission(int artistId, int commissionId)
         {
-            return await _commissionRepository.GetUserCommissions(userId);
+            throw new NotImplementedException();
         }
 
-        public async Task<List<Commission>?> GetCommissionByCreatorId(int artistId)
+        public Task<(bool isUpdated, string message)> DenyCommission(int creatorId, int commissionId)
         {
-            return await _commissionRepository.GetArtistCommissions(artistId);
+            throw new NotImplementedException();
         }
 
-        public async Task<List<Commission>?> GetAcceptedCommissionByCreatorId(int artistId)
+        public async Task<(bool isUpdated, string message)> FinishCommission(int creatorId, int commissionId, IFormFile image)
         {
-            return await _commissionRepository.GetAcceptedCommissionByCreatorId(artistId);
-        }
-
-        public async Task UpdateCommissionStatus(int commissionId, string status)
-        {
-            try
+            Commission? commission = await _commissionRepository.GetCommission(commissionId);
+            if (commission == null || commission.CreatorId != creatorId)
             {
-                Commission commission = await _commissionRepository.GetCommission(commissionId);
-                if (commission != null)
-                {
-                    if (status == "accept")
-                    {
-                        /*VALIDATE HERE*/
-                        commission.CommissionStatus = CommissionStatus.Accepted;
-                        await _commissionRepository.UpdateCommission(commission);
-                    }
-                    else if (status == "deny")
-                    {
-                        commission.CommissionStatus = CommissionStatus.Denied;
-                        await _commissionRepository.UpdateCommission(commission);
-
-                        UserInfo user = await _userRepository.GetUserById(commission.UserId);
-                        user.Balance = user.Balance + commission.Price;
-                        await _userRepository.UpdateUser(user);
-                        TransactionHistory transactionHistory = new TransactionHistory
-                        {
-                            UserId = commission.UserId,
-                            Note = "",
-                            Amount = commission.Price,
-                            TransactionDate = DateTime.Today,
-                            TransactionType = TransactionType.RequestCommissionDeny
-                        };
-                        await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
-                    }
-                    else if (status == "cancel")
-                    {
-                        /* VALIDATE HERE*/
-                        commission.CommissionStatus = CommissionStatus.Canceled;
-                        await _commissionRepository.UpdateCommission(commission);
-
-                        UserInfo user = await _userRepository.GetUserById(commission.UserId);
-                        user.Balance = user.Balance + commission.Price / 2;
-                        await _userRepository.UpdateUser(user);
-                        TransactionHistory transactionHistory = new TransactionHistory
-                        {
-                            UserId = commission.UserId,
-                            Note = "",
-                            Amount = commission.Price / 2,
-                            TransactionDate = DateTime.Today,
-                            TransactionType = TransactionType.RequestCommissionCancel
-                        };
-                        await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
-                    }
-                }
-                else
-                {
-                    throw new Exception("Cannot find commission");
-                }
+                return (false, $"Can not found commission with id {commissionId}");
             }
-            catch (Exception ex)
+            if (commission.CommissionStatus != CommissionStatus.Accepted)
             {
-                throw new Exception(ex.Message);
+                return (false, $"Can not finish unaccepted commission");
             }
+            using MemoryStream stream = new();
+            image.CopyTo( stream );
+            byte[] originalImage = stream.ToArray();
+            Task<string> uploadOriginal = _azureBlobStorage.UploadFileAsync(originalImage);
+            Task<(string blobName, int blobSize)> uploadPreview = ProcessAndUploadPreviewImage(originalImage);
+            await Task.WhenAll(uploadOriginal,uploadPreview);
+            CommissionImageInfo imageInfo = new()
+            {
+                Preview = new UploadedFileInfo()
+                {
+                    BlobName = (await uploadPreview).blobName,
+                    FileName = $"preview_{image.FileName}",
+                    FileSize = (await uploadPreview).blobSize,
+                    ImageType = image.ContentType
+                },
+                Original = new UploadedFileInfo()
+                {
+                    BlobName = await uploadOriginal,
+                    FileName = image.FileName,
+                    FileSize = originalImage.Length,
+                    ImageType = image.ContentType
+                }
+            };
+            commission.ImageId = imageInfo.ImageId;
+            await Task.WhenAll(
+                _commissionImageInfoRepository.CreateNewImageInfo(imageInfo),
+                _commissionRepository.UpdateCommission(commission));
+            return (true, "Commisssion has been updated");
         }
-
-        public async Task FinishCommission(int commissionId, int ImageId)
+        public Task<List<Commission>> GetCreatorAcceptedCommissions(int artistId)
         {
-            try
-            {
-                Commission commission = await _commissionRepository.GetCommission(commissionId);
-                if (commission != null)
-                {
-                    commission.CommissionStatus = CommissionStatus.Finished;
-                    commission.ImageId = ImageId;
-                    await _commissionRepository.UpdateCommission(commission);
-                }
-                else
-                {
-                    throw new Exception("Cannot find commission");
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            throw new NotImplementedException();
         }
 
+        public Task<Commission?> GetCreatorCommission(int artistId, int commissionId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Commission>> GetCreatorCommissions(int artistId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Commission?> GetUserCommission(int userId, int commissionId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Commission>> GetUserCommissions(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<(string blobName,int fileSize)> ProcessAndUploadPreviewImage(byte[] originalImage)
+        {
+            byte[] previewImage = _imageUtil
+                .SetImage(originalImage)
+                .Resize()
+                .AddWatermark()
+                .GetResult();
+            return (await _azureBlobStorage.UploadFileAsync(previewImage), previewImage.Length);
+        }
+        /*public async Task<(bool isSuccess, string message)> CreateCommission(DateTime deadline, double price, int creatorId, int userId)
+        {
+            UserInfo? user = await _userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                return (false, "Invalid user id");
+            }
+            if (user.Balance < price)
+            {
+                return (false, "You don't have enough money to create this commission");
+            }
+            Commission newCommission = new Commission
+            {
+                CreatedDate = DateTime.Today,
+                Deadline = deadline,
+                Price = price,
+                CreatorId = creatorId,
+                UserId = userId,
+                CommissionStatus = CommissionStatus.Pending
+            };
+            await _commissionRepository.CreateNewCommission(newCommission);
+
+            user.Balance -= price;
+
+            await _userRepository.UpdateUser(user);
+            TransactionHistory transactionHistory = new TransactionHistory
+            {
+                UserId = userId,
+                Note = "",
+                Amount = price,
+                TransactionDate = DateTime.Today,
+                TransactionType = TransactionType.RequestCommission
+            };
+            await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
+            return (true, "Commission created successfully");
+        }
+
+        public async Task<(bool isSuccess, string message)> CreatorUpdateCommissionStatus(int commissionId, int creatorId, CommissionStatus status)
+        {
+            if (status == CommissionStatus.Accepted)
+            {
+                *//*VALIDATE HERE*//*
+                commission.CommissionStatus = CommissionStatus.Accepted;
+                await _commissionRepository.UpdateCommission(commission);
+                return (true, "Commission has been accepted");
+            }
+            if (status == CommissionStatus.Denied)
+            {
+                commission.CommissionStatus = CommissionStatus.Denied;
+                await _commissionRepository.UpdateCommission(commission);
+
+                UserInfo user = await _userRepository.GetUserById(commission.UserId);
+                user.Balance = user.Balance + commission.Price;
+                await _userRepository.UpdateUser(user);
+                TransactionHistory transactionHistory = new TransactionHistory
+                {
+                    UserId = commission.UserId,
+                    Note = "",
+                    Amount = commission.Price,
+                    TransactionDate = DateTime.Today,
+                    TransactionType = TransactionType.RequestCommissionDeny
+                };
+                await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
+            }
+            else if (status == "cancel")
+            {
+                *//* VALIDATE HERE*//*
+                commission.CommissionStatus = CommissionStatus.Canceled;
+                await _commissionRepository.UpdateCommission(commission);
+
+                UserInfo user = await _userRepository.GetUserById(commission.UserId);
+                user.Balance = user.Balance + commission.Price / 2;
+                await _userRepository.UpdateUser(user);
+                TransactionHistory transactionHistory = new TransactionHistory
+                {
+                    UserId = commission.UserId,
+                    Note = "",
+                    Amount = commission.Price / 2,
+                    TransactionDate = DateTime.Today,
+                    TransactionType = TransactionType.RequestCommissionCancel
+                };
+                await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
+            }
+        }
+*/
     }
 }

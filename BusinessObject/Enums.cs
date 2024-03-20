@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BusinessObject
+﻿namespace BusinessObject
 {
     public enum ArtStatus
     {
@@ -43,7 +37,10 @@ namespace BusinessObject
         Accepted,
         Denied,
         Finished,
-        Canceled
+        UserCanceled,
+        CreatorCancelled,
+        UserConfirmed,
+        UserReported
     }
     public enum PostVisibility
     {

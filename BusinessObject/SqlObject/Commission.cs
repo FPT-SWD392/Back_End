@@ -18,6 +18,8 @@ namespace BusinessObject.SqlObject
         [Required]
         public DateTime Deadline {  get; set; }
         [Required]
+        public required string Description { get; set; }
+        [Required]
         public CommissionStatus CommissionStatus { get; set; }
         [Required]
         public double Price { get; set; }
@@ -27,7 +29,7 @@ namespace BusinessObject.SqlObject
         [Required]
         [ForeignKey(nameof(CreatorInfo))]
         public int CreatorId { get; set; }
-        public int? ImageId { get; set; }
+        public string? ImageId { get; set; }
         public int? Rating {  get; set; }
         public DateTime? RatingDate { get; set; }
         public string? Review { get; set; }

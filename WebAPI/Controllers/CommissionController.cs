@@ -3,11 +3,9 @@ using BusinessObject.DTO;
 using BusinessObject.SqlObject;
 using JwtTokenAuthorization;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using Swashbuckle.AspNetCore.Annotations;
-using WebAPI.Model;
 
 namespace WebAPI.Controllers
 {
@@ -19,7 +17,7 @@ namespace WebAPI.Controllers
         private readonly ICommissionService _commissionService;
         private readonly IUserInfoService _userInfoService;
 
-        public CommissionController(ITokenHelper jwtHelper, ICommissionService commissionService, 
+        public CommissionController(ITokenHelper jwtHelper, ICommissionService commissionService,
             IUserInfoService userInfoService)
         {
             _jwtHelper = jwtHelper;
@@ -29,126 +27,137 @@ namespace WebAPI.Controllers
 
         [Authorize]
         [HttpPut("CreateCommission")]
-        [SwaggerResponse(200)]
-        [SwaggerResponse(400, "Deadline < Now error, or balance error" ,Type = typeof(string))]
+        [SwaggerResponse(200, Type = typeof(object))]
+        [SwaggerResponse(400, "Deadline < Now error, or balance error", Type = typeof(string))]
+        [SwaggerResponse(401, Type = typeof(object))]
         public async Task<IActionResult> CreateCommission([FromBody] CreateCommissionRequest commissionRequest)
         {
-            try
+            if (commissionRequest.Deadline <= DateTime.Today)
             {
-                if (commissionRequest.Deadline <= DateTime.Today)
-                {
-                    throw new Exception("Invalid deadline");
-                }
-
-                int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
-                await _commissionService.CreateCommission(commissionRequest.Deadline, commissionRequest.Price, commissionRequest.CreatorId, userId);
-                return Ok();
+                return BadRequest("Deadline can not be today");
             }
-            catch (Exception ex)
+            if (false == int.TryParse(_jwtHelper.GetUserIdFromToken(HttpContext), out int userId))
             {
-                return BadRequest(ex.Message);
+                return Unauthorized(new object());
             }
+            (bool isCreated, string message) = await _commissionService.CreateCommission(commissionRequest.Deadline, commissionRequest.Price, commissionRequest.CreatorId, userId);
+            if (isCreated)
+            {
+                return Ok(new object());
+            }
+            return BadRequest(new
+            {
+                Error = isCreated
+            });
         }
 
         [Authorize]
-        [HttpPut("CancelCommission/{commissionId}")]
+        [HttpPut("CancelCommission")]
         [SwaggerResponse(200)]
         [SwaggerResponse(400, Type = typeof(string))]
-        public async Task<IActionResult> CancelCommission(int commissionId)
+        public async Task<IActionResult> UserCancelCommission(int commissionId)
         {
-            try
+            if (int.TryParse(_jwtHelper.GetUserIdFromToken(HttpContext), out int userId))
             {
-                int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
-                await _commissionService.UpdateCommissionStatus(commissionId, "cancel");
-                return Ok();
+                return Unauthorized(new object());
             }
-            catch (Exception ex)
+            var (isUpdated, message) = await _commissionService.CancelCommission(userId, commissionId);
+            if (isUpdated)
             {
-                return BadRequest(ex.Message);
+                return Ok(new object());
             }
+            return BadRequest(new
+            {
+                Error = message
+            });
         }
 
         [Authorize]
-        [HttpPut("AcceptCommission/{commissionId}")]
+        [HttpPut("Creator/AcceptCommission")]
         [SwaggerResponse(200)]
         [SwaggerResponse(400, Type = typeof(string))]
         public async Task<IActionResult> AcceptCommission(int commissionId)
         {
-            try
+            if (false == int.TryParse(_jwtHelper.GetCreatorIdFromToken(HttpContext), out int creatorId))
             {
-                int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
-                await _commissionService.UpdateCommissionStatus(commissionId, "accept");
-                //await _commissionService.UpdateCommissionStatus(commissionId, CommissionStatus.Accepted);
-                return Ok();
+                return Unauthorized(new object());
             }
-            catch (Exception ex)
+            var (isUpdated, message) = await _commissionService.AcceptCommission(creatorId, commissionId);
+            if (isUpdated)
             {
-                return BadRequest(ex.Message);
+                return Ok(new object());
             }
+            return BadRequest(new
+            {
+                Error = message
+            });
         }
 
         [Authorize]
-        [HttpPut("DenyCommission/{commissionId}")]
+        [HttpPut("Creator/DenyCommission")]
         [SwaggerResponse(200)]
         [SwaggerResponse(400, Type = typeof(string))]
         public async Task<IActionResult> DenyCommission(int commissionId)
         {
-            try
+            if (false == int.TryParse(_jwtHelper.GetCreatorIdFromToken(HttpContext), out int creatorId))
             {
-                int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
-                await _commissionService.UpdateCommissionStatus(commissionId, "deny");
-                return Ok();
+                return Unauthorized(new object());
             }
-            catch (Exception ex)
+            var (isUpdated, message) = await _commissionService.DenyCommission(creatorId, commissionId);
+            if (isUpdated)
             {
-                return BadRequest(ex.Message);
+                return Ok(new object());
             }
+            return BadRequest(new
+            {
+                Error = message
+            });
         }
 
         [Authorize]
-        [HttpGet("ViewArtistAcceptedCommission")]
+        [HttpGet("Creator/GetAcceptedCommission")]
         [SwaggerResponse(200)]
         [SwaggerResponse(400, Type = typeof(string))]
-        public async Task<IActionResult> ViewArtistAcceptedCommission()
+        public async Task<IActionResult> GetArtistAcceptedCommission()
         {
-            int artistId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
-            List<Commission?> commission = await _commissionService.GetAcceptedCommissionByCreatorId(artistId);
-            if (commission.Count > 0)
+            if (false == int.TryParse(_jwtHelper.GetCreatorIdFromToken(HttpContext), out int artistId))
             {
-                List<ViewCommissionResponse> response = new List<ViewCommissionResponse>();
-                foreach (Commission item in commission)
+                return Unauthorized(new object());
+            }
+            List<Commission> commission = await _commissionService.GetCreatorAcceptedCommissions(artistId);
+            List<ViewCommissionResponse> response = new();
+            foreach (Commission item in commission)
+            {
+                ViewCommissionResponse r = new()
                 {
-                    ViewCommissionResponse r = new ViewCommissionResponse
-                    {
-                        CommisionId = item.CommissionId,
-                        CreatedDate = item.CreatedDate,
-                        Deadline = item.Deadline,
-                        Price = item.Price,
-                        UserName = item.UserInfo.NickName,
-                        CommissionStatus = item.CommissionStatus,
-                    };
-                    response.Add(r);
-                }
-                return Ok(response);
+                    CommisionId = item.CommissionId,
+                    CreatedDate = item.CreatedDate,
+                    Deadline = item.Deadline,
+                    Price = item.Price,
+                    UserName = item.UserInfo.NickName,
+                    CommissionStatus = item.CommissionStatus,
+                    Description = item.Description,
+                };
+                response.Add(r);
             }
-            else
-            {
-                return BadRequest("Cannot find any commission.");
-            }
+            return Ok(response);
         }
 
         [Authorize]
-        [HttpGet("ViewCommission/{commissionId}")]
+        [HttpGet("Get")]
         [SwaggerResponse(200)]
         [SwaggerResponse(400, Type = typeof(string))]
         public async Task<IActionResult> ViewCommission(int commissionId)
         {
-            Commission? commission = await _commissionService.GetCommissionByCommissionId(commissionId);
-
+            if (false == int.TryParse(_jwtHelper.GetUserIdFromToken(HttpContext), out int userId))
+            {
+                return Unauthorized(new object());
+            }
+            Commission? commission = await _commissionService.GetUserCommission(userId, commissionId);
             if (commission != null)
             {
                 UserInfo? creator = await _userInfoService.GetUserByCreatorId(commission.CreatorId);
-                ViewCommissionResponse response = new ViewCommissionResponse
+                ViewCommissionResponse response = new()
                 {
                     CommisionId = commission.CommissionId,
                     CreatedDate = commission.CreatedDate,
@@ -156,31 +165,40 @@ namespace WebAPI.Controllers
                     Price = commission.Price,
                     UserName = commission.UserInfo.NickName,
                     CommissionStatus = commission.CommissionStatus,
+                    Description = commission.Description,
                     ArtistName = creator.NickName
                 };
                 return Ok(response);
             }
-            else
-            {
-                return BadRequest("Cannot find any commission.");
-            }
+            return NotFound(new object());
         }
 
         [Authorize]
-        [HttpPut("FinishCommission")]
+        [HttpPost("Creator/FinishCommission")]
         [SwaggerResponse(200)]
         [SwaggerResponse(400, Type = typeof(string))]
-        public async Task<IActionResult> FinishCommission([FromBody] FinishCommissionRequest finishCommissionRequest)
+        public async Task<IActionResult> FinishCommission([FromForm] int commissionId, [FromForm]IFormFile image)
         {
-            try
+            if (false == int.TryParse(_jwtHelper.GetCreatorIdFromToken(HttpContext),out int creatorId))
             {
-                await _commissionService.FinishCommission(finishCommissionRequest.CommisionId, finishCommissionRequest.ImageId);
-                return Ok();
+                return Unauthorized(new { });
             }
-            catch (Exception ex)
+            if (false == ImageType.IsSupportedImageType(image.ContentType))
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new
+                {
+                    Error = "Unsupported image type"
+                });
             }
+            var (isUpdated, message) = await _commissionService.FinishCommission(creatorId,commissionId,image);
+            if (isUpdated)
+            {
+                return Ok(new { });
+            }
+            return BadRequest(new
+            {
+                Error = message
+            });
         }
     }
 }

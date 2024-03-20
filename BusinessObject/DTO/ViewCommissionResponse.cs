@@ -9,6 +9,7 @@ namespace BusinessObject.DTO
         public required DateTime Deadline { get; set; }
         public required double Price { get; set; }
         public required CommissionStatus CommissionStatus { get; set; }
+        public required string Description {  get; set; }
         public string? UserName { get; set; }
         public string? ArtistName { get; set; }
     }

@@ -9,11 +9,4 @@ namespace BusinessObject.MongoDbObject
         public required UploadedFileInfo Preview { get; set; }
         public required UploadedFileInfo Original { get; set; }
     }
-    public class UploadedFileInfo
-    {
-        public required string BlobName { get; set; }
-        public required long FileSize { get; set; }
-        public required string ImageType { get; set; }
-        public required string FileName { get; set; }
-    }
 }
