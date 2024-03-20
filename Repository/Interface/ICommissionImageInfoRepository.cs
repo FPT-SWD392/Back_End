@@ -12,6 +12,6 @@ namespace Repository.Interface
         public Task CreateNewImageInfo(CommissionImageInfo imageInfo);
         public Task DeleteImageInfo(CommissionImageInfo imageInfo);
         public Task UpdateImageInfo(CommissionImageInfo imageInfo);
-        public Task<CommissionImageInfo?> GetImageInfoById(int imageId);
+        public Task<CommissionImageInfo?> GetImageInfoById(string imageId);
     }
 }
