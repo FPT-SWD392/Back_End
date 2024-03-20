@@ -13,5 +13,7 @@ namespace Repository.Interface
         public Task<List<Report>> GetAllComissionReports(int commissionId);
         public Task<List<Report>> GetAllCreatorReports(int creatorId);
         public Task<List<Report>> GetAllPostReports(int postId);
+        public Task<List<Report>> GetAllReportsOfThatUser(int userId);
+        public Task<List<Report>> GetAllReport();
     }
 }
