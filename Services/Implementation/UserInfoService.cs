@@ -228,21 +228,30 @@ namespace Services.Implementation
             }
         }
 
-        public async Task AddAccountBalance(double amount, int userId)
+        public async Task AddAccountBalance(AddBalanceRequest addBalanceRequest, int userId)
         {
             try
             {
                 var userInfo = await this.GetUserByUserId(userId);
                 if (userInfo != null)
                 {
-                    userInfo.Balance += amount;
+                    userInfo.Balance += addBalanceRequest.Amount;
                     await _userRepository.UpdateUser(userInfo);
+                }
+                string note = "";
+                if (addBalanceRequest.TransactionType == TransactionType.DepositManualAdmin)
+                {                   
+                    note = "Admin added to your wallet " + addBalanceRequest.Amount;
+                }
+                else
+                {
+                    note = "You added to your wallet " + addBalanceRequest.Amount;
                 }
                 var transactionHistory = new TransactionHistory()
                 {
                     UserId = userId,
-                    Note = "You added to you wallet " + amount,
-                    TransactionType = TransactionType.Deposite,
+                    Note = note,
+                    TransactionType = addBalanceRequest.TransactionType,
                     TransactionDate = DateTime.UtcNow,
                 };
                 await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
@@ -252,6 +261,11 @@ namespace Services.Implementation
             {
                 throw new Exception("Unhandled Error");
             }
+        }
+
+        public async Task<List<UserInfo>> GetAllUser()
+        {
+            return await _userRepository.GetAllUsers();
         }
     }
 }

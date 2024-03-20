@@ -55,5 +55,28 @@ namespace Repository.Implementation
         {
             await _dao.UpdateAsync(transactionHistory);
         }
+
+        public async Task<List<TransactionHistory>> GetOnlyDepositTransactionByUser(int userId)
+        {
+            return await _dao
+                .Query()
+                .Where(u => u.UserId == userId && (u.TransactionType == BusinessObject.TransactionType.DepositVnPay
+                                                    || u.TransactionType == BusinessObject.TransactionType.DepositMomo
+                                                    || u.TransactionType == BusinessObject.TransactionType.DepositOther
+                                                    || u.TransactionType == BusinessObject.TransactionType.DepositManualAdmin))
+                .ToListAsync();
+                        
+        }
+        public async Task<List<TransactionHistory>> GetAllDepositTransaction()
+        {
+            return await _dao
+                .Query()
+                .Where(u => u.TransactionType == BusinessObject.TransactionType.DepositVnPay
+                                                    || u.TransactionType == BusinessObject.TransactionType.DepositMomo
+                                                    || u.TransactionType == BusinessObject.TransactionType.DepositOther
+                                                    || u.TransactionType == BusinessObject.TransactionType.DepositManualAdmin)
+                .ToListAsync();
+
+        }
     }
 }

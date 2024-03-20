@@ -14,5 +14,8 @@ namespace Services
         Task<TransactionHistory?> GetTransactionHistoryById(int transactionId);
         Task<List<TransactionHistory>> GetUserTransactionHistories(int userId);
         Task CreateTransactionHistory(TransactionHistory transactionHistory);
+        Task<List<TransactionHistory>> GetOnlyDepositTransactionByUser(int userId);
+        Task<List<TransactionHistory>> GetAllDepositTransaction();
+
     }
 }

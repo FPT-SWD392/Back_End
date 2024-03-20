@@ -19,7 +19,10 @@ namespace BusinessObject
     }
     public enum TransactionType
     {
-        Deposite,
+        DepositVnPay,
+        DepositMomo,
+        DepositOther,
+        DepositManualAdmin,
         Withdraw,
         Buy,
         Sell,
