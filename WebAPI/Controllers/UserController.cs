@@ -108,7 +108,10 @@ namespace WebAPI.Controllers
                 if (check)
                 {
                     await _userInfo.UpdatePassword(userId, newPassword);
-                    return Ok();
+                    return Ok(new object
+                    {
+
+                    });
                 }
                 else return BadRequest("Old password is not correct");
                 
@@ -125,7 +128,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> AddAccountBalanceUser([FromBody] AddBalanceRequest addBalanceRequest)
         {
             var userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
-            if (addBalanceRequest.userId == null || userId == addBalanceRequest.userId)
+            if (addBalanceRequest.UserId == null || userId == addBalanceRequest.UserId)
             {
                 
                 if (addBalanceRequest.TransactionType != TransactionType.DepositVnPay 
@@ -137,7 +140,10 @@ namespace WebAPI.Controllers
                 try
                 {
                     await _userInfo.AddAccountBalance(addBalanceRequest, userId);
-                    return Ok("Success");
+                    return Ok(new object
+                    {
+
+                    });
                 }
                 catch (Exception ex)
                 {
@@ -160,14 +166,17 @@ namespace WebAPI.Controllers
         {
             try
             {
-                if (addBalanceRequest.userId != null) 
+                if (addBalanceRequest.UserId != null) 
                 {
                     if (addBalanceRequest.TransactionType != TransactionType.DepositManualAdmin)
                     {
                         return BadRequest("Wrong transaction type for this api call (accept value: 3)");
                     }
-                    await _userInfo.AddAccountBalance(addBalanceRequest, (int) addBalanceRequest.userId);
-                    return Ok("Success");
+                    await _userInfo.AddAccountBalance(addBalanceRequest, (int) addBalanceRequest.UserId);
+                    return Ok(new object
+                    {
+
+                    });
                 }
                 else
                 {

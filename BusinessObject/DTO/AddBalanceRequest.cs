@@ -10,6 +10,7 @@ namespace BusinessObject.DTO
     {
         public double Amount { get; set; }
         public TransactionType TransactionType { get; set; }
-        public int? userId { get; set; }
+        public int? UserId { get; set; }
+        public bool IsSuccess { get; set; } = false;
     }
 }
