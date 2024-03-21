@@ -49,7 +49,7 @@ namespace WebAPI.Controllers
             var transactions = await _transactionHistoryService.GetAllTransaction();
             var responses = transactions.Select(t => new TransactionResponse
             {
-                UserId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext)),
+                TransactionId = t.TransactionId,
                 Note = t.Note,
                 Amount = t.Amount,
                 TransactionDate = t.TransactionDate,
@@ -72,7 +72,8 @@ namespace WebAPI.Controllers
 
             var response = new TransactionResponse
             {
-                UserId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext)),
+                UserId = transaction.UserId,
+                TransactionId = transactionId,
                 Note = transaction.Note,
                 Amount = transaction.Amount,
                 TransactionDate = transaction.TransactionDate,
@@ -91,7 +92,8 @@ namespace WebAPI.Controllers
 
             var responses = transactions.Select(t => new TransactionResponse
             {
-                UserId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext)),
+                UserId = t.UserId,
+                TransactionId = t.TransactionId,
                 Note = t.Note,
                 Amount = t.Amount,
                 TransactionDate = t.TransactionDate,
@@ -110,6 +112,7 @@ namespace WebAPI.Controllers
 
             var responses = transactionList.Select(t => new TransactionResponse
             {
+                TransactionId = t.TransactionId,
                 UserId = userId,
                 Note = t.Note,
                 Amount = t.Amount,
@@ -130,6 +133,7 @@ namespace WebAPI.Controllers
 
             var responses = transactionList.Select(t => new TransactionResponse
             {
+                TransactionId= t.TransactionId,
                 UserId = userId,
                 Note = t.Note,
                 Amount = t.Amount,
@@ -149,6 +153,7 @@ namespace WebAPI.Controllers
 
             var responses = transactionList.Select(t => new TransactionResponse
             {
+                TransactionId = t.TransactionId,
                 UserId = t.UserId,
                 Note = t.Note,
                 Amount = t.Amount,
