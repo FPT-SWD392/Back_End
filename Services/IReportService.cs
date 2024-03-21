@@ -17,7 +17,7 @@ namespace Services
         Task<Report?> GetReportById(int reportId);
         Task UpdateReport(Report report);
         Task<bool> ReportUser(ReportRequest report);
-        Task<List<ReportReponse>?> GetAllReport()
+        Task<List<ReportReponse>?> GetAllReport();
         Task<bool> ReportCommission(ReportRequest report);
         Task<bool> ReportArt(ReportRequest report);
         Task<bool> ReportArtist(ReportRequest report);
