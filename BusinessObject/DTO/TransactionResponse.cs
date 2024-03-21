@@ -10,5 +10,6 @@ namespace BusinessObject.DTO
         public required double Amount { get; set; }
         public required DateTime TransactionDate { get; set; }
         public TransactionType TransactionType { get; set; }
+        public bool IsSuccess { get; set; }
     }
 }
