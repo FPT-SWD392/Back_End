@@ -28,7 +28,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> CreatePost([FromBody] Post post)
         {
             await _postService.CreatePost(post);
-            return Ok();
+            return Ok(new {});
         }
 
         //[Authorize]

@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
                 var check = await _reportService.ReportUser(report);
                 if (check)
                 {
-                    return Ok();
+                    return Ok(new {});
                 }
                 else return BadRequest("Can not report");
             }
@@ -75,7 +75,7 @@ namespace WebAPI.Controllers
                 var check = await _reportService.ReportArtist(report);
                 if (check)
                 {
-                    return Ok();
+                    return Ok(new {});
                 }
                 else return BadRequest("Can not report");
             }
@@ -95,7 +95,7 @@ namespace WebAPI.Controllers
                 var check = await _reportService.ReportArt(report);
                 if (check)
                 {
-                    return Ok();
+                    return Ok(new {});
                 }
                 else return BadRequest("Can not report");
             }
@@ -115,7 +115,7 @@ namespace WebAPI.Controllers
                 var check = await _reportService.ReportCommission(report);
                 if (check)
                 {
-                    return Ok();
+                    return Ok(new {});
                 }
                 else return BadRequest("Can not report");
             }
@@ -133,7 +133,7 @@ namespace WebAPI.Controllers
                 var ban = await _userService.BanUser(id);
                 if (ban)
                 {
-                    return Ok();
+                    return Ok(new {});
                 }
                 else return BadRequest("Unsuccessful. Try again");
             }
@@ -152,7 +152,7 @@ namespace WebAPI.Controllers
                 var ban = await _artService.BanArt(id);
                 if (ban)
                 {
-                    return Ok();
+                    return Ok(new {});
                 }
                 else return BadRequest("Unsuccessful. Try again");
             }

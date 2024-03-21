@@ -42,7 +42,7 @@ namespace WebAPI.Controllers
 
                 int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
                 await _commissionService.CreateCommission(commissionRequest.Deadline, commissionRequest.Price, commissionRequest.CreatorId, userId);
-                return Ok();
+                return Ok(new {});
             }
             catch (Exception ex)
             {
@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
             {
                 int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
                 await _commissionService.UpdateCommissionStatus(commissionId, "cancel");
-                return Ok();
+                return Ok(new {});
             }
             catch (Exception ex)
             {
@@ -79,7 +79,7 @@ namespace WebAPI.Controllers
                 int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
                 await _commissionService.UpdateCommissionStatus(commissionId, "accept");
                 //await _commissionService.UpdateCommissionStatus(commissionId, CommissionStatus.Accepted);
-                return Ok();
+                return Ok(new {});
             }
             catch (Exception ex)
             {
@@ -97,7 +97,7 @@ namespace WebAPI.Controllers
             {
                 int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
                 await _commissionService.UpdateCommissionStatus(commissionId, "deny");
-                return Ok();
+                return Ok(new {});
             }
             catch (Exception ex)
             {
@@ -175,7 +175,7 @@ namespace WebAPI.Controllers
             try
             {
                 await _commissionService.FinishCommission(finishCommissionRequest.CommisionId, finishCommissionRequest.ImageId);
-                return Ok();
+                return Ok(new {});
             }
             catch (Exception ex)
             {
