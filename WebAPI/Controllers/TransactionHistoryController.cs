@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
             };
 
             await _transactionHistoryService.CreateTransactionHistory(transactionHistory);
-            return Ok();
+            return Ok(new {});
         }
 
         [Authorize]

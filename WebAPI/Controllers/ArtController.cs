@@ -146,7 +146,10 @@ namespace WebAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            return Ok();
+            return Ok(new
+            {
+
+            });
         }
         [HttpGet("Preview")]
         [SwaggerResponse(200)]
@@ -195,7 +198,10 @@ namespace WebAPI.Controllers
             
             if (checkSuccess)
             {
-                return Ok();
+                return Ok(new
+                {
+
+                });
             }
             else
             {
@@ -223,7 +229,7 @@ namespace WebAPI.Controllers
             {
                 return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
             }
-            return Ok();
+            return Ok(new {});
         }
         [HttpPost("Rating")]
         [Authorize]
@@ -244,7 +250,7 @@ namespace WebAPI.Controllers
             bool checkSuccess = await _artRatingService.RatingArtwork(userId, ratingDTO.ArtId, ratingDTO.Rating);
             if (checkSuccess)
             {
-                return Ok();
+                return Ok(new {});
             }
             else
             {

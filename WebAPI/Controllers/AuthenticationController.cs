@@ -73,7 +73,7 @@ namespace WebAPI.Controllers
                 RegisterResponse registerResponse = await _userInfoService.Register(userInfo);
                 if (registerResponse.IsSuccess)
                 {
-                    return Ok();
+                    return Ok(new {});
                 }
                 else
                 {

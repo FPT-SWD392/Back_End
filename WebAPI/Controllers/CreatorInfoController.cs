@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
             try
             {
                 await _creatorInfoService.UpgradeToCreatorWithBalance(userId, creatorInfoDTO);
-                return Ok();
+                return Ok(new {});
             }
             catch (Exception ex)
             {
@@ -64,7 +64,7 @@ namespace WebAPI.Controllers
             try
             {
                 await _creatorInfoService.UpgradeToCreatorWithExternalParty(userId, creatorInfoDTO);
-                return Ok();
+                return Ok(new {});
             }
             catch (Exception ex)
             {

@@ -73,7 +73,7 @@ namespace WebAPI.Controllers
             {
                 int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
                 await _userInfo.UpdateProfile(userId, user.FullName, user.Location, user.PhoneNumber, user.NickName);
-                return Ok();
+                return Ok(new {});
             }
             catch (Exception ex)
             {
@@ -89,7 +89,7 @@ namespace WebAPI.Controllers
             {
                 int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
                 await _userInfo.UpdateProfilePicture(userId, imgBase64);
-                return Ok();
+                return Ok(new {});
             }
             catch (Exception ex)
             {
@@ -108,7 +108,7 @@ namespace WebAPI.Controllers
                 if (check)
                 {
                     await _userInfo.UpdatePassword(userId, newPassword);
-                    return Ok(new object
+                    return Ok(new
                     {
 
                     });
@@ -140,7 +140,7 @@ namespace WebAPI.Controllers
                 try
                 {
                     await _userInfo.AddAccountBalance(addBalanceRequest, userId);
-                    return Ok(new object
+                    return Ok(new
                     {
 
                     });
@@ -173,7 +173,7 @@ namespace WebAPI.Controllers
                         return BadRequest("Wrong transaction type for this api call (accept value: 3)");
                     }
                     await _userInfo.AddAccountBalance(addBalanceRequest, (int) addBalanceRequest.UserId);
-                    return Ok(new object
+                    return Ok(new
                     {
 
                     });
