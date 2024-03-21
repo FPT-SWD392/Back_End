@@ -130,7 +130,8 @@ namespace WebAPI.Controllers
                 Note = t.Note,
                 Amount = t.Amount,
                 TransactionDate = t.TransactionDate,
-                TransactionType = t.TransactionType
+                TransactionType = t.TransactionType,
+                IsSuccess = t.IsSuccess,
             }).ToList();
 
             return Ok(responses);
