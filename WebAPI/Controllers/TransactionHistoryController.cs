@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
                 Note = transactionRequest.Note,
                 Amount = transactionRequest.Amount,
                 TransactionDate = DateTime.Now,
-                TransactionType = transactionRequest.TransactionType
+                TransactionType = transactionRequest.TransactionType,
             };
 
             await _transactionHistoryService.CreateTransactionHistory(transactionHistory);
@@ -53,7 +53,8 @@ namespace WebAPI.Controllers
                 Note = t.Note,
                 Amount = t.Amount,
                 TransactionDate = t.TransactionDate,
-                TransactionType = t.TransactionType
+                TransactionType = t.TransactionType,
+                IsSuccess = t.IsSuccess
             }).ToList();
 
             return Ok(responses);
@@ -75,7 +76,8 @@ namespace WebAPI.Controllers
                 Note = transaction.Note,
                 Amount = transaction.Amount,
                 TransactionDate = transaction.TransactionDate,
-                TransactionType = transaction.TransactionType
+                TransactionType = transaction.TransactionType,
+                IsSuccess = transaction.IsSuccess,
             };
 
             return Ok(response);
@@ -93,7 +95,8 @@ namespace WebAPI.Controllers
                 Note = t.Note,
                 Amount = t.Amount,
                 TransactionDate = t.TransactionDate,
-                TransactionType = t.TransactionType
+                TransactionType = t.TransactionType,
+                IsSuccess = t.IsSuccess,
             }).ToList();
 
             return Ok(responses);
@@ -111,7 +114,8 @@ namespace WebAPI.Controllers
                 Note = t.Note,
                 Amount = t.Amount,
                 TransactionDate = t.TransactionDate,
-                TransactionType = t.TransactionType
+                TransactionType = t.TransactionType,
+                IsSuccess = t.IsSuccess,
             }).ToList();
 
             return Ok(responses);
@@ -149,7 +153,8 @@ namespace WebAPI.Controllers
                 Note = t.Note,
                 Amount = t.Amount,
                 TransactionDate = t.TransactionDate,
-                TransactionType = t.TransactionType
+                TransactionType = t.TransactionType,
+                IsSuccess = t.IsSuccess,
             }).ToList();
 
             return Ok(responses);
