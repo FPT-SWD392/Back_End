@@ -58,6 +58,7 @@ namespace BusinessObject
         Post,
         Artist,
         Commission,
-        User
+        User,
+        Banned
     }
 }

@@ -1,4 +1,5 @@
-﻿using BusinessObject.DTO;
+﻿using BusinessObject;
+using BusinessObject.DTO;
 using BusinessObject.SqlObject;
 using MongoDB.Driver;
 using Repository.Interface;
@@ -41,31 +42,103 @@ namespace Services.Implementation
             var report = _reportRepository.GetReportById(reportId);
             await _reportRepository.DeleteReport(report.Result);
         }
-        public async Task<List<Report>?> GetAllReport()
+        public async Task<List<ReportReponse>?> GetAllReport()
         {
-            return await _reportRepository.GetAllReport();
+            List<ReportReponse> reportReponses = new List<ReportReponse>();
+            var test = await _reportRepository.GetAllReport();
+            foreach (var report in test)
+            {
+                bool foundMatchingResponse = false;
+                if (reportReponses.Count() == 0)
+                {
+                    ReportReponse response = new ReportReponse()
+                    {
+                        Reason = report.ReportReason,
+                        Description = report.ReportDescription,
+                        ReportDate = report.ReportDate,
+                        ReportedObjectId = report.ReportedObjectId,
+                        ReporterId = report.ReporterId,
+                        ReportedObjectType = report.ReportedObjectType,
+                        Count = 1
+                    };
+                    reportReponses.Add(response);
+                }
+                else
+                {
+                    for (int i = 0; i < reportReponses.Count(); i++)
+                    {
+                        if (report.ReportedObjectId == reportReponses[i].ReportedObjectId &&
+                            report.ReportedObjectType == reportReponses[i].ReportedObjectType)
+                        {
+                            
+                            reportReponses[i].Count += 1;
+                            foundMatchingResponse = true;
+                            break;
+                        }
+                        
+                    }
+                    if (!foundMatchingResponse)
+                    {
+                        ReportReponse response = new ReportReponse()
+                        {
+                            Reason = report.ReportReason,
+                            Description = report.ReportDescription,
+                            ReportDate = report.ReportDate,
+                            ReportedObjectId = report.ReportedObjectId,
+                            ReporterId = report.ReporterId,
+                            ReportedObjectType = report.ReportedObjectType,
+                            Count = 1
+                        };
+                        reportReponses.Add(response);
+                    }
+                }
+            }
+            return reportReponses;
         }
-        public async Task<List<Report>?> GetAllArtReports(int artId)
+        public async Task<List<Report>?> GetAllArtReports()
         {
-            return await _reportRepository.GetAllArtReports(artId);
+            return await _reportRepository.GetAllArtReports();
         }
 
-        public async Task<List<Report>?> GetAllPostReports(int postId)
+        public async Task<List<Report>?> GetAllPostReports()
         {
-            return await _reportRepository.GetAllPostReports(postId);
+            return await _reportRepository.GetAllPostReports();
         }
-        public async Task<List<Report>?> GetAllCreatorReports(int creatorId)
+        public async Task<List<Report>?> GetAllCreatorReports()
         {
-            return await _reportRepository.GetAllCreatorReports(creatorId);
+            return await _reportRepository.GetAllCreatorReports();
         }
-        public async Task<List<Report>?> GetAllComissionReports(int comissionId)
+        public async Task<List<Report>?> GetAllComissionReports()
         {
-            return await _reportRepository.GetAllComissionReports(comissionId);
+            return await _reportRepository.GetAllComissionReports();
         }
-        public async Task<List<Report>?> GetAllUserReports(int userId)
+        public async Task<List<Report>?> GetAllUserReports()
         {
-            return await _reportRepository.GetAllUserReports(userId);
+            return await _reportRepository.GetAllUserReports();
         }
+
+        public async Task<List<Report>?> GetArtReports(int artId)
+        {
+            return await _reportRepository.GetArtReports(artId);
+        }
+
+        public async Task<List<Report>?> GetPostReports(int postId)
+        {
+            return await _reportRepository.GetPostReports(postId);
+        }
+        public async Task<List<Report>?> GetCreatorReports(int creatorId)
+        {
+            return await _reportRepository.GetCreatorReports(creatorId);
+        }
+        public async Task<List<Report>?> GetComissionReports(int comissionId)
+        {
+            return await _reportRepository.GetComissionReports(comissionId);
+        }
+        public async Task<List<Report>?> GetUserReports(int userId)
+        {
+            return await _reportRepository.GetUserReports(userId);
+        }
+
         public async Task<List<Report>?> GetAllReportsOfThatUser(int userId)
         {
             return await _reportRepository.GetAllReportsOfThatUser(userId);
@@ -167,6 +240,16 @@ namespace Services.Implementation
                 };
                 await _reportRepository.CreateNewReport(newreport);
                 return true;
+            }
+        }
+
+        public async Task DeleteAfterBan(int id, ReportedObjectType type)
+        {
+            var delete = await _reportRepository.GetReportByReportedObjectTypeAndId(id, type);
+            foreach (var report in delete)
+            {
+                report.ReportedObjectType = ReportedObjectType.Banned;
+                await _reportRepository.UpdateReport(report);
             }
         }
     }

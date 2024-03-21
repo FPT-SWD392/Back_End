@@ -1,4 +1,5 @@
-﻿using BusinessObject.DTO;
+﻿using BusinessObject;
+using BusinessObject.DTO;
 using JwtTokenAuthorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -133,6 +134,8 @@ namespace WebAPI.Controllers
                 var ban = await _userService.BanUser(id);
                 if (ban)
                 {
+                    await _reportService.DeleteAfterBan(id, ReportedObjectType.User);
+
                     return Ok(new {});
                 }
                 else return BadRequest("Unsuccessful. Try again");
@@ -152,6 +155,7 @@ namespace WebAPI.Controllers
                 var ban = await _artService.BanArt(id);
                 if (ban)
                 {
+                    await _reportService.DeleteAfterBan(id, ReportedObjectType.Art);
                     return Ok(new {});
                 }
                 else return BadRequest("Unsuccessful. Try again");
