@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
                 Note = transactionRequest.Note,
                 Amount = transactionRequest.Amount,
                 TransactionDate = DateTime.Now,
-                TransactionType = transactionRequest.TransactionType
+                TransactionType = transactionRequest.TransactionType,
             };
 
             await _transactionHistoryService.CreateTransactionHistory(transactionHistory);
@@ -49,11 +49,12 @@ namespace WebAPI.Controllers
             var transactions = await _transactionHistoryService.GetAllTransaction();
             var responses = transactions.Select(t => new TransactionResponse
             {
-                UserId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext)),
+                TransactionId = t.TransactionId,
                 Note = t.Note,
                 Amount = t.Amount,
                 TransactionDate = t.TransactionDate,
-                TransactionType = t.TransactionType
+                TransactionType = t.TransactionType,
+                IsSuccess = t.IsSuccess
             }).ToList();
 
             return Ok(responses);
@@ -71,11 +72,13 @@ namespace WebAPI.Controllers
 
             var response = new TransactionResponse
             {
-                UserId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext)),
+                UserId = transaction.UserId,
+                TransactionId = transactionId,
                 Note = transaction.Note,
                 Amount = transaction.Amount,
                 TransactionDate = transaction.TransactionDate,
-                TransactionType = transaction.TransactionType
+                TransactionType = transaction.TransactionType,
+                IsSuccess = transaction.IsSuccess,
             };
 
             return Ok(response);
@@ -89,11 +92,13 @@ namespace WebAPI.Controllers
 
             var responses = transactions.Select(t => new TransactionResponse
             {
-                UserId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext)),
+                UserId = t.UserId,
+                TransactionId = t.TransactionId,
                 Note = t.Note,
                 Amount = t.Amount,
                 TransactionDate = t.TransactionDate,
-                TransactionType = t.TransactionType
+                TransactionType = t.TransactionType,
+                IsSuccess = t.IsSuccess,
             }).ToList();
 
             return Ok(responses);
@@ -107,11 +112,13 @@ namespace WebAPI.Controllers
 
             var responses = transactionList.Select(t => new TransactionResponse
             {
+                TransactionId = t.TransactionId,
                 UserId = userId,
                 Note = t.Note,
                 Amount = t.Amount,
                 TransactionDate = t.TransactionDate,
-                TransactionType = t.TransactionType
+                TransactionType = t.TransactionType,
+                IsSuccess = t.IsSuccess,
             }).ToList();
 
             return Ok(responses);
@@ -126,11 +133,13 @@ namespace WebAPI.Controllers
 
             var responses = transactionList.Select(t => new TransactionResponse
             {
+                TransactionId= t.TransactionId,
                 UserId = userId,
                 Note = t.Note,
                 Amount = t.Amount,
                 TransactionDate = t.TransactionDate,
-                TransactionType = t.TransactionType
+                TransactionType = t.TransactionType,
+                IsSuccess = t.IsSuccess,
             }).ToList();
 
             return Ok(responses);
@@ -144,11 +153,13 @@ namespace WebAPI.Controllers
 
             var responses = transactionList.Select(t => new TransactionResponse
             {
+                TransactionId = t.TransactionId,
                 UserId = t.UserId,
                 Note = t.Note,
                 Amount = t.Amount,
                 TransactionDate = t.TransactionDate,
-                TransactionType = t.TransactionType
+                TransactionType = t.TransactionType,
+                IsSuccess = t.IsSuccess,
             }).ToList();
 
             return Ok(responses);

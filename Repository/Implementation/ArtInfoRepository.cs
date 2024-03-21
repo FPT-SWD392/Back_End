@@ -132,7 +132,7 @@ namespace Repository.Implementation
                 .OrderByDescending(artInfo => artInfo.CreatedDate)
                 .Skip(skip)
                 .Take(pageSize)
-                .ToListAsync();
+                .ToListAsync(); 
             List<ArtworkPreviewDTO> result = _mapper.Map<List<ArtworkPreviewDTO>>(artList);
             long total = await _artInfoDao
                 .Query()
