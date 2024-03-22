@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
             UserInfo? user = await _authenticationService.Login(loginRequest.Email, loginRequest.Password);
             if (user == null)
             {
-                return Unauthorized();
+                return Unauthorized(new() { });
             }
             string token = _jwtHelper.GenerateToken(user);
             LoginResponse loginResponse = new()

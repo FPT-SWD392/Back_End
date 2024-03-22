@@ -23,13 +23,15 @@ namespace Services.Implementation
         public CreatorInfoService(ICreatorInfoRepository creatorInfoRepository, 
                                     IUserInfoRepository userInfoRepository, 
                                     IConfiguration configuration,
-                                    ITransactionHistoryRepository transactionHistoryRepository)
+                                    ITransactionHistoryRepository transactionHistoryRepository,
+                                    ISystemRevenueRepository systemRevenueRepository)
         {
             _creatorInfoRepository = creatorInfoRepository;
             _userInfoRepository = userInfoRepository;
             string priceToUpgradeString = configuration["AppSetting:PremiumPrice"];
             _priceToUpgrade = double.Parse(priceToUpgradeString);
             _transactionHistoryRepository = transactionHistoryRepository;
+            _systemRevenueRepository = systemRevenueRepository;
         }
 
         public async Task UpgradeToCreatorWithBalance(int userId, CreatorInfoDTO creatorInfoDTO)
