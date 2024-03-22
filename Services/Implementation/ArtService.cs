@@ -17,6 +17,8 @@ namespace Services.Implementation
         private readonly IImageUtil _imageUtil;
         private readonly IAzureBlobStorage _azureBlobStorage;
         private readonly IImageInfoRepository _imageInfoRepository;
+        private readonly IArtTagRepository _artTagRepository;
+        private readonly ITagRepository _tagRepository;
         private readonly int _artUploadLimit;
         public ArtService(
             IArtInfoRepository artInfoRepository,
@@ -25,7 +27,9 @@ namespace Services.Implementation
             IImageInfoRepository imageInfoRepository,
             IPurchaseRepository purchaseRepository,
             IImageUtil imageUtil,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IArtTagRepository artTagRepository,
+            ITagRepository tagRepository)
         {
             _artInfoRepository = artInfoRepository;
             _creatorInfoRepository = creatorInfoRepository;
@@ -33,10 +37,12 @@ namespace Services.Implementation
             _purchaseRepository = purchaseRepository;
             _azureBlobStorage = azureBlobStorage;
             _imageUtil = imageUtil;
-            if (false == int.TryParse(configuration["AppSetting:ArtLimit"],out _artUploadLimit))
+            if (false == int.TryParse(configuration["AppSetting:ArtLimit"], out _artUploadLimit))
             {
                 _artUploadLimit = int.MaxValue;
             }
+            _artTagRepository = artTagRepository;
+            _tagRepository = tagRepository;
         }
 
         public async Task CreateArt(int creatorId, CreateArtRequest request)
@@ -87,6 +93,22 @@ namespace Services.Implementation
                 UpdateDate = DateTime.Now,
             };
             await _artInfoRepository.CreateNewArt(artinfo);
+            List<int> validTags = (await _tagRepository
+                .GetAllTags())
+                .Select(x => x.TagId)
+                .ToList();
+            foreach (int tag in request.Tags.Distinct())
+            {
+                if (validTags.Contains(tag))
+                {
+                    await _artTagRepository.CreateArtTag(new()
+                    {
+                        ArtId = artinfo.ArtId,
+                        TagId = tag,
+                    });
+                }
+                
+            }
             return artinfo;
         }
 

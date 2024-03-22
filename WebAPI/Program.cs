@@ -70,6 +70,7 @@ namespace WebAPI
             builder.Services.AddScoped<IPostLikeRepository, PostLikeRepository>();
             builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
             builder.Services.AddScoped<ITagRepository, TagRepository>();
+            builder.Services.AddScoped<IArtTagRepository,ArtTagRepository>();
 
             builder.Services.AddScoped<IArtService,ArtService>();
             builder.Services.AddScoped<IArtRatingService, ArtRatingService>();

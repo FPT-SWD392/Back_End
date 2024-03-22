@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BusinessObject.SqlObject
 {
     [PrimaryKey(nameof(ArtId), nameof(TagId))]
-    public class ArtTag
+    public class ArtTag : ISqlObject
     {
         [ForeignKey(nameof(ArtInfo))]
         public int ArtId { get; set; }
