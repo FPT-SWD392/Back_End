@@ -1,7 +1,9 @@
 ﻿using BusinessObject.DTO;
+using BusinessObject.MongoDbObject;
 using BusinessObject.SqlObject;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Repository.Implementation;
 using Repository.Interface;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,7 @@ namespace Services.Implementation
         private readonly ICreatorInfoRepository _creatorInfoRepository;
         private readonly IUserInfoRepository _userInfoRepository;
         private readonly ITransactionHistoryRepository _transactionHistoryRepository;
+        private readonly ISystemRevenueRepository _systemRevenueRepository;
         private double _priceToUpgrade = default!;
         public CreatorInfoService(ICreatorInfoRepository creatorInfoRepository, 
                                     IUserInfoRepository userInfoRepository, 
@@ -45,7 +48,7 @@ namespace Services.Implementation
                 #region Create Creator Info
                 var creatorInfo = new CreatorInfo()
                 {
-                    BecomeArtistDate = DateTime.UtcNow,
+                    BecomeArtistDate = DateTime.Now,
                     AcceptCommissionStatus = BusinessObject.AcceptCommissionStatus.Closed,
                     Bio = creatorInfoDTO.Bio,
                     ContactInfo = creatorInfoDTO.ContactInfo,                   
@@ -71,11 +74,17 @@ namespace Services.Implementation
                     Note = "You upgraded to creator",
                     Amount = _priceToUpgrade,
                     TransactionType = BusinessObject.TransactionType.UpgradeToCreator,
-                    TransactionDate = DateTime.UtcNow,
+                    TransactionDate = DateTime.Now,
                 };
 
                 await _transactionHistoryRepository.CreateTransactionHistory(transactionHistoryBuyer);
                 #endregion
+                await _systemRevenueRepository.CreateSystemRevenue(new SystemRevenue()
+                {
+                    Amount = _priceToUpgrade,
+                    Description = "Profit from upgrade to creator",
+                    Date = DateTime.Now,
+                });
             }
 
         }
@@ -91,7 +100,7 @@ namespace Services.Implementation
                 #region Create Creator Info
                 var creatorInfo = new CreatorInfo()
                 {
-                    BecomeArtistDate = DateTime.UtcNow,
+                    BecomeArtistDate = DateTime.Now,
                     AcceptCommissionStatus = BusinessObject.AcceptCommissionStatus.Closed,
                     Bio = creatorInfoDTO.Bio,
                     ContactInfo = creatorInfoDTO.ContactInfo,
@@ -116,11 +125,17 @@ namespace Services.Implementation
                     Note = "You upgraded to creator",
                     Amount = _priceToUpgrade,
                     TransactionType = BusinessObject.TransactionType.UpgradeToCreator,
-                    TransactionDate = DateTime.UtcNow,
+                    TransactionDate = DateTime.Now,
                 };
 
                 await _transactionHistoryRepository.CreateTransactionHistory(transactionHistoryBuyer);
                 #endregion
+                await _systemRevenueRepository.CreateSystemRevenue(new SystemRevenue()
+                {
+                    Amount = _priceToUpgrade,
+                    Description = "Profit from upgrade to creator",
+                    Date = DateTime.Now,
+                });
             }
         }
     }

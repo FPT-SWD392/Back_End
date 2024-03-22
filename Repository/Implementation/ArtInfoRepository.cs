@@ -109,7 +109,7 @@ namespace Repository.Implementation
                 .SingleOrDefaultAsync() ?? throw new Exception("Invalid userId");
 
             List<int> purchasedArtIds = userInfo.Purchases.Select(x => x.ArtId).ToList();
-            List<int> userCreatedArtIds = userInfo.CreatorInfo.ArtInfos.Select(x => x.ArtId).ToList();
+            List<int> userCreatedArtIds = userInfo.CreatorInfo?.ArtInfos.Select(x => x.ArtId).ToList() ?? new();
 
             List<int> ignoredArtIds = purchasedArtIds.Concat(userCreatedArtIds).ToList();
 
