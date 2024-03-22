@@ -84,7 +84,7 @@ namespace Services.Implementation
                 CreatorId = creatorInfo.CreatorId,
                 Description = request.Description,
                 Status = ArtStatus.Public,
-                Price = request.Price * 1.2,
+                Price = request.Price,
                 UpdateDate = DateTime.Now,
             };
             await _artInfoRepository.CreateNewArt(artinfo);
