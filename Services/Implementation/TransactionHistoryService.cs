@@ -59,5 +59,10 @@ namespace Services.Implementation
             }
             return amount;
         }
+
+        public async Task<List<TransactionHistory>> GetAllTransactionThisUserByStatus(int userId, TransactionType transactionType)
+        {
+            return await _transactionHistoryRepository.GetAllTransactionThisUserByStatus(userId, transactionType);
+        }
     }
 }

@@ -88,5 +88,12 @@ namespace Repository.Implementation
                 .Where(x => x.TransactionType == type && x.TransactionDate >= oneMonthAgo)
                 .ToListAsync();
         }
+
+        public async Task<List<TransactionHistory>> GetAllTransactionThisUserByStatus(int userId, TransactionType transactionType)
+        {
+            return await _dao
+                .Query()
+                .Where(x => x.TransactionType == transactionType && x.UserId == userId).ToListAsync();
+        }
     }
 }

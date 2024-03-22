@@ -19,5 +19,6 @@ namespace Repository.Interface
         public Task<List<TransactionHistory>> GetOnlyDepositTransactionByUser(int userId);
         public Task<List<TransactionHistory>> GetAllDepositTransaction();
         public Task<List<TransactionHistory>> GetTransactionHistoryByTransactionTypeWithInLastMonth(TransactionType type);
+        public Task<List<TransactionHistory>> GetAllTransactionThisUserByStatus(int userId, TransactionType transactionType);
     }
 }

@@ -18,5 +18,6 @@ namespace Services
         Task<List<TransactionHistory>> GetOnlyDepositTransactionByUser(int userId);
         Task<List<TransactionHistory>> GetAllDepositTransaction();
         Task<double> GetAmountDepositWithIn1Month(TransactionType type);
+        Task<List<TransactionHistory>> GetAllTransactionThisUserByStatus(int userId, TransactionType transactionType);
     }
 }
