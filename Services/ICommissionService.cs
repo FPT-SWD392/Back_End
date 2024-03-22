@@ -16,7 +16,9 @@ namespace Services
         Task<List<Commission>?> GetCommissionByCreatorId(int artistId);
         Task<List<Commission>?> GetAcceptedCommissionByCreatorId(int artistId);
         //Task UpdateCommissionStatus(int commissionId, CommissionStatus commissionStatus);
-        Task UpdateCommissionStatus(int commissionId, string status);
+        Task AcceptCommission(int commissionId);
+        Task CancelCommission(int commissionId);
+        Task DenyCommission(int commissionId);
         Task FinishCommission(int commissionId, int ImageId);
     }
 }

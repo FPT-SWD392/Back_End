@@ -78,64 +78,93 @@ namespace Services.Implementation
 
         public async Task<List<Commission>?> GetCommissionByCreatorId(int artistId)
         {
-            return await _commissionRepository.GetArtistCommissions(artistId);
+            UserInfo creator = await _userRepository.GetUserById(artistId);
+            return await _commissionRepository.GetArtistCommissions((int)creator.CreatorId);
         }
 
         public async Task<List<Commission>?> GetAcceptedCommissionByCreatorId(int artistId)
         {
-            return await _commissionRepository.GetAcceptedCommissionByCreatorId(artistId);
+            UserInfo creator = await _userRepository.GetUserById(artistId);
+            return await _commissionRepository.GetAcceptedCommissionByCreatorId((int)creator.CreatorId);
         }
 
-        public async Task UpdateCommissionStatus(int commissionId, string status)
+        public async Task AcceptCommission(int commissionId)
         {
             try
             {
                 Commission commission = await _commissionRepository.GetCommission(commissionId);
                 if (commission != null)
                 {
-                    if (status == "accept")
-                    {
-                        /*VALIDATE HERE*/
-                        commission.CommissionStatus = CommissionStatus.Accepted;
-                        await _commissionRepository.UpdateCommission(commission);
-                    }
-                    else if (status == "deny")
-                    {
-                        commission.CommissionStatus = CommissionStatus.Denied;
-                        await _commissionRepository.UpdateCommission(commission);
+                    commission.CommissionStatus = CommissionStatus.Accepted;
+                    await _commissionRepository.UpdateCommission(commission);
+                }
+                else
+                {
+                    throw new Exception("Cannot find commission");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
-                        UserInfo user = await _userRepository.GetUserById(commission.UserId);
-                        user.Balance = user.Balance + commission.Price;
-                        await _userRepository.UpdateUser(user);
-                        TransactionHistory transactionHistory = new TransactionHistory
-                        {
-                            UserId = commission.UserId,
-                            Note = "",
-                            Amount = commission.Price,
-                            TransactionDate = DateTime.Today,
-                            TransactionType = TransactionType.RequestCommissionDeny
-                        };
-                        await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
-                    }
-                    else if (status == "cancel")
-                    {
-                        /* VALIDATE HERE*/
-                        commission.CommissionStatus = CommissionStatus.Canceled;
-                        await _commissionRepository.UpdateCommission(commission);
+        public async Task DenyCommission(int commissionId)
+        {
+            try
+            {
+                Commission commission = await _commissionRepository.GetCommission(commissionId);
+                if (commission != null)
+                {
+                    commission.CommissionStatus = CommissionStatus.Denied;
+                    await _commissionRepository.UpdateCommission(commission);
 
-                        UserInfo user = await _userRepository.GetUserById(commission.UserId);
-                        user.Balance = user.Balance + commission.Price / 2;
-                        await _userRepository.UpdateUser(user);
-                        TransactionHistory transactionHistory = new TransactionHistory
-                        {
-                            UserId = commission.UserId,
-                            Note = "",
-                            Amount = commission.Price / 2,
-                            TransactionDate = DateTime.Today,
-                            TransactionType = TransactionType.RequestCommissionCancel
-                        };
-                        await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
-                    }
+                    UserInfo user = await _userRepository.GetUserById(commission.UserId);
+                    user.Balance = user.Balance + commission.Price;
+                    await _userRepository.UpdateUser(user);
+                    TransactionHistory transactionHistory = new TransactionHistory
+                    {
+                        UserId = commission.UserId,
+                        Note = "",
+                        Amount = commission.Price,
+                        TransactionDate = DateTime.Today,
+                        TransactionType = TransactionType.RequestCommissionDeny
+                    };
+                    await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
+                }
+                else
+                {
+                    throw new Exception("Cannot find commission");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task CancelCommission(int commissionId)
+        {
+            try
+            {
+                Commission commission = await _commissionRepository.GetCommission(commissionId);
+                if (commission != null)
+                {
+                    commission.CommissionStatus = CommissionStatus.Canceled;
+                    await _commissionRepository.UpdateCommission(commission);
+
+                    UserInfo user = await _userRepository.GetUserById(commission.UserId);
+                    user.Balance = user.Balance + commission.Price / 2;
+                    await _userRepository.UpdateUser(user);
+                    TransactionHistory transactionHistory = new TransactionHistory
+                    {
+                        UserId = commission.UserId,
+                        Note = "",
+                        Amount = commission.Price / 2,
+                        TransactionDate = DateTime.Today,
+                        TransactionType = TransactionType.RequestCommissionCancel
+                    };
+                    await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
                 }
                 else
                 {

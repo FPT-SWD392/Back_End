@@ -59,7 +59,7 @@ namespace WebAPI.Controllers
             try
             {
                 int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
-                await _commissionService.UpdateCommissionStatus(commissionId, "cancel");
+                await _commissionService.CancelCommission(commissionId);
                 return Ok(new {});
             }
             catch (Exception ex)
@@ -76,7 +76,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                await _commissionService.UpdateCommissionStatus(commissionId, "accept");
+                await _commissionService.AcceptCommission(commissionId);
                 return Ok(new {});
             }
             catch (Exception ex)
@@ -93,7 +93,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                await _commissionService.UpdateCommissionStatus(commissionId, "deny");
+                await _commissionService.DenyCommission(commissionId);
                 return Ok(new {});
             }
             catch (Exception ex)
@@ -177,6 +177,78 @@ namespace WebAPI.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpGet("ViewCommissionByCreatorId")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, Type = typeof(string))]
+        public async Task<IActionResult> ViewCommissionByCreatorId()
+        {
+            int artistId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
+            List<Commission?> commission = await _commissionService.GetCommissionByCreatorId(artistId);
+            if (commission.Count > 0)
+            {
+                List<ViewCommissionResponse> response = new List<ViewCommissionResponse>();
+                foreach (Commission item in commission)
+                {
+                    ViewCommissionResponse r = new ViewCommissionResponse
+                    {
+                        CommisionId = item.CommissionId,
+                        CreatedDate = item.CreatedDate,
+                        Deadline = item.Deadline,
+                        Price = item.Price,
+                        UserName = item.UserInfo.NickName,
+                        CommissionStatus = item.CommissionStatus,
+                        ArtistName = item.CreatorInfo.UserInfo.NickName,
+                        ImageId = item.ImageId,
+                        Rating = item.Rating,
+                        Review = item.Review,
+                    };
+                    response.Add(r);
+                }
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest("Cannot find any commission.");
+            }
+        }
+
+        [Authorize]
+        [HttpGet("ViewCommissionByUserId")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, Type = typeof(string))]
+        public async Task<IActionResult> ViewCommissionByUserId()
+        {
+            int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
+            List<Commission?> commission = await _commissionService.GetCommissionByUserId(userId);
+            if (commission.Count > 0)
+            {
+                List<ViewCommissionResponse> response = new List<ViewCommissionResponse>();
+                foreach (Commission item in commission)
+                {
+                    ViewCommissionResponse r = new ViewCommissionResponse
+                    {
+                        CommisionId = item.CommissionId,
+                        CreatedDate = item.CreatedDate,
+                        Deadline = item.Deadline,
+                        Price = item.Price,
+                        UserName = item.UserInfo.NickName,
+                        CommissionStatus = item.CommissionStatus,
+                        ArtistName = item.CreatorInfo.UserInfo.NickName,
+                        ImageId = item.ImageId,
+                        Rating = item.Rating,
+                        Review = item.Review,
+                    };
+                    response.Add(r);
+                }
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest("Cannot find any commission.");
             }
         }
     }

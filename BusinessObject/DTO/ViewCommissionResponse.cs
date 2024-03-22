@@ -11,5 +11,8 @@ namespace BusinessObject.DTO
         public required CommissionStatus CommissionStatus { get; set; }
         public string? UserName { get; set; }
         public string? ArtistName { get; set; }
+        public int? ImageId { get; set; }
+        public int? Rating { get; set; }
+        public string? Review { get; set; }
     }
 }
