@@ -1,4 +1,5 @@
-﻿using BusinessObject.SqlObject;
+﻿using BusinessObject;
+using BusinessObject.SqlObject;
 using DataAccessObject;
 using Repository.Interface;
 using System;
@@ -32,37 +33,37 @@ namespace Repository.Implementation
             await _dao.DeleteAsync(report);
         }
 
-        public async Task<List<Report>> GetAllArtReports(int artId)
+        public async Task<List<Report>> GetArtReports(int artId)
         {
             return await _dao
                 .Query()
-                .Where(x=>
-                    x.ReportedObjectType == BusinessObject.ReportedObjectType.Art&&
+                .Where(x =>
+                    x.ReportedObjectType == BusinessObject.ReportedObjectType.Art &&
                     x.ReportedObjectId == artId)
                 .ToListAsync();
         }
 
-        public async Task<List<Report>> GetAllComissionReports(int commissionId)
+        public async Task<List<Report>> GetComissionReports(int commissionId)
         {
             return await _dao
                 .Query()
-                .Where(x => 
+                .Where(x =>
                     x.ReportedObjectType == BusinessObject.ReportedObjectType.Commission &&
-                    x.ReportedObjectType==BusinessObject.ReportedObjectType.Commission)
+                    x.ReportedObjectType == BusinessObject.ReportedObjectType.Commission)
                 .ToListAsync();
         }
 
-        public async Task<List<Report>> GetAllCreatorReports(int creatorId)
+        public async Task<List<Report>> GetCreatorReports(int creatorId)
         {
             return await _dao
                 .Query()
-                .Where(x => 
+                .Where(x =>
                     x.ReportedObjectType == BusinessObject.ReportedObjectType.Artist &&
                     x.ReportedObjectId == creatorId)
                 .ToListAsync();
         }
 
-        public async Task<List<Report>> GetAllPostReports(int postId)
+        public async Task<List<Report>> GetPostReports(int postId)
         {
             return await _dao
                 .Query()
@@ -72,13 +73,57 @@ namespace Repository.Implementation
                 .ToListAsync();
         }
 
-        public async Task<List<Report>> GetAllUserReports(int userId)
+        public async Task<List<Report>> GetUserReports(int userId)
         {
             return await _dao
                 .Query()
                 .Where(x =>
                     x.ReportedObjectType == BusinessObject.ReportedObjectType.User &&
                     x.ReportedObjectId == userId)
+                .ToListAsync();
+        }
+        public async Task<List<Report>> GetAllArtReports()
+        {
+            return await _dao
+                .Query()
+                .Where(x=>
+                    x.ReportedObjectType == BusinessObject.ReportedObjectType.Art)
+                .ToListAsync();
+        }
+
+        public async Task<List<Report>> GetAllComissionReports()
+        {
+            return await _dao
+                .Query()
+                .Where(x => 
+                    x.ReportedObjectType == BusinessObject.ReportedObjectType.Commission)
+                .ToListAsync();
+        }
+
+        public async Task<List<Report>> GetAllCreatorReports()
+        {
+            return await _dao
+                .Query()
+                .Where(x => 
+                    x.ReportedObjectType == BusinessObject.ReportedObjectType.Artist)
+                .ToListAsync();
+        }
+
+        public async Task<List<Report>> GetAllPostReports()
+        {
+            return await _dao
+                .Query()
+                .Where(x =>
+                    x.ReportedObjectType == BusinessObject.ReportedObjectType.Post)
+                .ToListAsync();
+        }
+
+        public async Task<List<Report>> GetAllUserReports()
+        {
+            return await _dao
+                .Query()
+                .Where(x =>
+                    x.ReportedObjectType == BusinessObject.ReportedObjectType.User)
                 .ToListAsync();
         }
         public async Task<List<Report>> GetAllReportsOfThatUser(int userId)
@@ -100,6 +145,16 @@ namespace Repository.Implementation
         public async Task UpdateReport(Report report)
         {
             await _dao.UpdateAsync(report);
+        }
+
+        public async Task<List<Report>> GetReportByReportedObjectTypeAndId(int id, ReportedObjectType type)
+        {
+            return await _dao
+                .Query()
+                .Where(x =>
+                    x.ReportedObjectType == type &&
+                    x.ReportedObjectId == id)
+                .ToListAsync();
         }
     }
 }
