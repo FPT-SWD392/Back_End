@@ -145,6 +145,26 @@ namespace WebAPI.Controllers
             return Ok(responses);
         }
         [Authorize]
+        [HttpGet("GetAllTransactionThisUserByStatus")]
+        public async Task<ActionResult<List<TransactionResponse>>> GetAllTransactionThisUserByStatus(TransactionType transactionType)
+        {
+            var userId = int.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
+            var transactionList = await _transactionHistoryService.GetAllTransactionThisUserByStatus(userId, transactionType);
+
+            var responses = transactionList.Select(t => new TransactionResponse
+            {
+                TransactionId = t.TransactionId,
+                UserId = userId,
+                Note = t.Note,
+                Amount = t.Amount,
+                TransactionDate = t.TransactionDate,
+                TransactionType = t.TransactionType,
+                IsSuccess = t.IsSuccess,
+            }).ToList();
+
+            return Ok(responses);
+        }
+        [Authorize]
         [HttpGet("GetAllDepositTransaction")]
         [SwaggerResponse(200, Type=typeof(List<TransactionResponse>))]
         public async Task<ActionResult<List<TransactionResponse>>> GetAllDepositTransaction()

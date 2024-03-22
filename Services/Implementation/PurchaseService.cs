@@ -1,4 +1,6 @@
-﻿using BusinessObject.SqlObject;
+﻿using BusinessObject.MongoDbObject;
+using BusinessObject.SqlObject;
+using Microsoft.Extensions.Configuration;
 using Repository.Interface;
 
 namespace Services.Implementation
@@ -9,12 +11,22 @@ namespace Services.Implementation
         private readonly IUserInfoRepository _userInfoRepository;
         private readonly IArtInfoRepository _artInfoRepository;
         private readonly ITransactionHistoryRepository _transactionHistoryRepository;
-        public PurchaseService(IPurchaseRepository purchaseRepository, IUserInfoRepository userInfoRepository, IArtInfoRepository artInfoRepository, ITransactionHistoryRepository transactionHistoryRepository)
+        private readonly ISystemRevenueRepository _systemRevenueRepository;
+        private readonly IConfiguration _configuration;
+        private double _feePercentage = 0;
+        public PurchaseService(IPurchaseRepository purchaseRepository, 
+                                IUserInfoRepository userInfoRepository, 
+                                IArtInfoRepository artInfoRepository, 
+                                ITransactionHistoryRepository transactionHistoryRepository, 
+                                IConfiguration configuration, ISystemRevenueRepository systemRevenueRepository)
         {
             _purchaseRepository = purchaseRepository;
             _userInfoRepository = userInfoRepository;
             _transactionHistoryRepository = transactionHistoryRepository;
             _artInfoRepository = artInfoRepository;
+            _systemRevenueRepository = systemRevenueRepository;
+            _configuration = configuration;
+            _feePercentage = double.Parse(_configuration["AppSetting:FeePercentage"]);
         }  
         public async Task<bool> PurchaseWithBalance(int userId, int artId)
         {
@@ -53,7 +65,7 @@ namespace Services.Implementation
                     #region Update Creator Balance
                     var creatorId = artWorkToBeBought.CreatorId;
                     var userInfoBaseOnCreatorId = await _userInfoRepository.GetUserByCreatorId(creatorId);
-                    userInfoBaseOnCreatorId!.Balance += artWorkToBeBought.Price;
+                    userInfoBaseOnCreatorId!.Balance += artWorkToBeBought.Price * (1 - _feePercentage);
                     await _userInfoRepository.UpdateUser(userInfoBaseOnCreatorId);
                     #endregion
                     #region Add transaction history for buyer
@@ -63,7 +75,7 @@ namespace Services.Implementation
                         Note = "You bought " + artWorkToBeBought.ArtName,
                         Amount = artWorkToBeBought.Price,
                         TransactionType = BusinessObject.TransactionType.Buy,
-                        TransactionDate = DateTime.UtcNow,
+                        TransactionDate = DateTime.Now,
                     };
 
                     await _transactionHistoryRepository.CreateTransactionHistory(transactionHistoryBuyer);
@@ -73,13 +85,19 @@ namespace Services.Implementation
                     {
                         UserId = artWorkToBeBought.CreatorId,
                         Note = buyingUser.NickName + " have bought " + artWorkToBeBought.ArtName,
-                        Amount = artWorkToBeBought.Price,
+                        Amount = artWorkToBeBought.Price * (1 - _feePercentage),
                         TransactionType= BusinessObject.TransactionType.Sell,
-                        TransactionDate = DateTime.UtcNow,
+                        TransactionDate = DateTime.Now,
                     };
 
                     await _transactionHistoryRepository.CreateTransactionHistory(transactionHistoryReceiver);
                     #endregion
+                    await _systemRevenueRepository.CreateSystemRevenue(new SystemRevenue()
+                    {
+                        Amount = artWorkToBeBought.Price * _feePercentage,
+                        Description = "Profit for system",
+                        Date = DateTime.Now,
+                    });
                     return true;
                 } catch (Exception ex)
                 {
@@ -119,7 +137,7 @@ namespace Services.Implementation
                     #region Update Creator Balance
                     var creatorId = artWorkToBeBought.CreatorId;
                     var userInfoBaseOnCreatorId = await _userInfoRepository.GetUserByCreatorId(creatorId);
-                    userInfoBaseOnCreatorId!.Balance += artWorkToBeBought.Price;
+                    userInfoBaseOnCreatorId!.Balance += artWorkToBeBought.Price * (1 - _feePercentage);
                     await _userInfoRepository.UpdateUser(userInfoBaseOnCreatorId);
                     #endregion
                     #region Add transaction history for buyer
@@ -129,7 +147,7 @@ namespace Services.Implementation
                         Note = "You bought " + artWorkToBeBought.ArtName,
                         Amount = artWorkToBeBought.Price,
                         TransactionType = BusinessObject.TransactionType.Buy,
-                        TransactionDate = DateTime.UtcNow,
+                        TransactionDate = DateTime.Now,
                     };
 
                     await _transactionHistoryRepository.CreateTransactionHistory(transactionHistoryBuyer);
@@ -141,11 +159,17 @@ namespace Services.Implementation
                         Note = buyingUser.NickName + " have bought " + artWorkToBeBought.ArtName,
                         Amount = artWorkToBeBought.Price,
                         TransactionType = BusinessObject.TransactionType.Sell,
-                        TransactionDate = DateTime.UtcNow,
+                        TransactionDate = DateTime.Now,
                     };
 
                     await _transactionHistoryRepository.CreateTransactionHistory(transactionHistoryReceiver);
                     #endregion
+                    await _systemRevenueRepository.CreateSystemRevenue(new SystemRevenue()
+                    {
+                        Amount = artWorkToBeBought.Price * _feePercentage,
+                        Description = "Profit for system",
+                        Date = DateTime.Now,
+                    });
                     return true;
                 }
                 catch (Exception ex)

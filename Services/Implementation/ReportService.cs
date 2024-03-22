@@ -1,4 +1,5 @@
-﻿using BusinessObject.DTO;
+﻿using BusinessObject;
+using BusinessObject.DTO;
 using BusinessObject.SqlObject;
 using MongoDB.Driver;
 using Repository.Interface;
@@ -41,34 +42,121 @@ namespace Services.Implementation
             var report = _reportRepository.GetReportById(reportId);
             await _reportRepository.DeleteReport(report.Result);
         }
-        public async Task<List<Report>?> GetAllReport()
+        public async Task<List<ReportReponse>?> GetReportWithCount(List<Report> list)
         {
-            return await _reportRepository.GetAllReport();
+            List<ReportReponse> reportReponses = new List<ReportReponse>();
+            foreach (var report in list)
+            {
+                bool foundMatchingResponse = false;
+                if (reportReponses.Count() == 0)
+                {
+                    ReportReponse response = new ReportReponse()
+                    {
+                        Reason = report.ReportReason,
+                        Description = report.ReportDescription,
+                        ReportDate = report.ReportDate,
+                        ReportedObjectId = report.ReportedObjectId,
+                        ReporterId = report.ReporterId,
+                        ReportedObjectType = report.ReportedObjectType,
+                        Count = 1
+                    };
+                    reportReponses.Add(response);
+                }
+                else
+                {
+                    for (int i = 0; i < reportReponses.Count(); i++)
+                    {
+                        if (report.ReportedObjectId == reportReponses[i].ReportedObjectId &&
+                            report.ReportedObjectType == reportReponses[i].ReportedObjectType)
+                        {
+                            
+                            reportReponses[i].Count += 1;
+                            foundMatchingResponse = true;
+                            break;
+                        }
+                        
+                    }
+                    if (!foundMatchingResponse)
+                    {
+                        ReportReponse response = new ReportReponse()
+                        {
+                            Reason = report.ReportReason,
+                            Description = report.ReportDescription,
+                            ReportDate = report.ReportDate,
+                            ReportedObjectId = report.ReportedObjectId,
+                            ReporterId = report.ReporterId,
+                            ReportedObjectType = report.ReportedObjectType,
+                            Count = 1
+                        };
+                        reportReponses.Add(response);
+                    }
+                }
+            }
+            return reportReponses;
         }
-        public async Task<List<Report>?> GetAllArtReports(int artId)
+        public async Task<List<ReportReponse>?> GetAllReport()
         {
-            return await _reportRepository.GetAllArtReports(artId);
+            var list = await _reportRepository.GetAllReport();
+            return await GetReportWithCount(list);
+        }
+        public async Task<List<ReportReponse>?> GetAllArtReports()
+        {
+            var list = await _reportRepository.GetAllArtReports();
+            return await GetReportWithCount(list);
         }
 
-        public async Task<List<Report>?> GetAllPostReports(int postId)
+        public async Task<List<ReportReponse>?> GetAllPostReports()
         {
-            return await _reportRepository.GetAllPostReports(postId);
+            var list = await _reportRepository.GetAllPostReports();
+            return await GetReportWithCount(list);
         }
-        public async Task<List<Report>?> GetAllCreatorReports(int creatorId)
+        public async Task<List<ReportReponse>?> GetAllCreatorReports()
         {
-            return await _reportRepository.GetAllCreatorReports(creatorId);
+            var list = await _reportRepository.GetAllCreatorReports();
+            return await GetReportWithCount(list);
         }
-        public async Task<List<Report>?> GetAllComissionReports(int comissionId)
+        public async Task<List<ReportReponse>?> GetAllComissionReports()
         {
-            return await _reportRepository.GetAllComissionReports(comissionId);
+            var list = await _reportRepository.GetAllComissionReports();
+            return await GetReportWithCount(list);
         }
-        public async Task<List<Report>?> GetAllUserReports(int userId)
+        public async Task<List<ReportReponse>?> GetAllUserReports()
         {
-            return await _reportRepository.GetAllUserReports(userId);
+            var list = await _reportRepository.GetAllUserReports();
+            return await GetReportWithCount(list);
         }
-        public async Task<List<Report>?> GetAllReportsOfThatUser(int userId)
+
+        public async Task<List<ReportReponse>?> GetArtReports(int artId)
         {
-            return await _reportRepository.GetAllReportsOfThatUser(userId);
+            var list = await _reportRepository.GetArtReports(artId);
+            return await GetReportWithCount(list);
+        }
+
+        public async Task<List<ReportReponse>?> GetPostReports(int postId)
+        {
+            var list = await _reportRepository.GetPostReports(postId);
+            return await GetReportWithCount(list);
+        }
+        public async Task<List<ReportReponse>?> GetCreatorReports(int creatorId)
+        {
+            var list = await _reportRepository.GetCreatorReports(creatorId);
+            return await GetReportWithCount(list);
+        }
+        public async Task<List<ReportReponse>?> GetComissionReports(int comissionId)
+        {
+            var list = await _reportRepository.GetComissionReports(comissionId);
+            return await GetReportWithCount(list);
+        }
+        public async Task<List<ReportReponse>?> GetUserReports(int userId)
+        {
+            var list = await _reportRepository.GetUserReports(userId);
+            return await GetReportWithCount(list);
+        }
+
+        public async Task<List<ReportReponse>?> GetAllReportsOfThatUser(int userId)
+        {
+            var list = await _reportRepository.GetAllReportsOfThatUser(userId);
+            return await GetReportWithCount(list);
         }
         public async Task<Report?> GetReportById(int reportId)
         {
@@ -167,6 +255,16 @@ namespace Services.Implementation
                 };
                 await _reportRepository.CreateNewReport(newreport);
                 return true;
+            }
+        }
+
+        public async Task DeleteAfterBan(int id, ReportedObjectType type)
+        {
+            var delete = await _reportRepository.GetReportByReportedObjectTypeAndId(id, type);
+            foreach (var report in delete)
+            {
+                report.ReportedObjectType = ReportedObjectType.Banned;
+                await _reportRepository.UpdateReport(report);
             }
         }
     }

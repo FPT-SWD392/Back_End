@@ -10,6 +10,7 @@ namespace BusinessObject.DTO
         [Required]
         public required string Description { get; set; }
         [Required]
+        [Range(0,double.MaxValue)]
         public required double Price { get; set; }
         [Required]
         public required List<int> Tags { get; set; }
