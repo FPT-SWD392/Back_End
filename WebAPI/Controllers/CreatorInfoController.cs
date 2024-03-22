@@ -28,12 +28,12 @@ namespace WebAPI.Controllers
         {
             if (creatorInfoDTO.ContactInfo.IsNullOrEmpty() || creatorInfoDTO.Bio.IsNullOrEmpty())
             {
-                return BadRequest();
+                return BadRequest(new() { });
             }
             var userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
             if (int.TryParse(userIdString, out var userId) == false) 
             {
-                return Unauthorized();
+                return Unauthorized(new() { });
             }
             try
             {
@@ -54,12 +54,12 @@ namespace WebAPI.Controllers
         {
             if (creatorInfoDTO.ContactInfo.IsNullOrEmpty() || creatorInfoDTO.Bio.IsNullOrEmpty())
             {
-                return BadRequest();
+                return BadRequest(new() { });
             }
             var userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
             if (int.TryParse(userIdString, out var userId) == false)
             {
-                return Unauthorized();
+                return Unauthorized(new() { });
             }
             try
             {

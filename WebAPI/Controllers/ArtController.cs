@@ -73,7 +73,7 @@ namespace WebAPI.Controllers
             }
             catch
             {
-                return Unauthorized();
+                return Unauthorized(new() { });
             }
         }
         [HttpGet("GetCreatedArtList")]
@@ -95,7 +95,7 @@ namespace WebAPI.Controllers
             }
             catch
             {
-                return Unauthorized();
+                return Unauthorized(new() { });
             }
         }
         [HttpGet("GetArtInfo")]
@@ -123,7 +123,7 @@ namespace WebAPI.Controllers
                 return Ok(artwork);
             } catch
             {
-                return Unauthorized();
+                return Unauthorized(new() { });
             }
         }
         [HttpGet("GetAllArtTags")]
@@ -143,8 +143,8 @@ namespace WebAPI.Controllers
             try
             {
                 string creatorIdString = _tokenHelper.GetCreatorIdFromToken(HttpContext);
-                if (false == int.TryParse(creatorIdString, out int creatorId)) return Unauthorized();
-                if (createArtRequest == null) return BadRequest();
+                if (false == int.TryParse(creatorIdString, out int creatorId)) return Unauthorized(new() { });
+                if (createArtRequest == null) return BadRequest(new() { });
                 if (false == ImageType.IsSupportedImageType(createArtRequest.ImageFile.ContentType)) return BadRequest("Unsupported image file type");
                 await _artService.CreateArt(creatorId, createArtRequest);
             }
@@ -152,10 +152,7 @@ namespace WebAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            return Ok(new
-            {
-
-            });
+            return Ok(new{});
         }
         [HttpGet("Preview")]
         [SwaggerResponse(200)]
@@ -175,7 +172,7 @@ namespace WebAPI.Controllers
             string userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
             if (false == int.TryParse(userIdString, out var userId))
             {
-                return Unauthorized();
+                return Unauthorized(new() { });
             }
             ImageDTO? imageDTO = await _artService.DownloadOriginal(userId, artId);
             if (imageDTO == null) return NotFound();
@@ -191,7 +188,7 @@ namespace WebAPI.Controllers
             string userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
             if (false == int.TryParse(userIdString, out var userID))
             {
-                return Unauthorized();
+                return Unauthorized(new() { });
             }
             bool checkSuccess = false;
             try
@@ -223,7 +220,7 @@ namespace WebAPI.Controllers
             string userIdString = _tokenHelper.GetUserIdFromToken(HttpContext);
             if (false == int.TryParse(userIdString, out var userID))
             {
-                return Unauthorized();
+                return Unauthorized(new() { });
             }
 
             bool checkSuccess = false;
@@ -260,7 +257,7 @@ namespace WebAPI.Controllers
             }
             else
             {
-                return BadRequest();
+                return BadRequest(new() { });
             }
         }
     }
