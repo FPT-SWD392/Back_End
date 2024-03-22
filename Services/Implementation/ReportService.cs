@@ -42,11 +42,10 @@ namespace Services.Implementation
             var report = _reportRepository.GetReportById(reportId);
             await _reportRepository.DeleteReport(report.Result);
         }
-        public async Task<List<ReportReponse>?> GetAllReport()
+        public async Task<List<ReportReponse>?> GetReportWithCount(List<Report> list)
         {
             List<ReportReponse> reportReponses = new List<ReportReponse>();
-            var test = await _reportRepository.GetAllReport();
-            foreach (var report in test)
+            foreach (var report in list)
             {
                 bool foundMatchingResponse = false;
                 if (reportReponses.Count() == 0)
@@ -95,53 +94,69 @@ namespace Services.Implementation
             }
             return reportReponses;
         }
-        public async Task<List<Report>?> GetAllArtReports()
+        public async Task<List<ReportReponse>?> GetAllReport()
         {
-            return await _reportRepository.GetAllArtReports();
+            var list = await _reportRepository.GetAllReport();
+            return await GetReportWithCount(list);
+        }
+        public async Task<List<ReportReponse>?> GetAllArtReports()
+        {
+            var list = await _reportRepository.GetAllArtReports();
+            return await GetReportWithCount(list);
         }
 
-        public async Task<List<Report>?> GetAllPostReports()
+        public async Task<List<ReportReponse>?> GetAllPostReports()
         {
-            return await _reportRepository.GetAllPostReports();
+            var list = await _reportRepository.GetAllPostReports();
+            return await GetReportWithCount(list);
         }
-        public async Task<List<Report>?> GetAllCreatorReports()
+        public async Task<List<ReportReponse>?> GetAllCreatorReports()
         {
-            return await _reportRepository.GetAllCreatorReports();
+            var list = await _reportRepository.GetAllCreatorReports();
+            return await GetReportWithCount(list);
         }
-        public async Task<List<Report>?> GetAllComissionReports()
+        public async Task<List<ReportReponse>?> GetAllComissionReports()
         {
-            return await _reportRepository.GetAllComissionReports();
+            var list = await _reportRepository.GetAllComissionReports();
+            return await GetReportWithCount(list);
         }
-        public async Task<List<Report>?> GetAllUserReports()
+        public async Task<List<ReportReponse>?> GetAllUserReports()
         {
-            return await _reportRepository.GetAllUserReports();
-        }
-
-        public async Task<List<Report>?> GetArtReports(int artId)
-        {
-            return await _reportRepository.GetArtReports(artId);
-        }
-
-        public async Task<List<Report>?> GetPostReports(int postId)
-        {
-            return await _reportRepository.GetPostReports(postId);
-        }
-        public async Task<List<Report>?> GetCreatorReports(int creatorId)
-        {
-            return await _reportRepository.GetCreatorReports(creatorId);
-        }
-        public async Task<List<Report>?> GetComissionReports(int comissionId)
-        {
-            return await _reportRepository.GetComissionReports(comissionId);
-        }
-        public async Task<List<Report>?> GetUserReports(int userId)
-        {
-            return await _reportRepository.GetUserReports(userId);
+            var list = await _reportRepository.GetAllUserReports();
+            return await GetReportWithCount(list);
         }
 
-        public async Task<List<Report>?> GetAllReportsOfThatUser(int userId)
+        public async Task<List<ReportReponse>?> GetArtReports(int artId)
         {
-            return await _reportRepository.GetAllReportsOfThatUser(userId);
+            var list = await _reportRepository.GetArtReports(artId);
+            return await GetReportWithCount(list);
+        }
+
+        public async Task<List<ReportReponse>?> GetPostReports(int postId)
+        {
+            var list = await _reportRepository.GetPostReports(postId);
+            return await GetReportWithCount(list);
+        }
+        public async Task<List<ReportReponse>?> GetCreatorReports(int creatorId)
+        {
+            var list = await _reportRepository.GetCreatorReports(creatorId);
+            return await GetReportWithCount(list);
+        }
+        public async Task<List<ReportReponse>?> GetComissionReports(int comissionId)
+        {
+            var list = await _reportRepository.GetComissionReports(comissionId);
+            return await GetReportWithCount(list);
+        }
+        public async Task<List<ReportReponse>?> GetUserReports(int userId)
+        {
+            var list = await _reportRepository.GetUserReports(userId);
+            return await GetReportWithCount(list);
+        }
+
+        public async Task<List<ReportReponse>?> GetAllReportsOfThatUser(int userId)
+        {
+            var list = await _reportRepository.GetAllReportsOfThatUser(userId);
+            return await GetReportWithCount(list);
         }
         public async Task<Report?> GetReportById(int reportId)
         {

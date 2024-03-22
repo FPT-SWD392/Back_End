@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
             var report = await _reportService.GetAllReportsOfThatUser(userId);
             return Ok(report);
         }
-        [Authorize]
+        
         [HttpGet("GetAllReports")]
         public async Task<IActionResult> GetAllReports()
         {

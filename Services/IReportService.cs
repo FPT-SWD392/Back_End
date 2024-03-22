@@ -8,12 +8,12 @@ namespace Services
     {
         Task CreateReport(Report report);
         Task DeleteReport(int reportId);
-        Task<List<Report>?> GetAllArtReports();
-        Task<List<Report>?> GetAllPostReports();
-        Task<List<Report>?> GetAllCreatorReports();
-        Task<List<Report>?> GetAllComissionReports();
-        Task<List<Report>?> GetAllUserReports();
-        Task<List<Report>?> GetAllReportsOfThatUser(int userId);
+        Task<List<ReportReponse>?> GetAllArtReports();
+        Task<List<ReportReponse>?> GetAllPostReports();
+        Task<List<ReportReponse>?> GetAllCreatorReports();
+        Task<List<ReportReponse>?> GetAllComissionReports();
+        Task<List<ReportReponse>?> GetAllUserReports();
+        Task<List<ReportReponse>?> GetAllReportsOfThatUser(int userId);
         Task<Report?> GetReportById(int reportId);
         Task UpdateReport(Report report);
         Task<bool> ReportUser(ReportRequest report);
@@ -21,11 +21,11 @@ namespace Services
         Task<bool> ReportCommission(ReportRequest report);
         Task<bool> ReportArt(ReportRequest report);
         Task<bool> ReportArtist(ReportRequest report);
-        public Task<List<Report>?> GetArtReports(int artId);
-        public Task<List<Report>?> GetPostReports(int postId);
-        public Task<List<Report>?> GetCreatorReports(int creatorId);
-        public Task<List<Report>?> GetComissionReports(int comissionId);
-        public Task<List<Report>?> GetUserReports(int userId);
-        public Task DeleteAfterBan(int id, ReportedObjectType type);
+        Task<List<ReportReponse>?> GetArtReports(int artId);
+        Task<List<ReportReponse>?> GetPostReports(int postId);
+        Task<List<ReportReponse>?> GetCreatorReports(int creatorId);
+        Task<List<ReportReponse>?> GetComissionReports(int comissionId);
+        Task<List<ReportReponse>?> GetUserReports(int userId);
+        Task DeleteAfterBan(int id, ReportedObjectType type);
     }
 }
