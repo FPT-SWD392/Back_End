@@ -35,7 +35,7 @@ namespace Services.Implementation
                     UserId = userId,
                     ArtId = artId,
                     Rating = rating,
-                    RatingDate = DateTime.UtcNow,
+                    RatingDate = DateTime.Now,
                 };
                 await _artRatingRepository.CreateNewArtRating(ratingToBeCreated);
                 return true;

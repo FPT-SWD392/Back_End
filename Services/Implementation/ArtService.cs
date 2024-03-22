@@ -18,6 +18,7 @@ namespace Services.Implementation
         private readonly IAzureBlobStorage _azureBlobStorage;
         private readonly IImageInfoRepository _imageInfoRepository;
         private readonly int _artUploadLimit;
+        private readonly double _profitRate;
         public ArtService(
             IArtInfoRepository artInfoRepository,
             ICreatorInfoRepository creatorInfoRepository,
@@ -83,7 +84,7 @@ namespace Services.Implementation
                 CreatorId = creatorInfo.CreatorId,
                 Description = request.Description,
                 Status = ArtStatus.Public,
-                Price = request.Price,
+                Price = request.Price * 1.2,
                 UpdateDate = DateTime.Now,
             };
             await _artInfoRepository.CreateNewArt(artinfo);

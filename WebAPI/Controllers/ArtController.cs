@@ -20,12 +20,18 @@ namespace WebAPI.Controllers
         private readonly IPurchaseService _purchaseService;
         private readonly IArtRatingService _artRatingService;
         private readonly ITokenHelper _tokenHelper;
-        public ArtController(IArtService artService, ITagService tagService, ITokenHelper tokenHelper, IArtRatingService artRatingService)
+        public ArtController(IArtService artService, 
+                ITagService tagService,
+                IPurchaseService purchaseService,                 
+                IArtRatingService artRatingService,
+                ITokenHelper tokenHelper
+                )
         {
             _artService = artService;
             _tagService = tagService;
             _tokenHelper = tokenHelper;
             _artRatingService = artRatingService;
+            _purchaseService = purchaseService;
         }
         [HttpGet("GetArtList")]
         [Produces("application/json")]

@@ -255,7 +255,7 @@ namespace Services.Implementation
                         Note = note,
                         TransactionType = addBalanceRequest.TransactionType,
                         Amount = addBalanceRequest.Amount,
-                        TransactionDate = DateTime.UtcNow,
+                        TransactionDate = DateTime.Now,
                         IsSuccess = true,
                     };
                     await _transactionHistoryRepository.CreateTransactionHistory(transactionHistory);
@@ -268,7 +268,7 @@ namespace Services.Implementation
                         UserId = userId,
                         Note = note,
                         TransactionType = addBalanceRequest.TransactionType,
-                        TransactionDate = DateTime.UtcNow,
+                        TransactionDate = DateTime.Now,
                         Amount = addBalanceRequest.Amount,
                         IsSuccess = false,
                     };
