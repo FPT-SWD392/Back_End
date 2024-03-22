@@ -24,7 +24,7 @@ namespace Services.Implementation
             _transactionHistoryRepository = transactionHistoryRepository;
         }
 
-        public async Task/*<Commission?> */CreateCommission(DateTime deadline, double price, int creatorId, int userId)
+        public async Task CreateCommission(DateTime deadline, double price, int creatorId, int userId)
         {
             try
             {
@@ -169,6 +169,5 @@ namespace Services.Implementation
                 throw new Exception(ex.Message);
             }
         }
-
     }
 }

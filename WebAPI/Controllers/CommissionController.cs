@@ -76,9 +76,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
                 await _commissionService.UpdateCommissionStatus(commissionId, "accept");
-                //await _commissionService.UpdateCommissionStatus(commissionId, CommissionStatus.Accepted);
                 return Ok(new {});
             }
             catch (Exception ex)
@@ -95,7 +93,6 @@ namespace WebAPI.Controllers
         {
             try
             {
-                int userId = Int32.Parse(_jwtHelper.GetUserIdFromToken(HttpContext));
                 await _commissionService.UpdateCommissionStatus(commissionId, "deny");
                 return Ok(new {});
             }
