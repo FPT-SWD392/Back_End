@@ -26,6 +26,8 @@ namespace Repository.Implementation
                 .Query()
                 .Where(x => x.CreatorId == creatorId && x.CommissionStatus == BusinessObject.CommissionStatus.Accepted)
                 .Include(x => x.UserInfo)
+                .Include(x => x.CreatorInfo)
+                .Include(x => x.CreatorInfo.UserInfo)
                 .ToListAsync();
         }
 
@@ -34,6 +36,8 @@ namespace Repository.Implementation
             return await _dao
                 .Query()
                 .Where(x => x.CreatorId == creatorId)
+                .Include(x => x.CreatorInfo)
+                .Include(x => x.CreatorInfo.UserInfo)
                 .Include(x => x.UserInfo)
                 .ToListAsync();
         }
@@ -43,6 +47,8 @@ namespace Repository.Implementation
             return await _dao
                 .Query()
                 .Where(x=>x.CommissionId == commissionId)
+                .Include(x => x.CreatorInfo)
+                .Include(x => x.CreatorInfo.UserInfo)
                 .Include(x => x.UserInfo)
                 .SingleOrDefaultAsync();
         }
@@ -52,6 +58,8 @@ namespace Repository.Implementation
             return await _dao
                 .Query()
                 .Where(x => x.UserId == userId)
+                .Include(x => x.CreatorInfo)
+                .Include(x => x.CreatorInfo.UserInfo)
                 .Include(x => x.UserInfo)
                 .ToListAsync();
         }
